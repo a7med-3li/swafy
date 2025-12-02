@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ../backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/swafy
+      - SPRING_DATASOURCE_USERNAME=swafy_user
+      - SPRING_DATASOURCE_PASSWORD=swafy_pass
+
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: swafy
+      POSTGRES_USER: swafy_user
+      POSTGRES_PASSWORD: swafy_pass
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql:ro
+    ports:
+      - "5432:5432"
+
+volumes:
+  db-data: {}

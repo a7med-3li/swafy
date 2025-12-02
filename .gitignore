@@ -1,0 +1,24 @@
+# Maven
+/target/
+
+# Gradle
+/.gradle/
+
+# Node
+/node_modules/
+
+# IDEs
+/.idea/
+/.vscode/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# Docker
+docker-compose.override.yml
+
+# Ignore local env files
+.env
