@@ -4,7 +4,7 @@ Starter repository scaffold for the Swafy project.
 
 Structure:
 
-- `backend/` - backend service (Gradle-based Java app)
+- `backend/` - backend service (Maven-based Java app)
 - `mobile/` - mobile client
 - `infra/` - docker-compose and infra scripts
 - `docs/` - project documentation
@@ -17,7 +17,7 @@ Getting started (local development):
 
 2. Build the backend jar (in `backend/`):
 
-   ./gradlew build
+   ./mvnw clean package
 
 Notes:
 
