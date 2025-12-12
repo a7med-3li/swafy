@@ -47,7 +47,7 @@ public class SecurityConfig {
     @Profile("test")  // Only active in test profile
     public UserDetailsService testUserDetailsService() {
         UserDetails testUser = User
-                .withUsername("test@example.com")
+                .withUsername("test")
                 .password(passwordEncoder().encode("test123"))  // Use BCrypt
                 .roles("RIDER")
                 .build();
