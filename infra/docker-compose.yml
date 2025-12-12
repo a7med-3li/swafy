@@ -4,27 +4,40 @@ services:
   backend:
     build:
       context: ../backend
+      dockerfile: Dockerfile
+    image: a7med3li/swafy-backend:local
     ports:
       - "8080:8080"
-    depends_on:
-      - db
+    env_file:
+      - .env
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/swafy
-      - SPRING_DATASOURCE_USERNAME=swafy_user
-      - SPRING_DATASOURCE_PASSWORD=swafy_pass
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://db:5432/swafy}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-swafy_user}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-swafy_pass}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-local}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   db:
     image: postgres:15
     restart: unless-stopped
     environment:
-      POSTGRES_DB: swafy
-      POSTGRES_USER: swafy_user
-      POSTGRES_PASSWORD: swafy_pass
+      POSTGRES_DB: ${POSTGRES_DB:-swafy}
+      POSTGRES_USER: ${POSTGRES_USER:-swafy_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-swafy_pass}
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql:ro
-    ports:
-      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-swafy_user} -d ${POSTGRES_DB:-swafy}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  db-data: {}
+  db-data:
