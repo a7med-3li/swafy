@@ -3,7 +3,6 @@ package com.swafy.user.controller;
 import com.swafy.common.dto.ApiResponse;
 import com.swafy.common.exception.UserNotFoundException;
 import com.swafy.user.dto.UpdateUserRequest;
-import com.swafy.auth.dto.UserRegistrationRequest;
 import com.swafy.user.dto.UserResponse;
 import com.swafy.user.entity.User;
 import com.swafy.user.service.UserService;
@@ -17,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UserController {
-    // TODO: add /me endpoints
+
     private final UserService userService;
 
     @GetMapping("/")
@@ -38,7 +37,6 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // Optional: Restore endpoint
     @PostMapping("/{id}/restore")
     public ResponseEntity<UserResponse> restoreUser(@PathVariable Long id) {
         UserResponse response = userService.restoreUser(id);
@@ -46,9 +44,8 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<User> updateUserPartially(@PathVariable Long id, @RequestBody UpdateUserRequest dto) {
-        User updated = userService.updateUserPartially(id, dto);
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest updateRequest) {
+        User updated = userService.updateUser(id, updateRequest);
         return ResponseEntity.ok(updated);
     }
-
 }

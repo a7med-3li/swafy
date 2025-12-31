@@ -1,11 +1,9 @@
 package com.swafy.user.service;
 
-import com.swafy.common.enums.UserRole;
 import com.swafy.common.exception.UserAlreadyDeletedException;
 import com.swafy.common.exception.UserNotFoundException;
 import com.swafy.common.util.Helpers;
 import com.swafy.user.dto.UpdateUserRequest;
-import com.swafy.auth.dto.UserRegistrationRequest;
 import com.swafy.user.dto.UserResponse;
 import com.swafy.user.entity.User;
 import com.swafy.user.repository.UserRepository;
@@ -28,20 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public User createUser(UserRegistrationRequest request){
-
-        User user = new User();
-        user.setEmail(request.getEmail());
-
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-        user.setPasswordHash(encodedPassword);
-
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setPhoneNumber(request.getPhoneNumber());
-        user.setRole(UserRole.RIDER);
-        user.setCreatedAt(LocalDateTime.now());
-
+    public User createUser(User user){
         return userRepository.save(user);
     }
 
@@ -94,7 +79,7 @@ public class UserService {
         return userResponseList;
     }
     // rewrite this to follow the best practice
-    public User updateUserPartially(Long id, UpdateUserRequest dto){
+    public User updateUser(Long id, UpdateUserRequest dto){
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 

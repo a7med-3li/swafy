@@ -4,11 +4,11 @@ This document summarizes the high-level architecture for the Swafy ride‑sharin
 
 Components
 - Backend (Java / Spring Boot)
-  - REST API for user, rides, matching and payments
+  - REST API for user, rides, and matching.
   - Persistence: PostgreSQL
   - Suggested: Spring Boot Actuator, OpenAPI, security (JWT)
 - Mobile client
-  - Native or cross-platform mobile app that consumes the backend API
+  - React-Native mobile app that consumes the backend API
 - Infra
   - docker-compose for local dev (Postgres + backend)
   - Future: Kubernetes manifests for staging/production
@@ -17,7 +17,8 @@ Data Model (high level)
 - Users (drivers, riders)
 - Vehicles (vehicle metadata)
 - Rides (origin, destination, driver, rider, status)
-- Payments (transactions linked to rides)
+
+[//]: # (- Payments &#40;transactions linked to rides&#41;)
 
 Operational concerns
 - Authentication & Authorization (JWT)

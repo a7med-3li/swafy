@@ -1,9 +1,0 @@
-{
-  "name": "swafy-mobile",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "start": "echo \"Start script not yet implemented\""
-  },
-  "dependencies": {}
-}

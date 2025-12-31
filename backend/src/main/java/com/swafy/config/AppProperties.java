@@ -6,8 +6,5 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {
-    private String example;
 
-    public String getExample() { return example; }
-    public void setExample(String example) { this.example = example; }
 }

@@ -1,17 +1,15 @@
 package com.swafy.auth.service;
 
-import com.swafy.auth.dto.AuthResponse;
 import com.swafy.auth.dto.LoginRequest;
-import com.swafy.auth.dto.UserRegistrationRequest;
 import com.swafy.common.exception.UserAlreadyExistsException;
 import com.swafy.common.exception.UserNotFoundException;
 import com.swafy.common.exception.WrongPasswordException;
+import com.swafy.driver.service.DriverService;
 import com.swafy.user.dto.UserResponse;
 import com.swafy.user.entity.User;
 import com.swafy.user.repository.UserRepository;
 import com.swafy.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,16 +21,15 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final UserService userService;
+    private final DriverService driverService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserResponse registerRider(UserRegistrationRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+    public UserResponse registerUser(User user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
             throw new UserAlreadyExistsException("Email already registered");
         }
 
-        User user = userService.createUser(request);
-
-        return mapToResponse(user);
+        return mapToResponse(userService.createUser(user));
     }
 
     public UserResponse login(LoginRequest request) {
@@ -47,6 +44,4 @@ public class AuthService {
 
         return mapToResponse(user);
     }
-
-
 }
