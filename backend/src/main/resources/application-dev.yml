@@ -1,0 +1,187 @@
+spring:
+  application:
+    name: swafy-backend
+
+  # Database Configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/swafy
+    username: swafy_user
+    password: dev_password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
+
+  # JPA/Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 20
+          fetch_size: 50
+        order_inserts: true
+        order_updates: true
+    open-in-view: false
+
+  # Redis Configuration
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 2000ms
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+
+  # Logging Configuration
+  mvc:
+    log-request-details: true
+
+  # Jackson Configuration
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+      indent-output: true
+    deserialization:
+      fail-on-unknown-properties: false
+
+  # Mail Configuration (Gmail SMTP)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your-email@gmail.com
+    password: your-app-password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+        from: noreply@swafy.dev
+
+# Server Configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: always
+    include-exception: false
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.swafy: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/swafy-dev.log
+    max-size: 10MB
+    max-history: 10
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,info,prometheus,env,configprops
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+
+# JWT Configuration
+jwt:
+  secret: dev-secret-key-must-be-at-least-256-bits-for-hs256-algorithm-change-in-production
+  expiration-ms: 86400000
+  refresh-expiration-ms: 604800000
+
+# CORS Configuration
+cors:
+  allowed-origins: http://localhost:3000,http://localhost:3001,http://localhost:4200
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS,PATCH
+  allowed-headers: "*"
+  allow-credentials: true
+  max-age: 3600
+
+# Application Configuration
+app:
+  name: Swafy
+  version: 0.1.0
+  environment: development
+  timezone: UTC
+
+  # Ride Configuration
+  ride:
+    base-fare: 5.00
+    per-km-rate: 2.50
+    per-minute-rate: 0.50
+    surge-multiplier: 1.5
+    matching-radius-km: 5.0
+    request-timeout-minutes: 5
+    acceptance-timeout-minutes: 2
+
+  # Driver Configuration
+  driver:
+    min-rating: 4.0
+    verification-required: false
+    documents-required:
+      - LICENSE
+      - INSURANCE
+      - REGISTRATION
+
+  # Passenger Configuration
+  passenger:
+    max-rating: 5.0
+    min-rating: 1.0
+
+  # Payment Configuration
+  payment:
+    provider: stripe
+    currency: USD
+    min-amount: 1.00
+    max-amount: 10000.00
+
+  # Pagination Configuration
+  pagination:
+    default-page-size: 20
+    max-page-size: 100
+
+# Springdoc (Swagger/OpenAPI Configuration)
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  show-actuator: true
+  use-root-path: true

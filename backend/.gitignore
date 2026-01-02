@@ -1,0 +1,86 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+bin/
+
+# Build
+target/
+build/
+dist/
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+
+# Dependencies
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Runtime
+*.pid
+*.seed
+*.pid.lock
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+*.h2.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Maven
+*.pom
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+.flattened-pom.xml
+
+# Gradle (if used)
+.gradle/
+gradle-app.setting
+gradlew
+gradlew.bat
+
+# Node (if frontend build is needed)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Misc
+*.class
+.classpath
+.factorypath
+.gitattributes

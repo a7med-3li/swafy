@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM maven:3.8.8-jdk-17 AS builder
+FROM maven:3.9.5-eclipse-temurin-21 AS builder
 WORKDIR /workspace
 # Copy maven wrapper and pom first for better caching if present
 COPY .mvn/ .mvn/
@@ -10,7 +10,7 @@ RUN chmod +x mvnw || true
 RUN ./mvnw -B -DskipTests clean package
 
 # Stage 2: Runtime
-FROM eclipse-temurin:17-jre-focal
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 # Copy jar produced by build stage (adjust the jar name as needed)
 COPY --from=builder /workspace/target/*-SNAPSHOT.jar app.jar
