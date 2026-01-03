@@ -22,7 +22,7 @@ public class AuthController {
     private final AuthService authService;
     private final PasswordEncoder passwordEncoder;
 
-    @PostMapping("/user/register")
+    @PostMapping("/register")
     public UserResponse registerUser(@RequestBody UserRegistrationRequest userRegistrationRequest) {
         return authService.registerUser(create(userRegistrationRequest, passwordEncoder));
     }
