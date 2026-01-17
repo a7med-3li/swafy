@@ -8,3 +8,8 @@ Thanks for contributing! Please follow these guidelines:
 - Update documentation when adding features.
 
 Run linters and tests before opening a PR.
+
+
+## Next steps
+
+- Implementation of "verifyPhoneNumber" end-point for the rider.
