@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OTPService {
 
-
+    String verifyServiceSid="";
     public void sendOtp(String phoneNumber){
-        Twilio.init("AC97967ca449c66f56e0ef100d50ebe7ba", "f8150791a58581d17fdfb31dab07b3df");
+        Twilio.init("", "");
         Verification.creator(
                 verifyServiceSid,
                 phoneNumber,
@@ -22,7 +22,7 @@ public class OTPService {
     }
 
     public boolean verifyOtp(String phoneNumber, String code){
-        Twilio.init("AC97967ca449c66f56e0ef100d50ebe7ba", "f8150791a58581d17fdfb31dab07b3df");
+        Twilio.init("", "");
         VerificationCheck check =
                 VerificationCheck.creator(verifyServiceSid)
                         .setTo(phoneNumber)
