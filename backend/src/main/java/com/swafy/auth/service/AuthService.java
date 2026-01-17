@@ -21,7 +21,6 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final UserService userService;
-    private final DriverService driverService;
     private final PasswordEncoder passwordEncoder;
 
     public UserResponse registerUser(User user) {
