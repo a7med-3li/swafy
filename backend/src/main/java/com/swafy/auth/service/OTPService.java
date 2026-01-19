@@ -4,16 +4,26 @@ import com.swafy.user.service.UserService;
 import com.twilio.Twilio;
 import com.twilio.rest.verify.v2.service.Verification;
 import com.twilio.rest.verify.v2.service.VerificationCheck;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class OTPService {
 
-    String verifyServiceSid="";
+    @Value("${twilio.verifyServiceSid}")
+    String verifyServiceSid;
+
+    @Value("${twilio.accountSid}")
+    String accountSid;
+
+    @Value("${twilio.authToken}")
+    String authToken;
+
     public void sendOtp(String phoneNumber){
-        Twilio.init("", "");
+        Twilio.init(accountSid, authToken);
         Verification.creator(
                 verifyServiceSid,
                 phoneNumber,
@@ -22,7 +32,7 @@ public class OTPService {
     }
 
     public boolean verifyOtp(String phoneNumber, String code){
-        Twilio.init("", "");
+        Twilio.init(accountSid, authToken);
         VerificationCheck check =
                 VerificationCheck.creator(verifyServiceSid)
                         .setTo(phoneNumber)
