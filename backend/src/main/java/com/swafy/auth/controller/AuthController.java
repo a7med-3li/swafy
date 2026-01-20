@@ -23,8 +23,8 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
-    public UserResponse registerUser(@RequestBody UserRegistrationRequest userRegistrationRequest) {
-        return authService.registerUser(create(userRegistrationRequest, passwordEncoder));
+    public UserResponse registerUser(@RequestBody UserRegistrationRequest request) {
+        return authService.registerUser(request);
     }
 
     @PostMapping("/login")
@@ -32,16 +32,4 @@ public class AuthController {
         return authService.login(request);
     }
 
-    public static User create(UserRegistrationRequest request, PasswordEncoder passwordEncoder) {
-        User user = new User();
-        user.setEmail(request.getEmail());
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-        user.setPasswordHash(encodedPassword);
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setPhoneNumber(request.getPhoneNumber());
-        user.setCreatedAt(LocalDateTime.now());
-        user.setRole(request.getRole());
-        return user;
-    }
 }

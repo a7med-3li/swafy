@@ -1,6 +1,7 @@
 package com.swafy.auth.service;
 
 import com.swafy.auth.dto.LoginRequest;
+import com.swafy.auth.dto.UserRegistrationRequest;
 import com.swafy.common.exception.UserAlreadyExistsException;
 import com.swafy.common.exception.UserNotFoundException;
 import com.swafy.common.exception.WrongPasswordException;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 import static com.swafy.common.util.Helpers.mapToResponse;
 
 @Service
@@ -23,12 +26,12 @@ public class AuthService {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserResponse registerUser(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
+    public UserResponse registerUser(UserRegistrationRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new UserAlreadyExistsException("Email already registered");
         }
 
-        return mapToResponse(userService.createUser(user));
+        return mapToResponse(userService.createUser(createUser(request, passwordEncoder)));
     }
 
     public UserResponse login(LoginRequest request) {
@@ -42,5 +45,18 @@ public class AuthService {
         //String token = jwtService.generateToken(user);
 
         return mapToResponse(user);
+    }
+
+    public static User createUser(UserRegistrationRequest request, PasswordEncoder passwordEncoder) {
+        User user = new User();
+        user.setEmail(request.getEmail());
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        user.setPasswordHash(encodedPassword);
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setCreatedAt(LocalDateTime.now());
+        user.setRole(request.getRole());
+        return user;
     }
 }

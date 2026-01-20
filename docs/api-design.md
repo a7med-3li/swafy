@@ -6,6 +6,8 @@ This file documents initial API endpoints and contracts.
 
 - POST /api/v1/auth/register
 - POST /api/v1/auth/login
+- POST /api/v1/auth/phone/send-otp // Verifies the phone number
+- POST /api/v1/auth/phone/verify-otp
 ## Sample resource
 
 - GET /api/v1/users/ - list all the users in the system
