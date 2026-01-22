@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 public class UserResponse {
 
+    // TODO: Refine this after implementing the refresh token
     private Long userId;
     private String email;
     private String displayName;

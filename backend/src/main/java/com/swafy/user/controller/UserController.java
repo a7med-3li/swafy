@@ -3,6 +3,7 @@ package com.swafy.user.controller;
 import com.swafy.common.dto.ApiResponse;
 import com.swafy.common.exception.UserNotFoundException;
 import com.swafy.user.dto.UpdateUserRequest;
+import com.swafy.user.dto.UserInfo;
 import com.swafy.user.dto.UserResponse;
 import com.swafy.user.entity.User;
 import com.swafy.user.service.UserService;
@@ -18,6 +19,12 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping("/me/{id}")
+    public ResponseEntity<UserInfo> getUserInfo(@PathVariable Long id){
+        UserInfo info = userService.getUserInfo(id);
+        return ResponseEntity.ok(info);
+    }
 
     @GetMapping("/")
     public ResponseEntity<List<UserResponse>> getAllUsers() {

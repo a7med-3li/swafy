@@ -1,6 +1,7 @@
 package com.swafy.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.swafy.common.enums.Gender;
 import com.swafy.common.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,6 +19,9 @@ public class User {
     private String firstName;
     private String lastName;
     private String phoneNumber;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @Column(unique = true, nullable = false)
     private String email;

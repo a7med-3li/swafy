@@ -4,11 +4,11 @@ import com.swafy.common.exception.UserAlreadyDeletedException;
 import com.swafy.common.exception.UserNotFoundException;
 import com.swafy.common.util.Helpers;
 import com.swafy.user.dto.UpdateUserRequest;
+import com.swafy.user.dto.UserInfo;
 import com.swafy.user.dto.UserResponse;
 import com.swafy.user.entity.User;
 import com.swafy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +24,12 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+
+    public UserInfo getUserInfo(Long id){
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+        return populateUserInfo(user);
+    }
 
     public User createUser(User user){
         return userRepository.save(user);
@@ -85,5 +90,13 @@ public class UserService {
 
         Helpers.copyNonNullProperties(dto, user);
         return userRepository.save(user);
+    }
+
+    private UserInfo populateUserInfo(User user){
+        return UserInfo.builder()
+                .email(user.getEmail())
+                .displayName(user.getFirstName() + " " + user.getLastName().charAt(0) + ".")
+                .phoneNumber(user.getPhoneNumber())
+                .build();
     }
 }

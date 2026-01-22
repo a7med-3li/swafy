@@ -10,6 +10,7 @@ This file documents initial API endpoints and contracts.
 - POST /api/v1/auth/phone/verify-otp
 ## Sample resource
 
+- GET /api/v1/users/me/{id} - gets the user info for the profile view
 - GET /api/v1/users/ - list all the users in the system
 - GET /api/v1/users/{id} - get user by id
 - DELETE /api/v1/users/{id} - delete user by id

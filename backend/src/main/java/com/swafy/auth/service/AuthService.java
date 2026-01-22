@@ -21,6 +21,7 @@ import static com.swafy.common.util.Helpers.mapToResponse;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+    // TODO: Add the refresh token logic to register as well
 
     private final UserRepository userRepository;
     private final UserService userService;
@@ -42,6 +43,7 @@ public class AuthService {
             throw new WrongPasswordException("Wrong password");
         }
 
+        // TODO: Implement the JWT token service
         //String token = jwtService.generateToken(user);
 
         return mapToResponse(user);
