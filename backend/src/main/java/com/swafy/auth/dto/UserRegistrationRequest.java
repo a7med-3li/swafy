@@ -1,5 +1,6 @@
 package com.swafy.auth.dto;
 
+import com.swafy.common.enums.Gender;
 import com.swafy.common.enums.UserRole;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,4 +15,5 @@ public class UserRegistrationRequest {
     private String email;
     private String password;
     private UserRole role;
+    private Gender gender;
 }

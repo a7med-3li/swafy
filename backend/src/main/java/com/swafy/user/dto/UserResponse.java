@@ -1,5 +1,6 @@
 package com.swafy.user.dto;
 
+import com.swafy.common.enums.Gender;
 import com.swafy.common.enums.UserRole;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class UserResponse {
     private String displayName;
     private String phoneNumber;
     private UserRole role;
+    private Gender gender;
     private LocalDateTime createdAt;
     private boolean deleted = false;
 }

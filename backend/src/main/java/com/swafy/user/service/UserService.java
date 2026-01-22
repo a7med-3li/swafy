@@ -97,6 +97,7 @@ public class UserService {
                 .email(user.getEmail())
                 .displayName(user.getFirstName() + " " + user.getLastName().charAt(0) + ".")
                 .phoneNumber(user.getPhoneNumber())
+                .gender(user.getGender())
                 .build();
     }
 }

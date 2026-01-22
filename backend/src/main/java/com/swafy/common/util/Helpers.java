@@ -33,6 +33,7 @@ public class Helpers {
                 .role(user.getRole())
                 .createdAt(user.getCreatedAt())
                 .deleted(user.isDeleted())
+                .gender(user.getGender())
                 .build();
     }
 
