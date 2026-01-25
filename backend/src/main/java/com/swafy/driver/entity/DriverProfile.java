@@ -11,8 +11,10 @@ import java.util.UUID;
 @Entity
 @Data
 public class DriverProfile {
+    // TODO: fix this
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private UUID userId;
     private String status;

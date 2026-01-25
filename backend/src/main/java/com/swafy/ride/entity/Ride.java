@@ -10,8 +10,8 @@ import java.util.UUID;
 
 @Entity
 @Data
-@Table(name = "rides")
-public class Ride {
+@Table(name = "ride")
+public class Ride{
 
     //TODO: manage the relation between tables
 
