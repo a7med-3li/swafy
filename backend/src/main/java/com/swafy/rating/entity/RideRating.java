@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Entity
 @Data
 public class RideRating {
@@ -13,7 +15,7 @@ public class RideRating {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long rideId;
+    private UUID rideId;
     private int rating;
 
 }
