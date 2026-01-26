@@ -1,5 +1,6 @@
 package com.swafy.ride.entity;
 
+import com.swafy.common.entity.GeoPoint;
 import com.swafy.common.enums.RideStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -23,8 +24,19 @@ public class Ride{
     private UUID passengerId;
     private UUID driverId;
 
-    private Long lat;
-    private Long lon;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "latitude", column = @Column(name = "pickup_lat")),
+            @AttributeOverride(name = "longitude", column = @Column(name = "pickup_lng"))
+    })
+    private GeoPoint pickUp;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "latitude", column = @Column(name = "dropoff_lat")),
+            @AttributeOverride(name = "longitude", column = @Column(name = "dropoff_lng"))
+    })
+    private GeoPoint dropOff;
 
     private RideStatus status;
 

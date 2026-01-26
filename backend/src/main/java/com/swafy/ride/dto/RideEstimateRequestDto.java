@@ -1,8 +1,11 @@
 package com.swafy.ride.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class RideEstimateRequestDto {
     private double distanceKm;
 
-    public double getDistanceKm() { return distanceKm; }
-    public void setDistanceKm(double distanceKm) { this.distanceKm = distanceKm; }
 }

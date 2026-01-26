@@ -1,8 +1,12 @@
 package com.swafy.ride.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class RideEstimateResponseDto {
     private double estimatedPrice;
 
-    public double getEstimatedPrice() { return estimatedPrice; }
-    public void setEstimatedPrice(double estimatedPrice) { this.estimatedPrice = estimatedPrice; }
+
 }
