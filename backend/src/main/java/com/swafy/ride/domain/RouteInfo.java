@@ -1,4 +1,4 @@
-package com.swafy.ride.models;
+package com.swafy.ride.domain;
 
 import lombok.Getter;
 import lombok.Setter;

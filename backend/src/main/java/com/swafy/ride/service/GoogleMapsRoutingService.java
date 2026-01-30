@@ -2,7 +2,7 @@ package com.swafy.ride.service;
 
 
 import com.swafy.common.entity.GeoPoint;
-import com.swafy.ride.models.RouteInfo;
+import com.swafy.ride.domain.RouteInfo;
 import com.swafy.ride.service.interfaces.RoutingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

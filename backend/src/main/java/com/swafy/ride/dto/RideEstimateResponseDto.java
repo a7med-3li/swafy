@@ -1,6 +1,6 @@
 package com.swafy.ride.dto;
 
-import com.swafy.ride.models.RideOption;
+import com.swafy.ride.domain.RideOption;
 import lombok.Getter;
 import lombok.Setter;
 

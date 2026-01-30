@@ -1,4 +1,4 @@
-package com.swafy.ride.models;
+package com.swafy.ride.domain;
 
 import com.swafy.common.enums.RideType;
 import lombok.Getter;
