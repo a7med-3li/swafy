@@ -1,5 +1,6 @@
 package com.swafy.addressing.entity;
 
+import com.swafy.common.entity.GeoPoint;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,6 +13,11 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String address;
-    private String Longitude;
-    private String Latitude;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "latitude", column = @Column(name = "latitude")),
+            @AttributeOverride(name = "longitude", column = @Column(name = "longitude"))
+    })
+    private GeoPoint location;
 }

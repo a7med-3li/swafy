@@ -37,4 +37,11 @@ user with addresses from the app local database before hitting an API call, to m
 This will be done by creating a local database to store all possible locations and search inside them 
 based on the user input. If the location does not exist in the local database, the app will use the maps API 
 to get that location and store it in the local database for the future searches. 
-- 
+
+
+- #### 
+  - ##### Note: 
+    - The client should not call the API after each keystroke immediately, they should wait, e.g. 300ms after each keystroke.
+    The user types 'P', and then types 'Pa' quickly, then ignore 'P', and call the API with 'Pa' only.
+    - When there is no match, return an empty list, not Error.
+    - When local results are empty: Show something like: 🔍 “Search on map for ‘par’”
