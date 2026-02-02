@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/address")
 public class AddressingController {
     private final AddressingService addressingService;
-    //TODO: add end-points, search / autoComplete
+    //TODO: add end-points, search
 
     @GetMapping("/autoComplete")
     public ResponseEntity<AutoCompleteResponse> autoComplete(@RequestParam(required = false) String address){

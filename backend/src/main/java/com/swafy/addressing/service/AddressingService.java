@@ -14,7 +14,7 @@ import java.util.List;
 public class AddressingService {
     private final AddressingRepository addressingRepository;
     //TODO: add the logic to provide an addressing layer before maps API call
-    //TODO-Now: implement the logic to return a list of addresses
+    //TODO-Now: implement the logic to search for the address in googleMaps and store the results in the local DB
 
     public AutoCompleteResponse autoComplete(String address){
         AutoCompleteResponse response = new AutoCompleteResponse();
