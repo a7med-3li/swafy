@@ -13,7 +13,7 @@ public class GoogleMapsRoutingService implements RoutingService {
     // TODO: Implement the logic
 
     @Override
-    public RouteInfo calculateRoute(GeoPoint from, GeoPoint to) {
+    public RouteInfo calculateRouteInfo(GeoPoint from, GeoPoint to) {
         return null;
     }
 }

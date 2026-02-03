@@ -1,7 +1,14 @@
 ## Ride Module:
 - This module will handle the business logic of estimating the ride details and provided it back to the user
 and confirm the ride to be registered in the database.
-  -  ### User Sequence:
+- User → RideController
+  - → RoutingService (route & ETA)
+  - → RideTypeService (available rides)
+  - → FareCalculationService (per ride)
+  - → RideEstimateResponseDto
+  - → User sees fare & ETA
+
+    -  ### User Sequence:
      - The user will start with searching for the drop-off location and the ride module will take that search
      input and look for an address using the *addressing module*. The results will be returned back to the user to choose from.
      Once the user selects an address, they will be asked for confirming the pick-up location, this will follow
