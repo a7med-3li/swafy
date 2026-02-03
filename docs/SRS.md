@@ -1,7 +1,7 @@
 ## Ride Module:
 - This module will handle the business logic of estimating the ride details and provided it back to the user
 and confirm the ride to be registered in the database.
-  -  ### User Sequence: 
+  -  ### User Sequence:
      - The user will start with searching for the drop-off location and the ride module will take that search
      input and look for an address using the *addressing module*. The results will be returned back to the user to choose from.
      Once the user selects an address, they will be asked for confirming the pick-up location, this will follow
@@ -17,8 +17,8 @@ and confirm the ride to be registered in the database.
 - ### Ride Estimation Service:
   - A service that will do initial calculations, initial fares, and ETA, and send it back to the user to 
   choose from the available options and confirm the ride or cancel it. 
-  - #### 
-- Ride Service:
+  - ####   
+- ### Ride Service:
   - The service that will to basic operations on the actual ride entity (CRUD). 
   This will be used after the user confirms the ride request, and we want to save 
   the ride and notify the drivers.
@@ -39,7 +39,7 @@ based on the user input. If the location does not exist in the local database, t
 to get that location and store it in the local database for the future searches. 
 
 
-- #### 
+- ####
   - ##### Note: 
     - The client should not call the API after each keystroke immediately, they should wait, e.g. 300ms after each keystroke.
     The user types 'P', and then types 'Pa' quickly, then ignore 'P', and call the API with 'Pa' only.

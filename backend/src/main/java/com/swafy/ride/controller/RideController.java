@@ -14,7 +14,7 @@ public class RideController {
 
     private final RideEstimationService rideEstimationService;
 
-    @PostMapping("/request-ride")
+    @PostMapping("/estimate-ride")
     public RideEstimateResponseDto estimateRide(
             @RequestBody RideEstimateRequestDto request) {
 

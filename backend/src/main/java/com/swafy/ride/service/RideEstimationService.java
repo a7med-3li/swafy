@@ -12,4 +12,8 @@ public class RideEstimationService {
     public RideEstimateResponseDto estimate(RideEstimateRequestDto request){
         return new RideEstimateResponseDto();
     }
+
+    private void estimatedFare(){}
+
+    private void availableTypes(){}
 }
