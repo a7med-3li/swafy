@@ -7,7 +7,4 @@ public interface RoutingService {
 
     RouteInfo calculateRouteInfo(GeoPoint from, GeoPoint to);
 
-//    double calculateDistanceKM(GeoPoint from, GeoPoint to);
-//
-//    Duration calculateETA(GeoPoint from, GeoPoint to);
 }

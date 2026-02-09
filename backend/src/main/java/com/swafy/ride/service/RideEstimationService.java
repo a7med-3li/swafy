@@ -1,19 +1,42 @@
 package com.swafy.ride.service;
 
+import com.swafy.common.enums.RideType;
+import com.swafy.ride.domain.RideOption;
+import com.swafy.ride.domain.RouteInfo;
 import com.swafy.ride.dto.RideEstimateRequestDto;
 import com.swafy.ride.dto.RideEstimateResponseDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-    // this service orchestrates other services,
+import java.math.BigDecimal;
+import java.util.ArrayList;
+// this service orchestrates other services,
     // to create and finalize a ride before saving it in DB using RideService.
 
 @Service
+@RequiredArgsConstructor
 public class RideEstimationService {
 
+    //TODO: fix this
+
+    private final FakeRoutingServiceImpl routingService;
     public RideEstimateResponseDto estimate(RideEstimateRequestDto request){
-        return new RideEstimateResponseDto();
+        ArrayList<RideOption> list = new ArrayList<>();
+        list.add(estimatedFare(routingService.calculateRouteInfo(request.getPickUp(), request.getDropOff())));
+        list.add(estimatedFare(routingService.calculateRouteInfo(request.getPickUp(), request.getDropOff())));
+        list.add(estimatedFare(routingService.calculateRouteInfo(request.getPickUp(), request.getDropOff())));
+
+        return RideEstimateResponseDto.builder()
+                .options(list)
+                .build();
     }
 
-    private void estimatedFare(){}
+    private RideOption estimatedFare(RouteInfo info){
+        return RideOption.builder()
+                .type(RideType.RIDE)
+                .estimatedTime(info.getDuration())
+                .estimatedFare(new BigDecimal("50.00"))
+                .build();
+    }
 
     private void availableTypes(){}
 }
