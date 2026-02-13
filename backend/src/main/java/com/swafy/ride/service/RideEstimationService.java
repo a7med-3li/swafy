@@ -5,7 +5,9 @@ import com.swafy.ride.domain.RideOption;
 import com.swafy.ride.domain.RouteInfo;
 import com.swafy.ride.dto.RideEstimateRequestDto;
 import com.swafy.ride.dto.RideEstimateResponseDto;
+import com.swafy.ride.service.interfaces.RoutingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -17,12 +19,9 @@ import java.util.ArrayList;
 public class RideEstimationService {
 
     //TODO: fix this
-
-    private final FakeRoutingServiceImpl routingService;
+    private final RoutingService routingService;
     public RideEstimateResponseDto estimate(RideEstimateRequestDto request){
         ArrayList<RideOption> list = new ArrayList<>();
-        list.add(estimatedFare(routingService.calculateRouteInfo(request.getPickUp(), request.getDropOff())));
-        list.add(estimatedFare(routingService.calculateRouteInfo(request.getPickUp(), request.getDropOff())));
         list.add(estimatedFare(routingService.calculateRouteInfo(request.getPickUp(), request.getDropOff())));
 
         return RideEstimateResponseDto.builder()
