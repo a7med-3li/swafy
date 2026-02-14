@@ -11,15 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Objects;
-
 @Service
 @RequiredArgsConstructor
 @Qualifier("HereTechnologies")
 @Primary
 public class HERERoutingServiceImpl implements RoutingService {
 
-    private final String BASE_URL ="https://router.hereapi.com/v8/routes";
+    // TODO find a better way for the api integration and consume the response
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${here.api.key}")
@@ -28,6 +27,7 @@ public class HERERoutingServiceImpl implements RoutingService {
     public RouteInfo calculateRouteInfo(GeoPoint from, GeoPoint to) {
         String origin = STR."\{from.getLatitude()},\{from.getLongitude()}";
         String destination = STR."\{to.getLatitude()},\{to.getLongitude()}";
+        String BASE_URL = "https://router.hereapi.com/v8/routes";
         String url = UriComponentsBuilder.fromHttpUrl(BASE_URL)
                 .queryParam("origin",origin)
                 .queryParam("destination", destination)
