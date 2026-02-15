@@ -16,7 +16,7 @@ public class FakeRoutingServiceImpl implements RoutingService {
     @Override
     public RouteInfo calculateRouteInfo(GeoPoint from, GeoPoint to) {
         return RouteInfo.builder()
-                .distanceKm(500)
+                .distanceMeters(500)
                 .duration(Duration.ofHours(500/60))
                 .build();
     }
