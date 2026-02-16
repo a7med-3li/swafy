@@ -1,5 +1,6 @@
 package com.swafy.ride.controller;
 
+import com.swafy.addressing.entity.Address;
 import com.swafy.ride.dto.RideEstimateRequestDto;
 import com.swafy.ride.dto.RideEstimateResponseDto;
 import com.swafy.ride.service.RideEstimationService;
@@ -19,5 +20,10 @@ public class RideController {
             @RequestBody RideEstimateRequestDto request) {
 
         return rideEstimationService.estimate(request);
+    }
+
+    @GetMapping("/search")
+    public Address search(@RequestParam String location){
+        return rideEstimationService.search(location);
     }
 }

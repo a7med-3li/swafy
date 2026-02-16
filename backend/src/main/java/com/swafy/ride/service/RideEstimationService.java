@@ -1,5 +1,6 @@
 package com.swafy.ride.service;
 
+import com.swafy.addressing.entity.Address;
 import com.swafy.common.enums.RideType;
 import com.swafy.ride.domain.RideOption;
 import com.swafy.ride.domain.RouteInfo;
@@ -29,6 +30,10 @@ public class RideEstimationService {
                 .build();
     }
 
+    public Address search(String location){
+        return routingService.search(location);
+    }
+
     private RideOption estimatedFare(RouteInfo info){
         return RideOption.builder()
                 .type(RideType.RIDE)
@@ -36,6 +41,7 @@ public class RideEstimationService {
                 .estimatedFare(new BigDecimal("50.00"))
                 .build();
     }
+
 
     private void availableTypes(){}
 }

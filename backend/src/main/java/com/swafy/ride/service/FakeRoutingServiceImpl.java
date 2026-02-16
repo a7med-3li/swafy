@@ -1,5 +1,6 @@
 package com.swafy.ride.service;
 
+import com.swafy.addressing.entity.Address;
 import com.swafy.common.entity.GeoPoint;
 import com.swafy.ride.domain.RouteInfo;
 import com.swafy.ride.service.interfaces.RoutingService;
@@ -19,5 +20,10 @@ public class FakeRoutingServiceImpl implements RoutingService {
                 .distanceMeters(500)
                 .duration(Duration.ofHours(500/60))
                 .build();
+    }
+
+    @Override
+    public Address search(String address) {
+        return null;
     }
 }

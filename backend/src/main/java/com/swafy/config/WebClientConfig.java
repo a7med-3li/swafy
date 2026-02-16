@@ -1,7 +1,7 @@
 package com.swafy.config;
 
 import com.swafy.common.util.HereApiProperties;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,10 +12,20 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfig {
 
     @Bean
-    public WebClient webClient(WebClient.Builder builder,
-                               HereApiProperties props) {
+    @Qualifier("routingClient")
+    public WebClient routeClient(WebClient.Builder builder,
+                                 HereApiProperties props) {
         return builder
-                .baseUrl(props.getBaseUrl())
+                .baseUrl(props.getRouteUrl())
+                .build();
+    }
+
+    @Bean
+    @Qualifier("searchClient")
+    public WebClient searchClient(WebClient.Builder builder,
+                                 HereApiProperties props) {
+        return builder
+                .baseUrl(props.getSearchUrl())
                 .build();
     }
 }

@@ -9,9 +9,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "here.api")
 public class HereApiProperties {
 
-    private String baseUrl;
+    private String routeUrl;
+    private String searchUrl;
     private String key;
-
-    // getters and setters
 }
 
