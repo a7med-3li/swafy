@@ -18,7 +18,7 @@ public class Ride{
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+    @Column(columnDefinition = "ride_uuid", updatable = false, nullable = false)
     private UUID id;
 
     private UUID passengerId;

@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Address {
-    // TODO: add the entity attributes
+    //TODO: refactor this
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
