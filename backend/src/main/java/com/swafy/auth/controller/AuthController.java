@@ -1,10 +1,13 @@
 package com.swafy.auth.controller;
 
+import com.swafy.auth.dto.AuthResponse;
 import com.swafy.auth.dto.LoginRequest;
 import com.swafy.auth.dto.UserRegistrationRequest;
+import com.swafy.auth.security.SecurityUser;
 import com.swafy.auth.service.AuthService;
 import com.swafy.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,13 +20,19 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public UserResponse registerUser(@RequestBody UserRegistrationRequest request) {
-        return authService.registerUser(request);
+    public ResponseEntity<AuthResponse> registerUser(@RequestBody UserRegistrationRequest request) {
+        authService.registerUser(request);
+        return login(new LoginRequest(request.getEmail(), request.getPassword()));
     }
 
     @PostMapping("/login")
-    public UserResponse loginUser(@RequestBody LoginRequest request) {
-        return authService.login(request);
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+        SecurityUser securityUser = authService.authenticate(
+                loginRequest.email(),
+                loginRequest.password()
+        );
+        String tokenValue = authService.generateToken(securityUser);
+        return ResponseEntity.ok(new AuthResponse(tokenValue));
     }
 
 }
