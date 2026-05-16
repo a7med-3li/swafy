@@ -1,5 +1,5 @@
 # Maven
-/target/
+/backend/target/
 
 # Gradle
 /.gradle/
