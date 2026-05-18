@@ -25,5 +25,4 @@ docker-compose.override.yml
 .env
 
 # unfinished files
-swafy-mobile
 router_api.yaml
