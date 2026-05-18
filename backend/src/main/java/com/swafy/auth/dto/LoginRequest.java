@@ -1,9 +1,12 @@
 package com.swafy.auth.dto;
 
-import lombok.Getter;
+import jakarta.validation.constraints.NotBlank;
 
-@Getter
-public class LoginRequest {
-    private String email;
-    private String password;
+public record LoginRequest(
+        @NotBlank(message = "Email is required")
+        String email,
+        
+        @NotBlank(message = "Password is required")
+        String password
+) {
 }
