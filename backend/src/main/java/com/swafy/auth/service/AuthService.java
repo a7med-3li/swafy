@@ -1,13 +1,8 @@
 package com.swafy.auth.service;
 
-import com.swafy.auth.dto.LoginRequest;
 import com.swafy.auth.dto.UserRegistrationRequest;
 import com.swafy.auth.security.SecurityUser;
 import com.swafy.common.exception.UserAlreadyExistsException;
-import com.swafy.common.exception.UserNotFoundException;
-import com.swafy.common.exception.WrongPasswordException;
-import com.swafy.driver.service.DriverService;
-import com.swafy.user.dto.UserResponse;
 import com.swafy.user.entity.User;
 import com.swafy.user.repository.UserRepository;
 import com.swafy.user.service.UserService;
@@ -29,7 +24,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
-import static com.swafy.common.util.Helpers.mapToResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +39,7 @@ public class AuthService {
     private final JwtEncoder jwtEncoder;
     
     public SecurityUser authenticate(String email, String password) {
+        System.out.println("reached");
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         return (SecurityUser) userDetailsService.loadUserByUsername(email);
     }

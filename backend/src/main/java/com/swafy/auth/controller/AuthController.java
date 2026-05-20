@@ -5,7 +5,6 @@ import com.swafy.auth.dto.LoginRequest;
 import com.swafy.auth.dto.UserRegistrationRequest;
 import com.swafy.auth.security.SecurityUser;
 import com.swafy.auth.service.AuthService;
-import com.swafy.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +26,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+        System.out.println("Authenticated user: " + loginRequest.email() + " " + loginRequest.email());
         SecurityUser securityUser = authService.authenticate(
                 loginRequest.email(),
                 loginRequest.password()
