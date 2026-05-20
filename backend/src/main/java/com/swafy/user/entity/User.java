@@ -5,10 +5,14 @@ import com.swafy.common.enums.Gender;
 import com.swafy.common.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@SQLDelete(sql = "UPDATE users SET deleted = true, deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@Where(clause = "deleted = false")
 @Entity
 @Table(name = "users")
 @Data
@@ -34,8 +38,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
     private LocalDateTime createdAt;
-
-    // Soft delete fields
+    
     private boolean deleted = false;
     private LocalDateTime deletedAt;
 }
