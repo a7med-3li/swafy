@@ -11,12 +11,10 @@ import com.swafy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import static com.swafy.common.util.Helpers.mapToResponse;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -25,17 +23,17 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserInfo getUserInfo(Long id){
+    public UserInfo getUserInfo(UUID id){
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
         return populateUserInfo(user);
     }
 
-    public User createUser(User user){
-        return userRepository.save(user);
+    public void createUser(User user){
+        userRepository.save(user);
     }
 
-    public UserResponse deleteUser(Long id) {
+    public UserResponse deleteUser(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
 
@@ -43,16 +41,12 @@ public class UserService {
             throw new UserAlreadyDeletedException("User already deleted");
         }
 
-        // Soft delete
-        user.setDeleted(true);
-        user.setDeletedAt(LocalDateTime.now());
+        userRepository.delete(user);
 
-        User deletedUser = userRepository.save(user);
-
-        return mapToResponse(deletedUser);
+        return mapToResponse(user);
     }
 
-    public UserResponse restoreUser(Long id) {
+    public UserResponse restoreUser(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
 
@@ -68,9 +62,9 @@ public class UserService {
         return mapToResponse(restoredUser);
     }
 
-    public UserResponse getUserById(Long id){
+    public UserResponse getUserById(UUID id){
         User user = userRepository.findById(id).orElseThrow(
-                () -> new UserNotFoundException("User not found with id: %d".formatted(id)));
+                () -> new UserNotFoundException("User not found with id:" + id));
 
         return mapToResponse(user);
     }
@@ -84,7 +78,7 @@ public class UserService {
         return userResponseList;
     }
     // rewrite this to follow the best practice
-    public User updateUser(Long id, UpdateUserRequest dto){
+    public User updateUser(UUID id, UpdateUserRequest dto){
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
