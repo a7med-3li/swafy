@@ -92,6 +92,7 @@ public class UserService {
                 .displayName(user.getFirstName() + " " + user.getLastName().charAt(0) + ".")
                 .phoneNumber(user.getPhoneNumber())
                 .gender(user.getGender())
+                .role(user.getRole())
                 .build();
     }
 }

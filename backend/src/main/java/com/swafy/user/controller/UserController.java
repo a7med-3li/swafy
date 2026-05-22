@@ -9,6 +9,8 @@ import com.swafy.user.entity.User;
 import com.swafy.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,13 +23,13 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/me/{id}")
-    public ResponseEntity<UserInfo> getUserInfo(@PathVariable UUID id){
-        UserInfo info = userService.getUserInfo(id);
+    @GetMapping("/me")
+    public ResponseEntity<UserInfo> getMyInfo(@AuthenticationPrincipal String userId) {
+        UserInfo info = userService.getUserInfo(UUID.fromString(userId));
         return ResponseEntity.ok(info);
     }
 
-    // todo: should be paginated and add PreAuthorize
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/")
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         List<UserResponse> usersResponse = userService.getAllUsers();
@@ -56,5 +58,11 @@ public class UserController {
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody UpdateUserRequest updateRequest) {
         User updated = userService.updateUser(id, updateRequest);
         return ResponseEntity.ok(updated);
+    }
+
+    @GetMapping("/info/{id}")
+    public ResponseEntity<UserInfo> getUserInfo(@PathVariable UUID id){
+        UserInfo info = userService.getUserInfo(id);
+        return ResponseEntity.ok(info);
     }
 }
