@@ -29,10 +29,11 @@ public class UserService {
         return populateUserInfo(user);
     }
 
-    public void createUser(User user){
+    public void saveUser(User user){
         userRepository.save(user);
     }
 
+    // todo: edit the return object to match the best practice, and this might include token expiration.
     public UserResponse deleteUser(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
@@ -46,6 +47,7 @@ public class UserService {
         return mapToResponse(user);
     }
 
+    // note: needs logic review
     public UserResponse restoreUser(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
@@ -59,13 +61,14 @@ public class UserService {
 
         User restoredUser = userRepository.save(user);
 
+        // todo: create a mapper
         return mapToResponse(restoredUser);
     }
 
     public UserResponse getUserById(UUID id){
         User user = userRepository.findById(id).orElseThrow(
                 () -> new UserNotFoundException("User not found with id:" + id));
-
+        // todo: replace with object mapper
         return mapToResponse(user);
     }
 
@@ -77,7 +80,7 @@ public class UserService {
         }
         return userResponseList;
     }
-    // rewrite this to follow the best practice
+    // todo: rewrite this to follow the best practice
     public User updateUser(UUID id, UpdateUserRequest dto){
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));

@@ -39,7 +39,6 @@ public class AuthService {
     private final JwtEncoder jwtEncoder;
     
     public SecurityUser authenticate(String email, String password) {
-        System.out.println("reached");
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         return (SecurityUser) userDetailsService.loadUserByUsername(email);
     }
@@ -68,7 +67,7 @@ public class AuthService {
             throw new UserAlreadyExistsException("Email already registered");
         }
 
-        userService.createUser(createUser(request, passwordEncoder));
+        userService.saveUser(createUser(request, passwordEncoder));
     }
 
     public static User createUser(UserRegistrationRequest request, PasswordEncoder passwordEncoder) {
