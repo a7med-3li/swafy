@@ -1,12 +1,5 @@
 package com.swafy.ride.dto;
 
 import com.swafy.common.entity.GeoPoint;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-public class RideRequestDto {
-    private GeoPoint pickUp;
-    private GeoPoint dropOff;
-}
+public record RideRequestDto(GeoPoint pickUp, GeoPoint dropOff) {}

@@ -80,11 +80,11 @@ public class HERERoutingServiceImpl implements RoutingService {
                 .bodyToMono(HereDiscoverResponse.class)
                 .block();
 
-        HereDiscoverResponse.Item item = response.getItems().getFirst();
+        HereDiscoverResponse.Item item = response.items().getFirst();
         Address address = Address.builder()
-                .address(item.getTitle())
-                .latitude(item.getPosition().getLat())
-                .longitude(item.getPosition().getLng())
+                .address(item.title())
+                .latitude(item.position().lat())
+                .longitude(item.position().lng())
                 .build();
 
         log.info(response.toString());
@@ -98,26 +98,20 @@ public class HERERoutingServiceImpl implements RoutingService {
     }
 
     private Optional<RouteInfo> mapToRouteInfo(HereRouteResponse response) {
-
         if (response == null
-                || response.getRoutes() == null
-                || response.getRoutes().isEmpty()) {
+                || response.routes() == null
+                || response.routes().isEmpty()) {
             return Optional.of(RouteInfo.empty());
         }
 
         HereRouteResponse.Summary summary =
-                response.getRoutes()
+                response.routes()
                         .getFirst()
-                        .getSections()
+                        .sections()
                         .getFirst()
-                        .getSummary();
+                        .summary();
 
-        return Optional.of(
-                new RouteInfo(
-                        summary.getLength(),
-                        Duration.ofSeconds(summary.getDuration())
-                )
-        );
+        return Optional.of(new RouteInfo(summary.length(), Duration.ofSeconds(summary.duration())));
     }
 
 }

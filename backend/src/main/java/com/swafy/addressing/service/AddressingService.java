@@ -16,17 +16,14 @@ public class AddressingService {
     //TODO: add the logic to provide an addressing layer before maps API call
     //TODO-Now: implement the logic to search for the address in googleMaps and store the results in the local DB
 
-    public AutoCompleteResponse autoComplete(String address){
-        AutoCompleteResponse response = new AutoCompleteResponse();
-        response.setSource("internal");
+    public AutoCompleteResponse autoComplete(String address) {
         try {
-            response.setAddresseList(
+            return new AutoCompleteResponse(
+                    "internal",
                     addressingRepository.queryAddressesByAddressContaining(address)
             );
         } catch (Exception e) {
-            response.setAddresseList(Collections.emptyList());
+            return new AutoCompleteResponse("internal", Collections.emptyList());
         }
-        response.setAddresseList(addressingRepository.queryAddressesByAddressContaining(address));
-        return response;
     }
 }
