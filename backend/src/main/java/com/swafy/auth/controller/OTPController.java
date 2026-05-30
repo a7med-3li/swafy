@@ -17,14 +17,14 @@ public class OTPController {
 
     @PostMapping("/send-otp")
     public void sendOtp(@RequestBody PhoneRequest request) {
-        otpService.sendOtp(request.getPhone());
+        otpService.sendOtp(request.phone());
     }
 
     @PostMapping("/verify-otp")
     public ResponseEntity<?> verifyOtp(@RequestBody VerifyOtpRequest request) {
         boolean verified = otpService.verifyOtp(
-                request.getPhone(),
-                request.getOtp()
+                request.phone(),
+                request.otp()
         );
 
         if (verified) {

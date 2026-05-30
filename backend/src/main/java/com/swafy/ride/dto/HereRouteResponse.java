@@ -1,26 +1,12 @@
 package com.swafy.ride.dto;
 
-import lombok.Data;
 import java.util.List;
 
-@Data
-public class HereRouteResponse {
+public record HereRouteResponse(List<Route> routes) {
 
-    private List<Route> routes;
+    public record Route(List<Section> sections) {}
 
-    @Data
-    public static class Route {
-        private List<Section> sections;
-    }
+    public record Section(Summary summary) {}
 
-    @Data
-    public static class Section {
-        private Summary summary;
-    }
-
-    @Data
-    public static class Summary {
-        private int length;     // meters
-        private int duration;   // seconds
-    }
+    public record Summary(int length, int duration) {}
 }

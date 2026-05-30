@@ -1,10 +1,3 @@
 package com.swafy.auth.dto;
 
-import lombok.Data;
-
-@Data
-public class VerifyOtpRequest {
-
-    private String phone;
-    private String otp;
-}
+public record VerifyOtpRequest(String phone, String otp) {}

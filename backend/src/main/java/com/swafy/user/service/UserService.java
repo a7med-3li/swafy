@@ -81,21 +81,25 @@ public class UserService {
         return userResponseList;
     }
     // todo: rewrite this to follow the best practice
-    public User updateUser(UUID id, UpdateUserRequest dto){
+    public User updateUser(UUID id, UpdateUserRequest dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        Helpers.copyNonNullProperties(dto, user);
+        if (dto.firstName() != null)   user.setFirstName(dto.firstName());
+        if (dto.lastName() != null)    user.setLastName(dto.lastName());
+        if (dto.phoneNumber() != null) user.setPhoneNumber(dto.phoneNumber());
+        if (dto.gender() != null)      user.setGender(dto.gender());
+
         return userRepository.save(user);
     }
 
-    private UserInfo populateUserInfo(User user){
-        return UserInfo.builder()
-                .email(user.getEmail())
-                .displayName(user.getFirstName() + " " + user.getLastName().charAt(0) + ".")
-                .phoneNumber(user.getPhoneNumber())
-                .gender(user.getGender())
-                .role(user.getRole())
-                .build();
+    private UserInfo populateUserInfo(User user) {
+        return new UserInfo(
+                user.getFirstName() + " " + user.getLastName().charAt(0) + ".",
+                user.getGender(),
+                user.getPhoneNumber(),
+                user.getEmail(),
+                user.getRole()
+        );
     }
 }

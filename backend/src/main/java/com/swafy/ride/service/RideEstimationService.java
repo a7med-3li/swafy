@@ -21,25 +21,18 @@ public class RideEstimationService {
 
     //TODO: fix this
     private final RoutingService routingService;
-    public RideEstimateResponseDto estimate(RideEstimateRequestDto request){
+    public RideEstimateResponseDto estimate(RideEstimateRequestDto request) {
         ArrayList<RideOption> list = new ArrayList<>();
-        list.add(estimatedFare(routingService.calculateRouteInfo(request.getPickUp(), request.getDropOff())));
-
-        return RideEstimateResponseDto.builder()
-                .options(list)
-                .build();
+        list.add(estimatedFare(routingService.calculateRouteInfo(request.pickUp(), request.dropOff())));
+        return new RideEstimateResponseDto(list);
     }
 
     public Address search(String location){
         return routingService.search(location);
     }
 
-    private RideOption estimatedFare(RouteInfo info){
-        return RideOption.builder()
-                .type(RideType.RIDE)
-                .estimatedTime(info.getDuration())
-                .estimatedFare(new BigDecimal("50.00"))
-                .build();
+    private RideOption estimatedFare(RouteInfo info) {
+        return new RideOption(RideType.RIDE, info.duration(), new BigDecimal("50.00"));
     }
 
 

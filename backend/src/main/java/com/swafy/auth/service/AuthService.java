@@ -63,7 +63,7 @@ public class AuthService {
     }
 
     public void registerUser(UserRegistrationRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(request.email())) {
             throw new UserAlreadyExistsException("Email already registered");
         }
 
@@ -72,15 +72,14 @@ public class AuthService {
 
     public static User createUser(UserRegistrationRequest request, PasswordEncoder passwordEncoder) {
         User user = new User();
-        user.setEmail(request.getEmail());
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-        user.setPasswordHash(encodedPassword);
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setPhoneNumber(request.getPhoneNumber());
+        user.setEmail(request.email());
+        user.setPasswordHash(passwordEncoder.encode(request.password()));
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
+        user.setPhoneNumber(request.phoneNumber());
         user.setCreatedAt(LocalDateTime.now());
-        user.setRole(request.getRole());
-        user.setGender(request.getGender());
+        user.setRole(request.role());
+        user.setGender(request.gender());
         return user;
     }
 }

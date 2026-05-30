@@ -25,16 +25,16 @@ public class Helpers {
     }
 
     public static UserResponse mapToResponse(User user) {
-        return UserResponse.builder()
-                .userId(user.getId())
-                .email(user.getEmail())
-                .displayName(user.getFirstName() + " " + user.getLastName().charAt(0) + ".")
-                .phoneNumber(maskPhoneNumber(user.getPhoneNumber()))
-                .role(user.getRole())
-                .createdAt(user.getCreatedAt())
-                .deleted(user.isDeleted())
-                .gender(user.getGender())
-                .build();
+        return new UserResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getFirstName() + " " + user.getLastName().charAt(0) + ".",
+                maskPhoneNumber(user.getPhoneNumber()),
+                user.getRole(),
+                user.getGender(),
+                user.getCreatedAt(),
+                user.isDeleted()
+        );
     }
 
     private static String maskPhoneNumber(String phone) {
