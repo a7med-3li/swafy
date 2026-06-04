@@ -1,7 +1,7 @@
 package com.swafy.user.service;
 
-import com.swafy.common.exception.UserAlreadyDeletedException;
 import com.swafy.common.exception.UserNotFoundException;
+import com.swafy.common.mapper.Mappers;
 import com.swafy.user.dto.UpdateUserRequest;
 import com.swafy.user.dto.UserInfo;
 import com.swafy.user.dto.UserResponse;
@@ -21,30 +21,26 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-
+    private final Mappers mappers;
+    
     public UserInfo getUserInfo(UUID id){
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
-        return populateUserInfo(user);
+        return mappers.userToUserInfo(user);
     }
 
     public void saveUser(User user){
         userRepository.save(user);
     }
 
-    // todo: edit the return object to match the best practice, and this might include token expiration.
-    public UserResponse deleteUser(UUID id) {
+    @Transactional
+    public void deleteUser(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
 
-        if (user.isDeleted()) {
-            throw new UserAlreadyDeletedException("User already deleted");
-        }
-
+        if (user.isDeleted()) { return;}
+        
         userRepository.delete(user);
-        user.setDeleted(true);
-
-        return mapToResponse(user);
     }
 
     // note: needs logic review
@@ -81,25 +77,11 @@ public class UserService {
         return userResponseList;
     }
     // todo: rewrite this to follow the best practice
-    public User updateUser(UUID id, UpdateUserRequest dto) {
+    public UserInfo updateUser(UUID id, UpdateUserRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
+        mappers.updateUserFromRequest(request, user);
 
-        if (dto.firstName() != null)   user.setFirstName(dto.firstName());
-        if (dto.lastName() != null)    user.setLastName(dto.lastName());
-        if (dto.phoneNumber() != null) user.setPhoneNumber(dto.phoneNumber());
-        if (dto.gender() != null)      user.setGender(dto.gender());
-
-        return userRepository.save(user);
-    }
-
-    private UserInfo populateUserInfo(User user) {
-        return new UserInfo(
-                user.getFirstName() + " " + user.getLastName().charAt(0) + ".",
-                user.getGender(),
-                user.getPhoneNumber(),
-                user.getEmail(),
-                user.getRole()
-        );
+        return mappers.userToUserInfo(userRepository.save(user));
     }
 }

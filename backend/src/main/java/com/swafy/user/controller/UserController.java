@@ -2,6 +2,7 @@ package com.swafy.user.controller;
 
 import com.swafy.common.dto.ApiResponse;
 import com.swafy.common.exception.UserNotFoundException;
+import com.swafy.common.mapper.Mappers;
 import com.swafy.user.dto.UpdateUserRequest;
 import com.swafy.user.dto.UserInfo;
 import com.swafy.user.dto.UserResponse;
@@ -44,8 +45,8 @@ public class UserController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or principal == #id.toString()")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable UUID id) {
-        UserResponse userResponse = userService.deleteUser(id);
-        ApiResponse response = new ApiResponse(true,userResponse,"User deleted successfully");
+        userService.deleteUser(id);
+        ApiResponse response = new ApiResponse(true,"User deleted successfully");
         return ResponseEntity.ok(response);
     }
 
@@ -56,8 +57,8 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody UpdateUserRequest updateRequest) {
-        User updated = userService.updateUser(id, updateRequest);
+    public ResponseEntity<UserInfo> updateUser(@PathVariable UUID id, @RequestBody UpdateUserRequest updateRequest) {
+        UserInfo updated = userService.updateUser(id, updateRequest);
         return ResponseEntity.ok(updated);
     }
 
