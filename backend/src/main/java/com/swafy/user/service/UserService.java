@@ -2,7 +2,6 @@ package com.swafy.user.service;
 
 import com.swafy.common.exception.UserAlreadyDeletedException;
 import com.swafy.common.exception.UserNotFoundException;
-import com.swafy.common.util.Helpers;
 import com.swafy.user.dto.UpdateUserRequest;
 import com.swafy.user.dto.UserInfo;
 import com.swafy.user.dto.UserResponse;
@@ -43,6 +42,7 @@ public class UserService {
         }
 
         userRepository.delete(user);
+        user.setDeleted(true);
 
         return mapToResponse(user);
     }
