@@ -30,6 +30,10 @@ public class UserService {
     }
 
     public void saveUser(User user){
+        if (userRepository.existsByEmailIgnoreCase(user.getEmail())) {
+            throw new IllegalArgumentException(
+                    "User already exists with email: " + user.getEmail());
+        }
         userRepository.save(user);
     }
 
