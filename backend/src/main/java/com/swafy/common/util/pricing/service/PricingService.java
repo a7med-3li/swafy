@@ -1,4 +1,4 @@
-package com.swafy.common.pricing.service;
+package com.swafy.common.util.pricing.service;
 
 import org.springframework.stereotype.Service;
 

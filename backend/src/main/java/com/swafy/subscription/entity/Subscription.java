@@ -1,4 +1,4 @@
-package com.swafy.subscription.model;
+package com.swafy.subscription.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

@@ -62,6 +62,7 @@ public class AuthService {
         return jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
     }
 
+    // todo: needs review
     public void registerUser(UserRegistrationRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             throw new UserAlreadyExistsException("Email already registered");

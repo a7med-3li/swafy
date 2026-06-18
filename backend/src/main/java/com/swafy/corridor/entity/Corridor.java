@@ -1,4 +1,4 @@
-package com.swafy.corridor.model;
+package com.swafy.corridor.entity;
 
 import java.util.List;
 import jakarta.persistence.Entity;

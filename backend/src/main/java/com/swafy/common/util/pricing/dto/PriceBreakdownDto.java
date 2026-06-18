@@ -1,3 +1,3 @@
-package com.swafy.common.pricing.dto;
+package com.swafy.common.util.pricing.dto;
 
 public record PriceBreakdownDto(double baseFare, double distanceFare, double total) {}
