@@ -7,15 +7,19 @@ import com.swafy.user.dto.UserInfo;
 import com.swafy.user.dto.UserResponse;
 import com.swafy.user.entity.User;
 import com.swafy.user.repository.UserRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
 import static com.swafy.common.util.Helpers.mapToResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@Validated
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
@@ -29,7 +33,7 @@ public class UserService {
         return mappers.userToUserInfo(user);
     }
 
-    public void saveUser(User user){
+    public void saveUser(@Valid User user){
         if (userRepository.existsByEmailIgnoreCase(user.getEmail())) {
             throw new IllegalArgumentException(
                     "User already exists with email: " + user.getEmail());

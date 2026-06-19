@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5110ee55-a42e-48f4-ae1e-f40686014707" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swafy/user/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swafy/user/entity/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/swafy/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swafy/user/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../docs/ARCHITECTURE.md" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/ARCHITECTURE.md" afterDir="false" />
     </list>
@@ -16,35 +18,37 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Atharva759"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Atharva759&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Atharva759/swafy.git",
-    "accountId": "cd3ea7ee-f6dc-43f2-b968-474729ffcf42"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Atharva759/swafy.git&quot;,
+    &quot;accountId&quot;: &quot;cd3ea7ee-f6dc-43f2-b968-474729ffcf42&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="3FJNrqDwS2nnD9D07oUDcdvzuSq" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/athar/OneDrive/Desktop/OpenSourceContributions/swafy/backend"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Maven.backend [test].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;fix-user-registration-validation&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/athar/OneDrive/Desktop/OpenSourceContributions/swafy/backend&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="SwafyApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="backend" />
@@ -69,6 +73,9 @@
       <option name="presentableId" value="Default" />
       <updated>1781789416173</updated>
       <workItem from="1781789417888" duration="601000" />
+      <workItem from="1781790239468" duration="19000" />
+      <workItem from="1781790375468" duration="34000" />
+      <workItem from="1781843406011" duration="763000" />
     </task>
     <servers />
   </component>
