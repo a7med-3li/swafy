@@ -44,4 +44,10 @@ public class RefreshTokenService {
 		}
 		return token;
 	}
+	
+	@Transactional
+	public void deleteRefreshToken(UUID userId) {
+		refreshTokenRepository.deleteByUser(userRepository.findById(userId).orElseThrow(()
+				-> new RuntimeException("User not found")));
+	}
 }

@@ -1,6 +1,6 @@
 package com.swafy.auth.dto;
 
 public record AuthResponse(
-        String token
-) {
-}
+        String token,
+        String refreshToken
+) {}
