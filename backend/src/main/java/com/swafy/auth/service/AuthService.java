@@ -2,7 +2,8 @@ package com.swafy.auth.service;
 
 import com.swafy.auth.dto.UserRegistrationRequest;
 import com.swafy.auth.security.SecurityUser;
-import com.swafy.common.exception.UserAlreadyExistsException;
+import com.swafy.common.dto.DriverRegisterRequest;
+import com.swafy.common.dto.PassengerRegisterRequest;
 import com.swafy.user.entity.User;
 import com.swafy.user.repository.UserRepository;
 import com.swafy.user.service.UserService;
@@ -20,7 +21,6 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
@@ -63,22 +63,21 @@ public class AuthService {
     }
 
     // todo: needs review
-    public void registerUser(UserRegistrationRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
-            throw new UserAlreadyExistsException("Email already registered");
-        }
-
-        userService.saveUser(createUser(request, passwordEncoder));
+    public void registerPassenger(PassengerRegisterRequest request) {
+        userService.registerPassenger(request);
+    }
+    
+    public void registerDriver(DriverRegisterRequest request) {
+        userService.registerDriver(request);
     }
 
     public static User createUser(UserRegistrationRequest request, PasswordEncoder passwordEncoder) {
         User user = new User();
-        user.setEmail(request.email());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setFirstName(request.firstName());
         user.setLastName(request.lastName());
         user.setPhoneNumber(request.phoneNumber());
-        user.setCreatedAt(LocalDateTime.now());
+        user.setCreatedAt(Instant.now());
         user.setRole(request.role());
         user.setGender(request.gender());
         return user;

@@ -10,6 +10,8 @@ import com.swafy.auth.entity.RefreshToken;
 import com.swafy.auth.security.SecurityUser;
 import com.swafy.auth.service.AuthService;
 import com.swafy.auth.service.RefreshTokenService;
+import com.swafy.common.dto.DriverRegisterRequest;
+import com.swafy.common.dto.PassengerRegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,17 +27,23 @@ public class AuthController {
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerUser(@RequestBody UserRegistrationRequest request) {
-        authService.registerUser(request);
-        return login(new LoginRequest(request.email(), request.password()));
+    @PostMapping("/register/passenger")
+    public ResponseEntity<AuthResponse> registerPassenger(@RequestBody PassengerRegisterRequest request) {
+        authService.registerPassenger(request);
+        return login(new LoginRequest(request.phoneNumber(), request.password()));
+    }
+    
+    @PostMapping("/register/driver")
+    public ResponseEntity<AuthResponse> registerDriver(@RequestBody DriverRegisterRequest request) {
+        authService.registerDriver(request);
+        return login(new LoginRequest(request.phoneNumber(), request.password()));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
-        System.out.println("Authenticated user: " + loginRequest.email() + " " + loginRequest.email());
+        System.out.println("Authenticated user: " + loginRequest.phoneNumber() + " " + loginRequest.phoneNumber());
         SecurityUser securityUser = authService.authenticate(
-                loginRequest.email(),
+                loginRequest.phoneNumber(),
                 loginRequest.password()
         );
         String tokenValue = authService.generateToken(securityUser);

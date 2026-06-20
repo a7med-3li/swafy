@@ -27,7 +27,6 @@ public class Helpers {
     public static UserResponse mapToResponse(User user) {
         return new UserResponse(
                 user.getId(),
-                user.getEmail(),
                 user.getFirstName() + " " + user.getLastName().charAt(0) + ".",
                 maskPhoneNumber(user.getPhoneNumber()),
                 user.getRole(),

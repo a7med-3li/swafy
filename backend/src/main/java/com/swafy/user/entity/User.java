@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swafy.common.enums.Gender;
 import com.swafy.common.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -12,7 +11,7 @@ import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @SQLDelete(sql = "UPDATE users SET deleted = true, deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
@@ -40,11 +39,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
-    @Column(unique = true, nullable = false)
-    private String email;
-
     @JsonIgnore
     @NotBlank(message = "Password is required")
     private String passwordHash;
@@ -53,8 +47,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     
     private boolean deleted = false;
-    private LocalDateTime deletedAt;
+    private Instant deletedAt;
 }

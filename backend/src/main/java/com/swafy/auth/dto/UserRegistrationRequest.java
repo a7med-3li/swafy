@@ -7,7 +7,6 @@ public record UserRegistrationRequest(
         String firstName,
         String lastName,
         String phoneNumber,
-        String email,
         String password,
         UserRole role,
         Gender gender

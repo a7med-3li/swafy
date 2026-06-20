@@ -13,12 +13,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
-@Table(name = "driver_profiles")
+@Table(name = "driver_profile")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class DriverProfile {
     
     @Id
