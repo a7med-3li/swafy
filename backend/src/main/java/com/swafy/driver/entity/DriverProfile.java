@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -37,12 +39,14 @@ public class DriverProfile {
     
     private String nationalId;
     private String licenseNumber;
-    private BigDecimal depositAmount;
+    
+    @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY)
+    private List<DriverDeposit> depositList;
     private BigDecimal walletBalance;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "active_corridor_id")
-    private Corridor activeCorridor;    // null when off shift
+    private Corridor activeCorridor;
     
     private boolean isOnShift;
     
