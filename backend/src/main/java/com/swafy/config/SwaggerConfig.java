@@ -14,19 +14,20 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI customSwafyOpenAPI() {
+        final String securitySchemeName = "bearerAuth";
         return new OpenAPI()
                 .info(new Info()
                         .title("Swafy API")
                         .description("API documentation for Swafy backend")
                         .version("v1.0"))
-                .addSecurityItem(new SecurityRequirement().addList("basicAuth"))
+                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
-                        .addSecuritySchemes("basicAuth",
+                        .addSecuritySchemes(securitySchemeName,
                                 new SecurityScheme()
-                                        .name("basicAuth")
+                                        .name(securitySchemeName)
                                         .type(SecurityScheme.Type.HTTP)
-                                        .scheme("basic")
-                                        //.bearerFormat("JWT")
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")
                         )
                 );
     }

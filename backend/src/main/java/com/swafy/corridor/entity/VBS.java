@@ -1,14 +1,13 @@
 package com.swafy.corridor.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,29 +17,27 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "corridor")
-public class Corridor {
+@Table(name = "vbs")
+public class VBS {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "corridor_id", referencedColumnName = "id", nullable = false)
+	private Corridor corridor;
+	
 	@NotBlank
 	@Column(nullable = false, unique = true)
 	private String name;
 	
-	@NotBlank
-	@Column(nullable = false, columnDefinition = "TEXT")
-	private String route;
+	@NotNull
+	@Column(nullable = false)
+	private Double latitude;
 	
 	@NotNull
-	private Double price;
+	@Column(nullable = false)
+	private Double longitude;
 	
-	@OneToMany(mappedBy = "corridor", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<VBS> stops = new ArrayList<>();
-	
-	public void addStop(VBS stop) {
-		stops.add(stop);
-		stop.setCorridor(this);
-	}
 }
