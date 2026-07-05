@@ -15,6 +15,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-swafy_user}
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-swafy_pass}
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-local}
+      - SPRING_FLYWAY_ENABLED=${SPRING_FLYWAY_ENABLED:-false}
     depends_on:
       db:
         condition: service_healthy
