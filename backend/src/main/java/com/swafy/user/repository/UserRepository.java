@@ -25,4 +25,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     // Check if active user exists by phoneNumber
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u WHERE u.phoneNumber = ?1 AND u.deleted = false")
     boolean existsActiveByPhoneNumber(String phoneNumber);
+
+    long countByRole(com.swafy.common.enums.UserRole role);
 }

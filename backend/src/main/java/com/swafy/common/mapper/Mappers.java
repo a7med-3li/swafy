@@ -8,14 +8,14 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface Mappers {
     // Placeholder for mapping utilities (e.g., MapStruct wrappers)
 	
 	@Mapping(target = "displayName", expression = "java(formatDisplayName(user.getFirstName(), user.getLastName()))")
 	UserInfo userToUserInfo(User user);
 	
-	@Mapping(target = "id", ignore = true)
 	void updateUserFromRequest(UpdateUserRequest request, @MappingTarget User entity);
 	
 	default String formatDisplayName(String firstName, String lastName) {

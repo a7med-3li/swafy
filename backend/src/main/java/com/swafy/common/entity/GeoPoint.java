@@ -10,6 +10,6 @@ import lombok.Setter;
 @Embeddable
 public class GeoPoint {
 
-    private Long latitude;
-    private Long longitude;
+    private Double latitude;
+    private Double longitude;
 }

@@ -4,6 +4,7 @@ import com.swafy.addressing.dto.AutoCompleteResponse;
 import com.swafy.addressing.service.AddressingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ public class AddressingController {
     private final AddressingService addressingService;
     //TODO: add end-points, search
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/autoComplete")
     public ResponseEntity<AutoCompleteResponse> autoComplete(@RequestParam(required = false) String address){
         return ResponseEntity.ok(addressingService.autoComplete(address));

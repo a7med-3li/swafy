@@ -8,7 +8,6 @@ import com.swafy.ride.service.interfaces.RoutingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
 public class GoogleMapsRoutingService implements RoutingService {
     // TODO: Implement the logic

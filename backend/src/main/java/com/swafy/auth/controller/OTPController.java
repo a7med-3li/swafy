@@ -3,6 +3,7 @@ package com.swafy.auth.controller;
 import com.swafy.auth.dto.PhoneRequest;
 import com.swafy.auth.dto.VerifyOtpRequest;
 import com.swafy.auth.service.OTPService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +17,12 @@ public class OTPController {
     private final OTPService otpService;
 
     @PostMapping("/send-otp")
-    public void sendOtp(@RequestBody PhoneRequest request) {
+    public void sendOtp(@Valid @RequestBody PhoneRequest request) {
         otpService.sendOtp(request.phone());
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<?> verifyOtp(@RequestBody VerifyOtpRequest request) {
+    public ResponseEntity<?> verifyOtp(@Valid @RequestBody VerifyOtpRequest request) {
         boolean verified = otpService.verifyOtp(
                 request.phone(),
                 request.otp()

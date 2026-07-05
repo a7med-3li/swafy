@@ -1,7 +1,10 @@
 package com.swafy.driver.service;
 
 import com.swafy.common.enums.ApprovalStatus;
+import com.swafy.common.exception.NotFoundException;
 import com.swafy.common.events.DriverRegisteredEvent;
+import com.swafy.driver.dto.ActivateCorridorRequest;
+import com.swafy.driver.dto.DriverProfileResponse;
 import com.swafy.driver.entity.DriverProfile;
 import com.swafy.driver.repository.DriverProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,26 +12,60 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.math.BigDecimal;
+import java.util.UUID;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class DriverService {
-    // TODO: implement driver business logic
-	
-	private final DriverProfileRepository driverProfileRepository;
-	
-	@TransactionalEventListener
-	public void onDriverRegistered(DriverRegisteredEvent event) {
-		DriverProfile profile = new DriverProfile(null,
-				event.user(),
-				event.registerDriverRequest().nationalId(),
-				event.registerDriverRequest().licenseNumber(),
-				null,
-				null,
-				null,
-				false,
-				ApprovalStatus.PENDING
-		);
-		driverProfileRepository.save(profile);
-	}
+
+    private final DriverProfileRepository driverProfileRepository;
+
+    @TransactionalEventListener
+    public void onDriverRegistered(DriverRegisteredEvent event) {
+        DriverProfile profile = DriverProfile.builder()
+                .user(event.user())
+                .nationalId(event.registerDriverRequest().nationalId())
+                .licenseNumber(event.registerDriverRequest().licenseNumber())
+                .walletBalance(BigDecimal.ZERO)
+                .isOnShift(false)
+                .approvalStatus(ApprovalStatus.PENDING)
+                .build();
+        driverProfileRepository.save(profile);
+    }
+
+    public DriverProfileResponse getProfile(UUID userId) {
+        DriverProfile profile = driverProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException("Driver profile not found"));
+
+        return new DriverProfileResponse(
+                profile.getId(),
+                profile.getNationalId(),
+                profile.getLicenseNumber(),
+                profile.isOnShift(),
+                profile.getActiveCorridor() != null ? profile.getActiveCorridor().getId() : null,
+                profile.getApprovalStatus()
+        );
+    }
+
+    public void activateCorridor(UUID userId, ActivateCorridorRequest request) {
+        DriverProfile profile = driverProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException("Driver profile not found"));
+
+        if (profile.getApprovalStatus() != ApprovalStatus.APPROVED) {
+            throw new IllegalStateException("Driver account not approved yet");
+        }
+
+        profile.setOnShift(request.onShift());
+        driverProfileRepository.save(profile);
+    }
+
+    public void toggleShift(UUID userId, boolean onShift) {
+        DriverProfile profile = driverProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException("Driver profile not found"));
+
+        profile.setOnShift(onShift);
+        driverProfileRepository.save(profile);
+    }
 }

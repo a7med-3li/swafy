@@ -1,10 +1,12 @@
 package com.swafy.user.dto;
 
 import com.swafy.common.enums.Gender;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public record UpdateUserRequest(
-        String firstName,
-        String lastName,
-        String phoneNumber,
+        @Size(min = 2, max = 50) String firstName,
+        @Size(min = 2, max = 50) String lastName,
+        @Pattern(regexp = "^[+]?[0-9]{10,15}$") String phoneNumber,
         Gender gender
 ) {}

@@ -1,5 +1,7 @@
 package com.swafy.auth.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record TokenRefreshRequest(
-		String refreshToken
+		@NotBlank String refreshToken
 ) {}

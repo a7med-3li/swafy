@@ -12,10 +12,9 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.web.WebProperties;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -25,6 +24,8 @@ import java.util.UUID;
 @Table(name = "passenger_profile")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class PassengerProfile {
     
     @Id

@@ -1,5 +1,6 @@
 package com.swafy.auth.controller;
 
+import jakarta.validation.Valid;
 import java.util.UUID;
 import com.swafy.auth.dto.AuthResponse;
 import com.swafy.auth.dto.LoginRequest;
@@ -28,19 +29,19 @@ public class AuthController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/register/passenger")
-    public ResponseEntity<AuthResponse> registerPassenger(@RequestBody PassengerRegisterRequest request) {
+    public ResponseEntity<AuthResponse> registerPassenger(@Valid @RequestBody PassengerRegisterRequest request) {
         authService.registerPassenger(request);
         return login(new LoginRequest(request.phoneNumber(), request.password()));
     }
     
     @PostMapping("/register/driver")
-    public ResponseEntity<AuthResponse> registerDriver(@RequestBody DriverRegisterRequest request) {
+    public ResponseEntity<AuthResponse> registerDriver(@Valid @RequestBody DriverRegisterRequest request) {
         authService.registerDriver(request);
         return login(new LoginRequest(request.phoneNumber(), request.password()));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         System.out.println("Authenticated user: " + loginRequest.phoneNumber() + " " + loginRequest.phoneNumber());
         SecurityUser securityUser = authService.authenticate(
                 loginRequest.phoneNumber(),
@@ -61,7 +62,7 @@ public class AuthController {
     }
     
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
         String requestRefreshToken = request.refreshToken();
         
         return refreshTokenService.findByToken(requestRefreshToken)

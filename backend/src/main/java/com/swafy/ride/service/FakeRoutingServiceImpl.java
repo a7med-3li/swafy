@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
-@Service
 @RequiredArgsConstructor
 public class FakeRoutingServiceImpl implements RoutingService {
     // TODO: fix this

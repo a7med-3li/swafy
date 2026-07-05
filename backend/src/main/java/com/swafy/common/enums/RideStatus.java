@@ -1,10 +1,9 @@
 package com.swafy.common.enums;
 
 public enum RideStatus {
-    REQUESTED,
-    ACCEPTED,
-    DRIVER_ARRIVED,
+    BOOKED,
     IN_PROGRESS,
     COMPLETED,
-    CANCELLED
+    CANCELLED,
+    NO_SHOW
 }

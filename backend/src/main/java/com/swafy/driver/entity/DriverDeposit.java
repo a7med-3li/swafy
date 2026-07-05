@@ -30,7 +30,7 @@ public class DriverDeposit {
 	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "driver_profile_id", nullable = false)
+	@JoinColumn(name = "driver_id", nullable = false)
 	private DriverProfile driver;
 
 	@NotNull(message = "Deposit amount is required")

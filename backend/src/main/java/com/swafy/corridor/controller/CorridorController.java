@@ -6,8 +6,10 @@ import com.swafy.corridor.dto.SaveCorridorRequest;
 import com.swafy.corridor.dto.StopResponse;
 import com.swafy.corridor.entity.Corridor;
 import com.swafy.corridor.service.CorridorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +22,9 @@ public class CorridorController {
 	
 	private final CorridorService corridorService;
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/add")
-	public ResponseEntity<?> createCorridor(@RequestBody SaveCorridorRequest request) {
+	public ResponseEntity<?> createCorridor(@Valid @RequestBody SaveCorridorRequest request) {
 		Corridor savedCorridor = corridorService.createCorridor(request);
 		
 		// Map the entity to the DTO before returning
