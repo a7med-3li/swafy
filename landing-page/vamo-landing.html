@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vamo — Move on Your Own Terms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0a0b0b;
+    --graphite:#1d2021;
+    --graphite-light:#2b2f30;
+    --evergreen:#1f4d3a;
+    --evergreen-bright:#3f8f68;
+    --mint:#8be3b3;
+    --white:#f4f5f1;
+    --muted:#9aa19c;
+    --line:rgba(244,245,241,0.09);
+    --display: 'Big Shoulders Display', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--white);
+    font-family:var(--body);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--evergreen-bright); color:var(--black); }
+
+  a{color:inherit;}
+  .wrap{ max-width:1160px; margin:0 auto; padding:0 32px; }
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 32px;
+    background:linear-gradient(to bottom, rgba(10,11,11,0.9), transparent);
+  }
+  .nav .brand{ display:flex; align-items:center; gap:10px; }
+  .nav .brand img{ height:30px; width:auto; display:block; }
+  .nav .brand span{ font-family:var(--mono); font-size:12px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; }
+  .nav .status{
+    font-family:var(--mono); font-size:11px; color:var(--mint);
+    display:flex; align-items:center; gap:8px; letter-spacing:.06em;
+  }
+  .nav .status .dot{
+    width:6px; height:6px; border-radius:50%; background:var(--mint);
+    box-shadow:0 0 8px var(--mint);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.35;} }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding:140px 24px 120px;
+    overflow:hidden;
+  }
+  .hero-road-field{
+    position:absolute; inset:0; z-index:0;
+    opacity:0.55;
+  }
+  .hero-logo{
+    width:88px; height:88px; margin-bottom:36px; position:relative; z-index:2;
+    filter:drop-shadow(0 0 24px rgba(63,143,104,0.35));
+  }
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.28em;
+    text-transform:uppercase; color:var(--evergreen-bright);
+    margin-bottom:22px; position:relative; z-index:2;
+  }
+  h1.headline{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:clamp(52px, 9vw, 108px);
+    line-height:0.96;
+    letter-spacing:-0.01em;
+    color:var(--white);
+    max-width:900px;
+    position:relative; z-index:2;
+  }
+  h1.headline em{
+    font-style:normal;
+    color:transparent;
+    -webkit-text-stroke:1.5px var(--evergreen-bright);
+  }
+  .sub{
+    margin-top:26px;
+    font-size:18px; line-height:1.6; color:var(--muted);
+    max-width:560px;
+    position:relative; z-index:2;
+    font-weight:400;
+  }
+  .cta-row{
+    margin-top:48px;
+    display:flex; gap:16px; flex-wrap:wrap; justify-content:center;
+    position:relative; z-index:2;
+  }
+  .btn{
+    font-family:var(--body); font-weight:600; font-size:15px;
+    padding:16px 30px; border-radius:100px;
+    border:1px solid var(--line);
+    cursor:pointer;
+    display:inline-flex; align-items:center; gap:10px;
+    transition:transform .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease;
+    text-decoration:none;
+    background:transparent;
+    color:var(--white);
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn.primary{
+    background:var(--evergreen);
+    border-color:var(--evergreen);
+  }
+  .btn.primary:hover{
+    background:var(--evergreen-bright);
+    border-color:var(--evergreen-bright);
+    box-shadow:0 8px 30px rgba(63,143,104,0.35);
+    color:var(--black);
+  }
+  .btn.outline:hover{
+    border-color:var(--evergreen-bright);
+    box-shadow:0 8px 30px rgba(63,143,104,0.18);
+  }
+  .btn .arrow{ transition:transform .25s ease; }
+  .btn:hover .arrow{ transform:translateX(3px); }
+
+  .scroll-hint{
+    position:absolute; bottom:36px; left:50%; transform:translateX(-50%);
+    font-family:var(--mono); font-size:11px; letter-spacing:.2em;
+    color:var(--muted); text-transform:uppercase;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+  }
+  .scroll-hint .line{
+    width:1px; height:28px; background:linear-gradient(var(--evergreen-bright), transparent);
+    animation:scrolldown 1.6s ease-in-out infinite;
+  }
+  @keyframes scrolldown{ 0%{opacity:0; transform:scaleY(0.3);} 50%{opacity:1; transform:scaleY(1);} 100%{opacity:0; transform:scaleY(0.3); transform-origin:bottom;} }
+
+  /* ---------- FORK (signature element) ---------- */
+  .fork-section{
+    position:relative;
+    padding:20px 24px 40px;
+    display:flex; justify-content:center;
+  }
+  .fork-svg{ width:100%; max-width:620px; height:auto; display:block; }
+  .fork-label{
+    font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  }
+  .fork-label.rider{ fill:var(--muted); }
+  .fork-label.driver{ fill:var(--muted); }
+  .fork-label.active{ fill:var(--mint); }
+  .fork-path{ transition:stroke .4s ease, opacity .4s ease, filter .4s ease; }
+  .fork-path.dim{ opacity:0.28; }
+  .fork-path.lit{ filter:drop-shadow(0 0 6px rgba(139,227,179,0.7)); }
+
+  .fork-prompt{
+    text-align:center; font-family:var(--mono); font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:6px;
+  }
+
+  /* ---------- FUNNEL PANELS ---------- */
+  .funnel{
+    position:relative;
+    padding:20px 24px 120px;
+  }
+  .panel{
+    display:none;
+    animation:fadein .5s ease forwards;
+  }
+  .panel.active{ display:block; }
+  @keyframes fadein{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+
+  .panel-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start;
+  }
+  @media (max-width:880px){ .panel-grid{ grid-template-columns:1fr; gap:48px; } }
+
+  .panel-copy .tag{
+    font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--evergreen-bright); margin-bottom:16px; display:block;
+  }
+  .panel-copy h2{
+    font-family:var(--display); font-weight:800; font-size:clamp(36px,4.5vw,54px);
+    line-height:1.02; margin-bottom:18px;
+  }
+  .panel-copy .lead{
+    color:var(--muted); font-size:16px; line-height:1.7; max-width:460px; margin-bottom:36px;
+  }
+
+  .benefits{ list-style:none; display:flex; flex-direction:column; gap:22px; }
+  .benefits li{
+    display:flex; gap:16px; align-items:flex-start;
+    padding-bottom:22px; border-bottom:1px solid var(--line);
+    opacity:0; transform:translateY(10px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .benefits li.in-view{ opacity:1; transform:translateY(0); }
+  .benefits li:last-child{ border-bottom:none; }
+  .benefits .icon{
+    flex:0 0 auto; width:34px; height:34px; border-radius:9px;
+    background:var(--graphite-light); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--mint);
+  }
+  .benefits .b-title{ font-weight:600; font-size:15px; margin-bottom:4px; }
+  .benefits .b-desc{ font-size:14px; color:var(--muted); line-height:1.55; }
+
+  /* form card */
+  .form-card{
+    background:var(--graphite);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:36px;
+    position:sticky; top:110px;
+  }
+  .form-card h3{
+    font-family:var(--display); font-weight:700; font-size:26px; margin-bottom:6px;
+  }
+  .form-card .form-sub{ color:var(--muted); font-size:13px; margin-bottom:26px; }
+  .field{ margin-bottom:16px; }
+  .field label{
+    display:block; font-family:var(--mono); font-size:11px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:8px;
+  }
+  .field input, .field select{
+    width:100%; padding:13px 14px; border-radius:10px;
+    background:var(--black); border:1px solid var(--line); color:var(--white);
+    font-family:var(--body); font-size:14px;
+    outline:none; transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .field input::placeholder{ color:#6b716d; }
+  .field input:focus, .field select:focus{
+    border-color:var(--evergreen-bright);
+    box-shadow:0 0 0 3px rgba(63,143,104,0.18);
+  }
+  .form-submit{
+    width:100%; margin-top:8px; padding:15px; border-radius:10px;
+    background:var(--evergreen); border:none; color:var(--white);
+    font-family:var(--body); font-weight:600; font-size:15px; cursor:pointer;
+    transition:background .2s ease, transform .2s ease;
+  }
+  .form-submit:hover{ background:var(--evergreen-bright); color:var(--black); transform:translateY(-1px); }
+  .form-note{
+    margin-top:14px; font-size:12px; color:var(--muted); text-align:center;
+    font-family:var(--mono);
+  }
+  .form-success{
+    display:none; text-align:center; padding:20px 0;
+  }
+  .form-success.show{ display:block; animation:fadein .4s ease; }
+  .form-success .check{
+    width:44px; height:44px; border-radius:50%; margin:0 auto 14px;
+    background:var(--evergreen); display:flex; align-items:center; justify-content:center;
+  }
+  .form-success h4{ font-family:var(--display); font-size:22px; margin-bottom:6px; }
+  .form-success p{ color:var(--muted); font-size:13px; }
+
+  /* ---------- FOOTER / TRUST BAR ---------- */
+  .footer{
+    position:relative;
+    background:linear-gradient(180deg, var(--graphite), var(--black));
+    border-top:1px solid var(--line);
+    padding:90px 24px 40px;
+    text-align:center;
+    overflow:hidden;
+  }
+  .footer-road{ position:absolute; bottom:0; left:0; right:0; height:140px; opacity:0.5; }
+  .footer h2{
+    font-family:var(--display); font-weight:800; font-size:clamp(32px,5vw,52px);
+    margin-bottom:16px; position:relative; z-index:2;
+  }
+  .footer p{
+    color:var(--muted); max-width:480px; margin:0 auto; font-size:15px; line-height:1.65;
+    position:relative; z-index:2;
+  }
+  .footer .foot-brand{
+    margin-top:70px; display:flex; align-items:center; justify-content:space-between;
+    padding-top:24px; border-top:1px solid var(--line);
+    font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.06em;
+    position:relative; z-index:2;
+  }
+  .footer .foot-brand img{ height:20px; }
+  .foot-brand-left{ display:flex; align-items:center; gap:10px; }
+
+  @media (max-width:600px){
+    .foot-brand{ flex-direction:column; gap:14px; text-align:center; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">
+    <img src="vamo-logo.png" alt="Vamo">
+    <span>Vamo</span>
+  </div>
+  <div class="status"><span class="dot"></span>Launching soon on local roads</div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <svg class="hero-road-field" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#3f8f68" stop-opacity="0.5"/>
+        <stop offset="100%" stop-color="#3f8f68" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path d="M -100 850 C 250 550, 450 750, 700 500 S 1150 250, 1350 -50" fill="none" stroke="url(#fade)" stroke-width="2"/>
+    <path id="dashline1" d="M -100 850 C 250 550, 450 750, 700 500 S 1150 250, 1350 -50" fill="none" stroke="#8be3b3" stroke-width="2" stroke-dasharray="2 26" stroke-linecap="round" opacity="0.7"/>
+  </svg>
+
+  <img class="hero-logo" src="vamo-logo.png" alt="Vamo logo">
+  <span class="eyebrow">Ride-hailing, rebuilt for local roads</span>
+  <h1 class="headline">Move on <em>Your</em><br>Own Terms.</h1>
+  <p class="sub">Whether you need a reliable ride across the city or want to earn on your own schedule, Vamo is built for better journeys. Join the waitlist today.</p>
+
+  <div class="cta-row">
+    <button class="btn primary" onclick="selectFunnel('rider')">Ride with Vamo <span class="arrow">→</span></button>
+    <button class="btn outline" onclick="selectFunnel('driver')">Drive with Vamo <span class="arrow">→</span></button>
+  </div>
+
+  <div class="scroll-hint"><span class="line"></span>Scroll</div>
+</section>
+
+<!-- ================= FORK (signature transition) ================= -->
+<section class="fork-section" id="fork">
+  <div style="width:100%;">
+    <p class="fork-prompt">Choose your route</p>
+    <svg class="fork-svg" viewBox="0 0 620 180" fill="none">
+      <!-- trunk -->
+      <path d="M 310 0 L 310 70" stroke="#8be3b3" stroke-width="2" stroke-dasharray="3 10" stroke-linecap="round"/>
+      <!-- rider branch (left) -->
+      <path id="branch-rider" class="fork-path" d="M 310 70 C 260 100, 160 100, 90 150" stroke="#8be3b3" stroke-width="2" stroke-dasharray="3 10" stroke-linecap="round"/>
+      <!-- driver branch (right) -->
+      <path id="branch-driver" class="fork-path" d="M 310 70 C 360 100, 460 100, 530 150" stroke="#8be3b3" stroke-width="2" stroke-dasharray="3 10" stroke-linecap="round"/>
+      <text id="label-rider" class="fork-label rider" x="90" y="172" text-anchor="middle">Rider</text>
+      <text id="label-driver" class="fork-label driver" x="530" y="172" text-anchor="middle">Driver</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ================= FUNNELS ================= -->
+<section class="funnel wrap">
+
+  <!-- RIDER PANEL -->
+  <div class="panel" id="panel-rider">
+    <div class="panel-grid">
+      <div class="panel-copy">
+        <span class="tag">For riders</span>
+        <h2>Your Daily Commute, Upgraded.</h2>
+        <p class="lead">Say goodbye to endless waiting and unpredictable fares. Vamo brings you comfortable, transparent, and secure rides with just a tap.</p>
+        <ul class="benefits">
+          <li><div class="icon">₹</div><div><div class="b-title">Upfront Pricing</div><div class="b-desc">No haggling, no surprises. Know exactly what you will pay before you book.</div></div></li>
+          <li><div class="icon">✓</div><div><div class="b-title">Verified Drivers</div><div class="b-desc">Every ride is tracked, and every driver is vetted for your peace of mind.</div></div></li>
+          <li><div class="icon">⚡</div><div><div class="b-title">Quick Pickups</div><div class="b-desc">Smart routing gets a car to your location faster, even during rush hour.</div></div></li>
+        </ul>
+      </div>
+      <div class="form-card">
+        <div id="rider-form-wrap">
+          <h3>Be the first to ride.</h3>
+          <p class="form-sub">Get notified the moment Vamo launches near you.</p>
+          <form onsubmit="return submitForm(event, 'rider')">
+            <div class="field"><label>First name</label><input type="text" placeholder="e.g. Ahmed" required></div>
+            <div class="field"><label>Phone number (WhatsApp)</label><input type="tel" placeholder="e.g. 01xxxxxxxxx" required></div>
+            <button class="form-submit" type="submit">Get Early Access</button>
+          </form>
+          <p class="form-note">No spam. Just a message when we go live.</p>
+        </div>
+        <div class="form-success" id="rider-success">
+          <div class="check">✓</div>
+          <h4>You're on the list.</h4>
+          <p>We'll message you on WhatsApp the moment Vamo goes live near you.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRIVER PANEL -->
+  <div class="panel" id="panel-driver">
+    <div class="panel-grid">
+      <div class="panel-copy">
+        <span class="tag">For drivers</span>
+        <h2>Drive Your Way to Better Earnings.</h2>
+        <p class="lead">You do the hard work; you should keep the reward. Vamo offers industry-leading commission rates and the flexibility you deserve.</p>
+        <ul class="benefits">
+          <li><div class="icon">💵</div><div><div class="b-title">Keep More of Your Money</div><div class="b-desc">Lower platform fees mean a bigger cut of every fare goes straight to your pocket.</div></div></li>
+          <li><div class="icon">⏱</div><div><div class="b-title">Flexible Payouts</div><div class="b-desc">Access your earnings quickly, without waiting for the end of the month.</div></div></li>
+          <li><div class="icon">🎚</div><div><div class="b-title">You Are in Control</div><div class="b-desc">Choose your own hours. Drive full-time, part-time, or just on weekends.</div></div></li>
+        </ul>
+      </div>
+      <div class="form-card">
+        <div id="driver-form-wrap">
+          <h3>Start earning with Vamo.</h3>
+          <p class="form-sub">Tell us about your vehicle and we'll reach out when it's time to apply.</p>
+          <form onsubmit="return submitForm(event, 'driver')">
+            <div class="field"><label>First name</label><input type="text" placeholder="e.g. Mahmoud" required></div>
+            <div class="field"><label>Phone number (WhatsApp)</label><input type="tel" placeholder="e.g. 01xxxxxxxxx" required></div>
+            <div class="field"><label>Vehicle type</label>
+              <select required>
+                <option value="" disabled selected>Select vehicle type</option>
+                <option>Private car</option>
+                <option>Microbus</option>
+                <option>Tuk-tuk</option>
+                <option>Motorcycle</option>
+              </select>
+            </div>
+            <button class="form-submit" type="submit">Apply to Drive</button>
+          </form>
+          <p class="form-note">No spam. Just a message when we go live.</p>
+        </div>
+        <div class="form-success" id="driver-success">
+          <div class="check">✓</div>
+          <h4>Application received.</h4>
+          <p>We'll message you on WhatsApp when driver onboarding opens.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <svg class="footer-road" viewBox="0 0 1200 200" preserveAspectRatio="none">
+    <path d="M -50 220 C 300 40, 900 40, 1250 220" stroke="#3f8f68" stroke-width="1.5" stroke-dasharray="2 22" opacity="0.6"/>
+  </svg>
+  <h2>Proudly built for local roads.</h2>
+  <p>Join thousands of riders and drivers redefining urban mobility. We will notify you via WhatsApp the moment we go live in your area.</p>
+
+  <div class="foot-brand">
+    <div class="foot-brand-left"><img src="vamo-logo.png" alt="Vamo"> <span>Vamo</span></div>
+    <span>© 2026 Vamo. Every road leads somewhere.</span>
+  </div>
+</footer>
+
+<script>
+  // ---- Funnel toggle ----
+  function selectFunnel(type){
+    document.getElementById('panel-rider').classList.toggle('active', type === 'rider');
+    document.getElementById('panel-driver').classList.toggle('active', type === 'driver');
+
+    // Fork illumination
+    const riderBranch = document.getElementById('branch-rider');
+    const driverBranch = document.getElementById('branch-driver');
+    const riderLabel = document.getElementById('label-rider');
+    const driverLabel = document.getElementById('label-driver');
+
+    riderBranch.classList.toggle('lit', type === 'rider');
+    riderBranch.classList.toggle('dim', type !== 'rider');
+    driverBranch.classList.toggle('lit', type === 'driver');
+    driverBranch.classList.toggle('dim', type !== 'driver');
+    riderLabel.classList.toggle('active', type === 'rider');
+    driverLabel.classList.toggle('active', type === 'driver');
+
+    document.getElementById('fork').scrollIntoView({ behavior:'smooth', block:'start' });
+    setTimeout(revealBenefits, 400);
+  }
+
+  // default state: nothing lit until a choice is made
+  document.getElementById('branch-rider').classList.add('dim');
+  document.getElementById('branch-driver').classList.add('dim');
+
+  // ---- Form submit ----
+  function submitForm(e, type){
+    e.preventDefault();
+    document.getElementById(type + '-form-wrap').style.display = 'none';
+    document.getElementById(type + '-success').classList.add('show');
+    return false;
+  }
+
+  // ---- Reveal benefits on view ----
+  function revealBenefits(){
+    document.querySelectorAll('.panel.active .benefits li').forEach(function(li, i){
+      setTimeout(function(){ li.classList.add('in-view'); }, i * 110);
+    });
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) revealBenefits();
+    });
+  }, { threshold: 0.2 });
+  io.observe(document.querySelector('.funnel'));
+</script>
+
+</body>
+</html>
