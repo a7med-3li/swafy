@@ -42,7 +42,26 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGOR10y49OklcupkITKt9Sgjm0pCOWn7QuWb50gR-ec6X0KSQKsurvuixNmzUQI8NZxA/exec'; // Paste your Google Apps Script web app URL here
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0XpyuF2VtyeHRV46EQCA1wklqkNvigVLHd7vcsR3mlCI5rD_ZgJ_4Cu6KbTaVY9DEpQ/exec';
+function postToSheet(payload, wrap, success) {
+  if (APPS_SCRIPT_URL) {
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body: JSON.stringify(payload)
+    }).then(function() {
+      if (wrap) wrap.style.display = 'none';
+      if (success) success.classList.add('show');
+    }).catch(function() {
+      if (wrap) wrap.style.display = 'none';
+      if (success) success.classList.add('show');
+    });
+  } else {
+    if (wrap) wrap.style.display = 'none';
+    if (success) success.classList.add('show');
+  }
+}
 
 function submitWaitlist(e) {
   e.preventDefault();
@@ -52,30 +71,12 @@ function submitWaitlist(e) {
   var wrap = form.parentElement;
   var success = wrap.parentElement.querySelector('.form-success');
 
-  var payload = {
+  postToSheet({
     fullName: inputs[0].value,
     phone: inputs[1].value,
     route: inputs[2].value,
     role: role
-  };
-
-  if (APPS_SCRIPT_URL) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', APPS_SCRIPT_URL, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = function() {
-      if (wrap) wrap.style.display = 'none';
-      if (success) success.classList.add('show');
-    };
-    xhr.onerror = function() {
-      if (wrap) wrap.style.display = 'none';
-      if (success) success.classList.add('show');
-    };
-    xhr.send(JSON.stringify(payload));
-  } else {
-    if (wrap) wrap.style.display = 'none';
-    if (success) success.classList.add('show');
-  }
+  }, wrap, success);
   return false;
 }
 
@@ -86,26 +87,8 @@ function submitFeedback(e) {
   var wrap = form.parentElement;
   var success = wrap.parentElement.querySelector('.form-success');
 
-  var payload = {
+  postToSheet({
     feedback: textarea.value
-  };
-
-  if (APPS_SCRIPT_URL) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', APPS_SCRIPT_URL, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = function() {
-      if (wrap) wrap.style.display = 'none';
-      if (success) success.classList.add('show');
-    };
-    xhr.onerror = function() {
-      if (wrap) wrap.style.display = 'none';
-      if (success) success.classList.add('show');
-    };
-    xhr.send(JSON.stringify(payload));
-  } else {
-    if (wrap) wrap.style.display = 'none';
-    if (success) success.classList.add('show');
-  }
+  }, wrap, success);
   return false;
 }
