@@ -42,25 +42,70 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGOR10y49OklcupkITKt9Sgjm0pCOWn7QuWb50gR-ec6X0KSQKsurvuixNmzUQI8NZxA/exec'; // Paste your Google Apps Script web app URL here
+
 function submitWaitlist(e) {
   e.preventDefault();
   var form = e.target;
-  var type = form.getAttribute('data-type');
+  var role = form.getAttribute('data-type');
+  var inputs = form.querySelectorAll('input');
   var wrap = form.parentElement;
   var success = wrap.parentElement.querySelector('.form-success');
 
-  if (wrap) wrap.style.display = 'none';
-  if (success) success.classList.add('show');
+  var payload = {
+    fullName: inputs[0].value,
+    phone: inputs[1].value,
+    route: inputs[2].value,
+    role: role
+  };
+
+  if (APPS_SCRIPT_URL) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', APPS_SCRIPT_URL, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+      if (wrap) wrap.style.display = 'none';
+      if (success) success.classList.add('show');
+    };
+    xhr.onerror = function() {
+      if (wrap) wrap.style.display = 'none';
+      if (success) success.classList.add('show');
+    };
+    xhr.send(JSON.stringify(payload));
+  } else {
+    if (wrap) wrap.style.display = 'none';
+    if (success) success.classList.add('show');
+  }
   return false;
 }
 
 function submitFeedback(e) {
   e.preventDefault();
   var form = e.target;
+  var textarea = form.querySelector('textarea');
   var wrap = form.parentElement;
   var success = wrap.parentElement.querySelector('.form-success');
 
-  if (wrap) wrap.style.display = 'none';
-  if (success) success.classList.add('show');
+  var payload = {
+    feedback: textarea.value
+  };
+
+  if (APPS_SCRIPT_URL) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', APPS_SCRIPT_URL, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+      if (wrap) wrap.style.display = 'none';
+      if (success) success.classList.add('show');
+    };
+    xhr.onerror = function() {
+      if (wrap) wrap.style.display = 'none';
+      if (success) success.classList.add('show');
+    };
+    xhr.send(JSON.stringify(payload));
+  } else {
+    if (wrap) wrap.style.display = 'none';
+    if (success) success.classList.add('show');
+  }
   return false;
 }
