@@ -6,6 +6,7 @@ import {
   Banknote,
   Ticket,
   AlertTriangle,
+  Route,
   LogOut,
 } from "lucide-react"
 import { clearToken } from "@/lib/api"
@@ -18,6 +19,7 @@ const navItems = [
   { to: "/deposits", icon: Banknote, label: "Deposits" },
   { to: "/subscriptions", icon: Ticket, label: "Subscriptions" },
   { to: "/no-shows", icon: AlertTriangle, label: "No-Shows" },
+  { to: "/corridors", icon: Route, label: "Corridors" },
 ]
 
 export function Sidebar() {

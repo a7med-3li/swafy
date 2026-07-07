@@ -7,6 +7,7 @@ import { DriversPage } from "@/pages/DriversPage"
 import { DepositsPage } from "@/pages/DepositsPage"
 import { SubscriptionsPage } from "@/pages/SubscriptionsPage"
 import { NoShowsPage } from "@/pages/NoShowsPage"
+import { CorridorsPage } from "@/pages/CorridorsPage"
 import { isAuthenticated } from "@/lib/api"
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="deposits" element={<DepositsPage />} />
           <Route path="subscriptions" element={<SubscriptionsPage />} />
           <Route path="no-shows" element={<NoShowsPage />} />
+          <Route path="corridors" element={<CorridorsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

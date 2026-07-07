@@ -1,5 +1,6 @@
 package com.swafy.corridor.service;
 
+import java.util.List;
 import com.swafy.corridor.dto.CorridorStopRequest;
 import com.swafy.corridor.dto.SaveCorridorRequest;
 import com.swafy.corridor.entity.Corridor;
@@ -15,6 +16,10 @@ public class CorridorService {
 	
 	private final CorridorRepository corridorRepository;
 	
+	public List<Corridor> getAllCorridors() {
+		return corridorRepository.findAll();
+	}
+
 	@Transactional
 	public Corridor createCorridor(SaveCorridorRequest request) {
 		Corridor corridor = new Corridor();

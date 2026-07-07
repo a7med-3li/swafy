@@ -86,6 +86,20 @@ export interface NoShowPassengerItem {
   noShowCount: number
 }
 
+export interface CorridorStopItem {
+  id: number
+  name: string
+  latitude: number
+  longitude: number
+}
+
+export interface CorridorItem {
+  id: number
+  name: string
+  price: number
+  stops: CorridorStopItem[]
+}
+
 export interface LoginRequest {
   phoneNumber: string
   password: string
