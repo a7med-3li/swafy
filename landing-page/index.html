@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vamo &mdash; Your Commute, But Better.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============ NAV ============ -->
+  <nav class="nav">
+    <div class="nav-brand">
+      <img src="vamo-logo.png" alt="vamo">
+      <span>vamo</span>
+    </div>
+    <div class="nav-status">
+      <span class="dot"></span>
+      Launching soon &mdash; Beni Suef
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+
+    <img class="hero-logo" src="vamo-logo.png" alt="vamo">
+
+    <h1>
+      vamo <span class="highlight">is Coming</span>:<br>
+      Your Commute, <span class="strike">But Better</span>.
+    </h1>
+
+    <p>
+      vamo is a localized hybrid transit platform built exclusively for Beni Suef Governorate.
+      We are completely changing how you move around the city. No more fighting for a seat,
+      no more waiting forever, and no more stressing over your daily route.
+    </p>
+
+    <p style="margin-top:12px; font-weight:600; color:var(--white);">
+      We are launching soon. Pick your profile below and get on the exclusive waitlist!
+    </p>
+
+    <div class="hero-cta">
+      <button class="btn btn-primary" onclick="switchAudience('student')">
+        I&rsquo;m a Student <span class="arrow">&rarr;</span>
+      </button>
+      <button class="btn btn-outline" onclick="switchAudience('driver')">
+        I&rsquo;m a Driver <span class="arrow">&rarr;</span>
+      </button>
+      <button class="btn btn-outline" onclick="switchAudience('commuter')">
+        I&rsquo;m a Commuter <span class="arrow">&rarr;</span>
+      </button>
+    </div>
+
+    <div class="scroll-hint">
+      <span class="line"></span>
+      Scroll
+    </div>
+  </section>
+
+  <!-- ============ AUDIENCE TABS ============ -->
+  <div class="audience-nav">
+    <button class="audience-tab active" data-audience="student" onclick="switchAudience('student')">
+      &#127891; Students
+    </button>
+    <button class="audience-tab" data-audience="driver" onclick="switchAudience('driver')">
+      &#128663; Drivers
+    </button>
+    <button class="audience-tab" data-audience="commuter" onclick="switchAudience('commuter')">
+      &#128188; Daily Commuters
+    </button>
+  </div>
+
+  <!-- ============ AUDIENCE SECTIONS ============ -->
+  <div class="wrap">
+
+    <!-- STUDENT -->
+    <section class="audience active" id="audience-student">
+      <div class="audience-grid">
+        <div class="audience-copy">
+          <span class="tag">&#127891; For the Students</span>
+          <h2>Survive the Morning Rush</h2>
+          <p class="lead">
+            Tired of being late to your morning lectures? We have designed special student
+            subscriptions just for you.
+          </p>
+          <ul class="benefits">
+            <li>
+              <div class="icon">&#128176;</div>
+              <div>
+                <div class="b-title">Pre-Paid Bundles</div>
+                <div class="b-desc">Pay upfront for a bundle of corridor rides at a per-ride discount.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#9989;</div>
+              <div>
+                <div class="b-title">Guaranteed Seat</div>
+                <div class="b-desc">You will always have a reserved seat &mdash; no more standing or waiting.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#128274;</div>
+              <div>
+                <div class="b-title">Board with a PIN or QR</div>
+                <div class="b-desc">Simply show your code and board. No cash, no hassle.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#128197;</div>
+              <div>
+                <div class="b-title">Lock In Your Month</div>
+                <div class="b-desc">Secure your rides for the month and never worry about finding a ride to campus again.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="form-card">
+          <div class="form-wrap">
+            <h3>Get Your Student Pass</h3>
+            <p class="form-sub">Join the student waitlist and be first in line for launch.</p>
+            <form onsubmit="return submitWaitlist(event)" data-type="student">
+              <div class="field">
+                <label>Name</label>
+                <input type="text" placeholder="e.g. Omar Hassan" required>
+              </div>
+              <div class="field">
+                <label>WhatsApp Number</label>
+                <input type="tel" placeholder="e.g. 01xxxxxxxxx" required>
+              </div>
+              <div class="field">
+                <label>Where do you usually travel from/to?</label>
+                <input type="text" placeholder="e.g. From Mahatta Square to University Main Gate" required>
+              </div>
+              <button class="form-submit" type="submit">Secure My Spot</button>
+            </form>
+            <p class="form-note">We will only message you when your route goes live!</p>
+          </div>
+          <div class="form-success">
+            <div class="check">&#10003;</div>
+            <h4>You&rsquo;re on the list!</h4>
+            <p>We will WhatsApp you the moment your route goes live.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DRIVER -->
+    <section class="audience" id="audience-driver">
+      <div class="audience-grid">
+        <div class="audience-copy">
+          <span class="tag">&#128663; For the Drivers</span>
+          <h2>Drive Smart, Not Hard</h2>
+          <p class="lead">
+            Stop burning fuel while hunting for passengers. vamo is designed to keep your wheels
+            moving and your income steady.
+          </p>
+          <ul class="benefits">
+            <li>
+              <div class="icon">&#128179;</div>
+              <div>
+                <div class="b-title">Guaranteed Demand</div>
+                <div class="b-desc">Receive pre-purchased demand &mdash; no more empty runs.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#128424;</div>
+              <div>
+                <div class="b-title">Real-Time Manifest</div>
+                <div class="b-desc">Check a live manifest of booked passengers before you depart.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#128187;</div>
+              <div>
+                <div class="b-title">Digitally Filled Seats</div>
+                <div class="b-desc">The system fills your seats digitally before you even start.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#128176;</div>
+              <div>
+                <div class="b-title">Smooth Shifts</div>
+                <div class="b-desc">No negotiation, no waiting for a full van. Just drive.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="form-card">
+          <div class="form-wrap">
+            <h3>Register as a Driver</h3>
+            <p class="form-sub">Get priority access when driver onboarding opens.</p>
+            <form onsubmit="return submitWaitlist(event)" data-type="driver">
+              <div class="field">
+                <label>Name</label>
+                <input type="text" placeholder="e.g. Sayed Mahmoud" required>
+              </div>
+              <div class="field">
+                <label>WhatsApp Number</label>
+                <input type="tel" placeholder="e.g. 01xxxxxxxxx" required>
+              </div>
+              <div class="field">
+                <label>Where do you usually travel from/to?</label>
+                <input type="text" placeholder="e.g. From Mahatta Square to University Main Gate" required>
+              </div>
+              <button class="form-submit" type="submit">Secure My Spot</button>
+            </form>
+            <p class="form-note">We will only message you when your route goes live!</p>
+          </div>
+          <div class="form-success">
+            <div class="check">&#10003;</div>
+            <h4>You&rsquo;re on the list!</h4>
+            <p>We will WhatsApp you when driver onboarding begins.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMUTER -->
+    <section class="audience" id="audience-commuter">
+      <div class="audience-grid">
+        <div class="audience-copy">
+          <span class="tag">&#128188; For Daily Commuters</span>
+          <h2>Claim Your Peace of Mind</h2>
+          <p class="lead">
+            Whether you are heading to work, the market, or running errands &mdash; your time is valuable.
+          </p>
+          <ul class="benefits">
+            <li>
+              <div class="icon">&#128666;</div>
+              <div>
+                <div class="b-title">Affordable Guaranteed Transport</div>
+                <div class="b-desc">Reliable rides you can count on, at prices that make sense.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#128205;</div>
+              <div>
+                <div class="b-title">Virtual Bus Stops</div>
+                <div class="b-desc">Pre-mapped stops at major landmarks and intersections for easy boarding.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#128204;</div>
+              <div>
+                <div class="b-title">Safe &amp; Convenient Locations</div>
+                <div class="b-desc">Stops are spaced 400&ndash;800m apart along each corridor at institutional gates and landmarks.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#9200;</div>
+              <div>
+                <div class="b-title">Predictable Departures</div>
+                <div class="b-desc">Know exactly when you leave. No more guessing games.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="form-card">
+          <div class="form-wrap">
+            <h3>Join the Commuter Waitlist</h3>
+            <p class="form-sub">Be the first to know when we launch on your corridor.</p>
+            <form onsubmit="return submitWaitlist(event)" data-type="commuter">
+              <div class="field">
+                <label>Name</label>
+                <input type="text" placeholder="e.g. Ahmed Ali" required>
+              </div>
+              <div class="field">
+                <label>WhatsApp Number</label>
+                <input type="tel" placeholder="e.g. 01xxxxxxxxx" required>
+              </div>
+              <div class="field">
+                <label>Where do you usually travel from/to?</label>
+                <input type="text" placeholder="e.g. From Mahatta Square to University Main Gate" required>
+              </div>
+              <button class="form-submit" type="submit">Secure My Spot</button>
+            </form>
+            <p class="form-note">We will only message you when your route goes live!</p>
+          </div>
+          <div class="form-success">
+            <div class="check">&#10003;</div>
+            <h4>You&rsquo;re on the list!</h4>
+            <p>We will WhatsApp you the moment your corridor goes live.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ FEEDBACK ============ -->
+  <section class="feedback">
+    <div class="wrap">
+      <h2>&#128172; What is Your Real Problem or Wish?</h2>
+      <p class="lead">
+        We are building this platform for you. Tell us what drives you crazy about your current
+        commute, or what would make your daily trips a hundred times better.
+      </p>
+
+      <div class="feedback-form">
+        <div class="form-wrap">
+          <form onsubmit="return submitFeedback(event)">
+            <div class="field">
+              <textarea placeholder="Vent, suggest, dream&hellip; we are listening." required></textarea>
+            </div>
+            <button class="form-submit" type="submit">Send Feedback</button>
+          </form>
+        </div>
+        <div class="form-success">
+          <div class="check">&#10003;</div>
+          <h4>Thank you!</h4>
+          <p>Your feedback helps us build a better vamo for everyone.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <h2>Proudly built for Beni Suef.</h2>
+    <p>
+      Join hundreds of riders, drivers, and commuters redefining how this city moves.
+      We will notify you via WhatsApp the moment your route is ready.
+    </p>
+
+    <div class="footer-bottom">
+      <div class="footer-bottom-left">
+        <img src="vamo-logo.png" alt="vamo">
+        <span>vamo</span>
+      </div>
+      <span>&copy; 2026 vamo. Every road leads somewhere.</span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فامو &mdash; تنقلاتك، لكن بشكل أفضل.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============ NAV ============ -->
+  <nav class="nav">
+    <div class="nav-brand">
+      <img src="../vamo-logo.png" alt="سوافي">
+      <span>فامو</span>
+    </div>
+    <div class="nav-status">
+      <span class="dot"></span>
+      قريباً &mdash; بني سويف
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+
+    <img class="hero-logo" src="../vamo-logo.png" alt="فامو">
+
+    <h1>
+      فامو <span class="highlight">قادم</span>:<br>
+      تنقلاتك، <span class="strike">لكن بشكل أفضل</span>.
+    </h1>
+
+    <p>
+      فامو هي منصة نقل محلية هجينة مصممة خصيصاً لمحافظة بني سويف. نحن نغير
+      بالكامل طريقة تنقلك في المدينة. لا مزيد من المعاناة للحصول على مقعد،
+      ولا مزيد من الانتظار الطويل، ولا مزيد من التوتر بشأن خط سيرك اليومي.
+    </p>
+
+    <p style="margin-top:12px; font-weight:600; color:var(--white);">
+      نحن على وشك الانطلاق. اختر فئتك بالأسفل وانضم إلى القائمة الانتظارية الحصرية!
+    </p>
+
+    <div class="hero-cta">
+      <button class="btn btn-primary" onclick="switchAudience('student')">
+        أنا طالب <span class="arrow">&larr;</span>
+      </button>
+      <button class="btn btn-outline" onclick="switchAudience('driver')">
+        أنا سائق <span class="arrow">&larr;</span>
+      </button>
+      <button class="btn btn-outline" onclick="switchAudience('commuter')">
+        أنا مسافر يومي <span class="arrow">&larr;</span>
+      </button>
+    </div>
+
+    <div class="scroll-hint">
+      <span class="line"></span>
+      اتمرر
+    </div>
+  </section>
+
+  <!-- ============ AUDIENCE TABS ============ -->
+  <div class="audience-nav">
+    <button class="audience-tab active" data-audience="student" onclick="switchAudience('student')">
+      &#127891; طلاب
+    </button>
+    <button class="audience-tab" data-audience="driver" onclick="switchAudience('driver')">
+      &#128663; سائقون
+    </button>
+    <button class="audience-tab" data-audience="commuter" onclick="switchAudience('commuter')">
+      &#128188; مسافرون يوميون
+    </button>
+  </div>
+
+  <!-- ============ AUDIENCE SECTIONS ============ -->
+  <div class="wrap">
+
+    <!-- STUDENT -->
+    <section class="audience active" id="audience-student">
+      <div class="audience-grid">
+        <div class="audience-copy">
+          <span class="tag">&#127891; للطلاب</span>
+          <h2>تغلب على الزحمة الصباحية</h2>
+          <p class="lead">
+            تعبت من التأخير على محاضراتك الصباحية؟ صممنا اشتراكات طلابية خاصة
+            من أجلك.
+          </p>
+          <ul class="benefits">
+            <li>
+              <div class="icon">&#128176;</div>
+              <div>
+                <div class="b-title">باقات مدفوعة مسبقاً</div>
+                <div class="b-desc">ادفع مسبقاً لحزمة من الرحلات على الممرات بخصم على كل رحلة.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#9989;</div>
+              <div>
+                <div class="b-title">مقعد مضمون</div>
+                <div class="b-desc">ستحصل دائماً على مقعد محجوز &mdash; لا وقوف ولا انتظار.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#128274;</div>
+              <div>
+                <div class="b-title">اصعد برمز PIN أو QR</div>
+                <div class="b-desc">بس أظهر الكود الخاص بك واصعد. لا نقود، لا متاعب.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#128197;</div>
+              <div>
+                <div class="b-title">احجز شهرك</div>
+                <div class="b-desc">أمّن رحلاتك للشهر كامل ولا تقلق أبداً بشأن إيجاد موصل للجامعة مرة أخرى.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="form-card">
+          <div class="form-wrap">
+            <h3>احصل على اشتراك الطالب</h3>
+            <p class="form-sub">انضم لقائمة الطلاب الانتظارية وكن أول من ينطلق.</p>
+            <form onsubmit="return submitWaitlist(event)" data-type="student">
+              <div class="field">
+                <label>الاسم</label>
+                <input type="text" placeholder="مثال: عمر حسن" required>
+              </div>
+              <div class="field">
+                <label>رقم الواتساب</label>
+                <input type="tel" placeholder="مثال: 01xxxxxxxxx" required>
+              </div>
+              <div class="field">
+                <label>من أين وإلى أين تسافر عادةً؟</label>
+                <input type="text" placeholder="مثال: من ميدان المحطة إلى البوابة الرئيسية للجامعة" required>
+              </div>
+              <button class="form-submit" type="submit">احجز مقعدي</button>
+            </form>
+            <p class="form-note">لن نرسل لك إلا عندما يكون مسارك جاهزاً!</p>
+          </div>
+          <div class="form-success">
+            <div class="check">&#10003;</div>
+            <h4>أنت في القائمة!</h4>
+            <p>سنرسل لك واتساب فور تفعيل مسارك.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DRIVER -->
+    <section class="audience" id="audience-driver">
+      <div class="audience-grid">
+        <div class="audience-copy">
+          <span class="tag">&#128663; للسائقين</span>
+          <h2>اسوق بذكاء، لا بمشقة</h2>
+          <p class="lead">
+            توقف عن حرق الوقود وأنت تبحث عن ركاب. فامو صممت لتُبقي عجلاتك
+            تدور ودخلك ثابتاً.
+          </p>
+          <ul class="benefits">
+            <li>
+              <div class="icon">&#128179;</div>
+              <div>
+                <div class="b-title">طلب مضمون</div>
+                <div class="b-desc">احصل على طلب مدفوع مسبقاً &mdash; لا مزيد من الرحلات الفارغة.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#128424;</div>
+              <div>
+                <div class="b-title">كشف الركاب المباشر</div>
+                <div class="b-desc">اطلع على كشف حي بالركاب المحجوزين قبل التحرك.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#128187;</div>
+              <div>
+                <div class="b-title">مقاعد محجوزة إلكترونياً</div>
+                <div class="b-desc">النظام يملأ مقاعدك إلكترونياً قبل أن تبدأ رحلتك.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#128176;</div>
+              <div>
+                <div class="b-title">ورديات مريحة</div>
+                <div class="b-desc">لا مساومة، ولا انتظار لتمتلئ العربة. فقط اسوق.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="form-card">
+          <div class="form-wrap">
+            <h3>سجّل كسائق</h3>
+            <p class="form-sub">احصل على أولوية الوصول عند فتح باب تسجيل السائقين.</p>
+            <form onsubmit="return submitWaitlist(event)" data-type="driver">
+              <div class="field">
+                <label>الاسم</label>
+                <input type="text" placeholder="مثال: سيد محمود" required>
+              </div>
+              <div class="field">
+                <label>رقم الواتساب</label>
+                <input type="tel" placeholder="مثال: 01xxxxxxxxx" required>
+              </div>
+              <div class="field">
+                <label>من أين وإلى أين تسافر عادةً؟</label>
+                <input type="text" placeholder="مثال: من ميدان المحطة إلى البوابة الرئيسية للجامعة" required>
+              </div>
+              <button class="form-submit" type="submit">احجز مقعدي</button>
+            </form>
+            <p class="form-note">لن نرسل لك إلا عندما يكون مسارك جاهزاً!</p>
+          </div>
+          <div class="form-success">
+            <div class="check">&#10003;</div>
+            <h4>أنت في القائمة!</h4>
+            <p>سنرسل لك واتساب عند فتح باب التسجيل للسائقين.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMUTER -->
+    <section class="audience" id="audience-commuter">
+      <div class="audience-grid">
+        <div class="audience-copy">
+          <span class="tag">&#128188; للمسافرين اليوميين</span>
+          <h2>استعد راحة بالك</h2>
+          <p class="lead">
+            سواء كنت متجهاً إلى العمل أو السوق أو لقضاء مشاويرك &mdash; وقتك ثمين.
+          </p>
+          <ul class="benefits">
+            <li>
+              <div class="icon">&#128666;</div>
+              <div>
+                <div class="b-title">نقل مضمون وبأسعار معقولة</div>
+                <div class="b-desc">رحلات موثوقة تعتمد عليها بأسعار منطقية.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#128205;</div>
+              <div>
+                <div class="b-title">محطات افتراضية</div>
+                <div class="b-desc">محطات محددة مسبقاً عند المعالم الرئيسية والتقاطعات لسهولة الصعود.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#128204;</div>
+              <div>
+                <div class="b-title">مواقع آمنة ومناسبة</div>
+                <div class="b-desc">المحطات موزعة على مسافات 400&ndash;800 متر على طول كل ممر عند البوابات والمعالم.</div>
+              </div>
+            </li>
+            <li>
+              <div class="icon">&#9200;</div>
+              <div>
+                <div class="b-title">مواعيد انطلاق محددة</div>
+                <div class="b-desc">اعرف موعد انطلاقك بالضبط. لا مزيد من التخمين.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="form-card">
+          <div class="form-wrap">
+            <h3>انضم لقائمة المسافرين</h3>
+            <p class="form-sub">كن أول من يعلم عند إطلاق خدماتنا على مسارك.</p>
+            <form onsubmit="return submitWaitlist(event)" data-type="commuter">
+              <div class="field">
+                <label>الاسم</label>
+                <input type="text" placeholder="مثال: أحمد علي" required>
+              </div>
+              <div class="field">
+                <label>رقم الواتساب</label>
+                <input type="tel" placeholder="مثال: 01xxxxxxxxx" required>
+              </div>
+              <div class="field">
+                <label>من أين وإلى أين تسافر عادةً؟</label>
+                <input type="text" placeholder="مثال: من ميدان المحطة إلى البوابة الرئيسية للجامعة" required>
+              </div>
+              <button class="form-submit" type="submit">احجز مقعدي</button>
+            </form>
+            <p class="form-note">لن نرسل لك إلا عندما يكون مسارك جاهزاً!</p>
+          </div>
+          <div class="form-success">
+            <div class="check">&#10003;</div>
+            <h4>أنت في القائمة!</h4>
+            <p>سنرسل لك واتساب فور تفعيل المسار الخاص بك.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ FEEDBACK ============ -->
+  <section class="feedback">
+    <div class="wrap">
+      <h2>&#128172; ما هي مشكلتك الحقيقية أو أمنيتك؟</h2>
+      <p class="lead">
+        نحن نبني هذه المنصة من أجلك. أخبرنا ما يزعجك في تنقلاتك الحالية،
+        أو ما الذي سيجعل رحلاتك اليومية أفضل بمئة مرة.
+      </p>
+
+      <div class="feedback-form">
+        <div class="form-wrap">
+          <form onsubmit="return submitFeedback(event)">
+            <div class="field">
+              <textarea placeholder="تنفّس، اقترح، احلم&hellip; نحن نستمع." required></textarea>
+            </div>
+            <button class="form-submit" type="submit">أرسل ملاحظاتك</button>
+          </form>
+        </div>
+        <div class="form-success">
+          <div class="check">&#10003;</div>
+          <h4>شكراً لك!</h4>
+          <p>ملاحظاتك تساعدنا في بناء فامو أفضل للجميع.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <h2>بفخر، صُمّم في بني سويف.</h2>
+    <p>
+      انضم إلى مئات الركاب والسائقين والمسافرين اليوميين الذين يعيدون تعريف
+      كيفية تنقل هذه المدينة. سنخبرك عبر واتساب فور جاهزية مسارك.
+    </p>
+
+    <div class="footer-bottom">
+      <div class="footer-bottom-left">
+        <img src="../vamo-logo.png" alt="فامو">
+        <span>فامو</span>
+      </div>
+      <span>&copy; 2026 فامو. كل طريق يؤدي إلى مكان.</span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
