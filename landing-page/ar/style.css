@@ -155,8 +155,19 @@ a {
   z-index: 2;
 }
 
+/* highlight styling remains handled by .hero h1 .highlight color below */
+
 .hero h1 .highlight {
+  /* show the two words inline but reverse their visual order so the Latin word appears on the right */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-direction: row-reverse;
+}
+
+.word-latin {
   color: var(--teal-bright);
+  font-weight: 800;
 }
 
 .hero h1 .strike {
