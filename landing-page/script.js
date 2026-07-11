@@ -76,7 +76,8 @@ function submitWaitlist(e) {
     fullName: inputs[0].value,
     phone: inputs[1].value,
     route: inputs[2].value,
-    role: role
+    role: role,
+    referralCode: inputs[3] ? inputs[3].value : ''
   }, wrap, success);
   return false;
 }

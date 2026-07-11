@@ -6,21 +6,26 @@ Based on the Software Product Description (SPD) document.
 
 ## MVP Thesis
 
-If 150 students pay 200 EGP upfront for 40 rides on the Train Station → University corridor, and 5 drivers complete those rides consistently for 60 days, Swafy works. That's the only thing the MVP needs to prove.
+If 150 students pay upfront for 40 rides on the established corridor, 
+and 5 drivers complete those rides consistently for 30 days, Swafy works. That's the only thing the MVP needs to prove.
 
 ---
 
 ## 1. Product Definition
 
-Swafy is a localized hybrid transit platform for Beni Suef Governorate. It digitizes corridor-based shared rides with guaranteed seats, virtual bus stops (VBS), and prepaid subscriptions. The MVP focuses exclusively on **Class C subscriptions on a single corridor**.
+Swafy is a localized hybrid transit platform for Beni Suef Governorate. It digitizes corridor-based shared rides with 
+guaranteed seats, virtual bus stops (VBS), and prepaid subscriptions. The MVP focuses exclusively on **Class C subscriptions 
+on a single corridor**.
 
 ### 1.1 Corridor-Matching Engine
 
-Fixed-route matching — not open-radius dispatch. The city's highest-demand transit corridors are mapped as virtual lines. Drivers select a line; the app matches passengers along that path with real-time seat availability.
+Fixed-route matching — not open-radius dispatch. The city's highest-demand transit corridors are mapped as virtual lines. 
+Drivers select a line; the app matches passengers along that path with real-time seat availability.
 
 ### 1.2 Virtual Bus Stop (VBS) System
 
-All pickups occur at pre-mapped VBS — major landmarks, intersections, and institutional gates spaced 400–800m apart. Passengers walk to the nearest VBS. Beni Suef is compact (14 km²); max walk to any VBS is under 7 minutes.
+All pickups occur at pre-mapped VBS — major landmarks, intersections, and institutional gates spaced 400–800m apart. 
+Passengers walk to the nearest VBS. Beni Suef is compact (14 km²); max walk to any VBS is under 7 minutes.
 
 ### 1.3 Driver Accountability System
 
@@ -81,9 +86,9 @@ Same as Class A but operated exclusively by female drivers for female passengers
 - **Driver app:** Corridor activation, passenger manifest view, boarding confirmation, payout tracking
 - **Admin dashboard:** Trip monitoring, driver management, subscription sales, no-show tracking, manual dispute resolution
 - **Payment integration:** Fawry and Vodafone Cash for subscriptions and driver top-ups
-- **One corridor only:** Train Station → Mahatta Square → University Main Gate (3 VBS stops)
+- **One corridor only:** TBD
 - **One subscription tier:** Student Basic at 200 EGP/month for 40 rides
-- **Operating hours:** 7:00 AM – 6:00 PM only
+- **Operating hours:** 7:00 AM – 6:00 PM only (check the validity of this with local traffic patterns)
 
 ### 3.2 What Is Deliberately Excluded
 
@@ -113,7 +118,8 @@ Same as Class A but operated exclusively by female drivers for female passengers
 
 ## 4. The Single Most Important MVP Feature
 
-**Boarding confirmation via PIN.** When a passenger boards, they show a 4-digit PIN to the driver who enters it into the driver app. This single interaction:
+**Boarding confirmation via PIN.** When a passenger boards, they show a 4-digit PIN to the driver who enters it into the driver app. 
+This single interaction:
 1. Triggers driver payout
 2. Deducts the ride from the passenger's monthly balance
 3. Creates a verifiable trip record
@@ -246,4 +252,6 @@ Same as Class A but operated exclusively by female drivers for female passengers
 
 **Drivers defecting to WhatsApp.** Drivers collecting student contact numbers through the app and taking cash directly.
 
-**Defense:** Make the subscription valuable beyond the ride — exam reminders, university schedule integration, priority booking during finals week, digital student transit card. The more Swafy feels like a student membership rather than a ticket, the harder it is for a driver to replicate in WhatsApp.
+**Defense:** Make the subscription valuable beyond the ride — exam reminders, university schedule integration, 
+priority booking during finals week, digital student transit card. The more Swafy feels like a student membership 
+rather than a ticket, the harder it is for a driver to replicate in WhatsApp.
