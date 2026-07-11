@@ -6,7 +6,6 @@ import com.swafy.auth.dto.AuthResponse;
 import com.swafy.auth.dto.LoginRequest;
 import com.swafy.auth.dto.TokenRefreshRequest;
 import com.swafy.auth.dto.TokenRefreshResponse;
-import com.swafy.auth.dto.UserRegistrationRequest;
 import com.swafy.auth.entity.RefreshToken;
 import com.swafy.auth.security.SecurityUser;
 import com.swafy.auth.service.AuthService;
@@ -42,7 +41,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
-        System.out.println("Authenticated user: " + loginRequest.phoneNumber() + " " + loginRequest.phoneNumber());
         SecurityUser securityUser = authService.authenticate(
                 loginRequest.phoneNumber(),
                 loginRequest.password()
@@ -54,7 +52,6 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(tokenValue, refreshToken.getToken()));
     }
     
-    // todo: needs review
     @PostMapping("/logout")
     public void logout(@AuthenticationPrincipal String userId) {
         // Invalidate the refresh token on logout

@@ -43,9 +43,10 @@ public class UserController {
     public UserResponse getUser(@PathVariable UUID id) throws UserNotFoundException {
         return userService.getUserById(id);
     }
-
-    @DeleteMapping("/{id}")
+    
+    // hack: this should be edited to allow the user to delet their account
     @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
         ApiResponse response = new ApiResponse(true,"User deleted successfully");
