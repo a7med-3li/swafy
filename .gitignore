@@ -10,7 +10,7 @@
 # IDEs
 /.idea/
 /.vscode/
-
+.gitignore
 # Logs
 *.log
 *.gz
@@ -28,5 +28,6 @@ docker-compose.override.yml
 router_api.yaml
 
 /landing-page/landing-page-announce
+/landing-page/coming-soon.mp4
 /docs
 /legal-docs
