@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0XpyuF2VtyeHRV46EQCA1wklqkNvigVLHd7vcsR3mlCI5rD_ZgJ_4Cu6KbTaVY9DEpQ/exec';
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzkZv10YdBn9x1VL9m1C9-mwwTN314TAw8iGJAA9DxB1UHHLYDfoCod9pw_arub_47WdA/exec';
 function postToSheet(payload, wrap, success) {
   if (APPS_SCRIPT_URL) {
     fetch(APPS_SCRIPT_URL, {
