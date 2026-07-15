@@ -66,10 +66,14 @@ function postToSheet(payload, wrap, success) {
 function submitWaitlist(e) {
   e.preventDefault();
   var form = e.target;
+  var btn = form.querySelector('.form-submit');
   var role = form.getAttribute('data-type');
   var inputs = form.querySelectorAll('input');
   var wrap = form.parentElement;
   var success = wrap.parentElement.querySelector('.form-success');
+
+  btn.disabled = true;
+  btn.textContent = 'جاري الإرسال...';
 
   postToSheet({
     fullName: inputs[0].value,
@@ -84,9 +88,13 @@ function submitWaitlist(e) {
 function submitFeedback(e) {
   e.preventDefault();
   var form = e.target;
+  var btn = form.querySelector('.form-submit');
   var textarea = form.querySelector('textarea');
   var wrap = form.parentElement;
   var success = wrap.parentElement.querySelector('.form-success');
+
+  btn.disabled = true;
+  btn.textContent = 'جاري الإرسال...';
 
   postToSheet({
     feedback: textarea.value
