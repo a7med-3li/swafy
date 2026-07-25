@@ -7,8 +7,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 @SpringBootApplication
 @EnableConfigurationProperties(TwilioProperty.class)
-public class SwafyApplication {
+public class VamoApplication {
     public static void main(String[] args) {
-        SpringApplication.run(SwafyApplication.class, args);
+        SpringApplication.run(VamoApplication.class, args);
     }
 }
