@@ -1,0 +1,26 @@
+name: Deploy to Azure VM
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute deployment commands via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AZURE_HOST }}
+          username: ${{ secrets.AZURE_USERNAME }}
+          key: ${{ secrets.AZURE_SSH_KEY }}
+          script: |
+            # Navigate to vamo project directory on the VM
+            cd ~/vamo
+            
+            # Pull the latest changes from the repository
+            git pull origin main
+            
+            # Rebuild the backend image and restart the containers
+            docker compose up --build -d
