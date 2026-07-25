@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: vamo
+      POSTGRES_USER: vamo_user
+      POSTGRES_PASSWORD: vamo_pass
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Database settings expected by the application
+      DB_URL: "jdbc:postgresql://db:5432/vamo"
+      DB_USER_NAME: vamo_user
+      DB_PASSWORD: vamo_pass
+      # App secrets (override via environment or .env)
+      JWT_SECRET: "${JWT_SECRET:-change-me}"
+      HERE_API_KEY: "${HERE_API_KEY:-}"
+      ACCOUNT_SID: "${ACCOUNT_SID:-}"
+      AUTH_TOKEN: "${AUTH_TOKEN:-}"
+      SERVICE_SID: "${SERVICE_SID:-}"
+      SPRING_PROFILES_ACTIVE: "local"
+    restart: unless-stopped
+
+volumes:
+  db_data:

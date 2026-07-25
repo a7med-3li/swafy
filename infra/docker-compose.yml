@@ -9,7 +9,7 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - .env
+      - ../.env
     environment:
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://db:5432/vamo}
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-swafy_user}
