@@ -10,4 +10,4 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Insert a demo user (change or remove for production)
-INSERT INTO users (username, email) VALUES ('demo', 'demo@swafy.local');
+INSERT INTO users (username, email) VALUES ('demo', 'demo@vamo.local');

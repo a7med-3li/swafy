@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     environment:
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://db:5432/swafy}
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://db:5432/vamo}
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-swafy_user}
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-swafy_pass}
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-local}
@@ -29,13 +29,13 @@ services:
     image: postgres:15
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-swafy}
+      POSTGRES_DB: ${POSTGRES_DB:-vamo}
       POSTGRES_USER: ${POSTGRES_USER:-swafy_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-swafy_pass}
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-swafy_user} -d ${POSTGRES_DB:-swafy}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-swafy_user} -d ${POSTGRES_DB:-vamo}"]
       interval: 10s
       timeout: 5s
       retries: 5
