@@ -1,9 +1,14 @@
 package com.vamo.corridor.entity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import com.vamo.common.entity.Location;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,7 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,14 +31,28 @@ public class Corridor {
 	
 	@NotBlank
 	@Column(nullable = false, unique = true)
-	private String name;
+	private String title;
 	
 	@NotBlank
-	@Column(nullable = false, columnDefinition = "TEXT")
-	private String route;
+	@Embedded
+	@AttributeOverrides({
+			@AttributeOverride(name = "latitude", column = @Column(name = "start_lat")),
+			@AttributeOverride(name = "longitude", column = @Column(name = "start_lng")),
+			@AttributeOverride(name = "addressName", column = @Column(name = "start_address"))
+	})
+	private Location start;
 	
-	@NotNull
-	private Double price;
+	@NotBlank
+	@Embedded
+	@AttributeOverrides({
+			@AttributeOverride(name = "latitude", column = @Column(name = "destination_lat")),
+			@AttributeOverride(name = "longitude", column = @Column(name = "destination_lng")),
+			@AttributeOverride(name = "addressName", column = @Column(name = "destination_address"))
+	})
+	private Location destination;
+	
+	@Column(nullable = false, precision = 10, scale = 2)
+	private BigDecimal price;
 	
 	@OneToMany(mappedBy = "corridor", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<VBS> stops = new ArrayList<>();

@@ -4,12 +4,13 @@ import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
 
+@Embeddable
 @Getter
 @Setter
-
-@Embeddable
-public class GeoPoint {
-
+public class Location {
+    
     private Double latitude;
     private Double longitude;
+    
+    private String addressName;
 }

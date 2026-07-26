@@ -1,5 +1,5 @@
 package com.vamo.ride.dto;
 
-import com.vamo.common.entity.GeoPoint;
+import com.vamo.common.entity.Location;
 
-public record RideRequestDto(GeoPoint pickUp, GeoPoint dropOff) {}
+public record RideRequestDto(Location pickUp, Location dropOff) {}

@@ -1,6 +1,6 @@
 package com.vamo.ride.entity;
 
-import com.vamo.common.entity.GeoPoint;
+import com.vamo.common.entity.Location;
 import com.vamo.common.enums.RideStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -45,14 +45,14 @@ public class Ride {
             @AttributeOverride(name = "latitude", column = @Column(name = "pickup_lat")),
             @AttributeOverride(name = "longitude", column = @Column(name = "pickup_lng"))
     })
-    private GeoPoint pickUp;
+    private Location pickUp;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "latitude", column = @Column(name = "dropoff_lat")),
             @AttributeOverride(name = "longitude", column = @Column(name = "dropoff_lng"))
     })
-    private GeoPoint dropOff;
+    private Location dropOff;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)

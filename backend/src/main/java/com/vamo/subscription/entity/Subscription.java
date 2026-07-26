@@ -1,18 +1,17 @@
 package com.vamo.subscription.entity;
 
-import com.vamo.common.enums.SubscriptionPlan;
 import com.vamo.common.enums.SubscriptionStatus;
+import com.vamo.corridor.entity.Corridor;
+import com.vamo.passenger.entity.PassengerProfile;
+import com.vamo.payment.entity.Payment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity
 @Table(name = "subscription")
@@ -26,23 +25,15 @@ public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private UUID passengerId;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
-    private SubscriptionPlan plan;
-
-    @Column(nullable = false)
-    private Integer totalRides;
-
-    @Column(nullable = false)
-    private Integer remainingRides;
-
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
-
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "passenger_id", nullable = false)
+    private PassengerProfile passenger;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "corridor_id", nullable = false)
+    private Corridor corridor;
+    
     @Column(nullable = false)
     private LocalDate startDate;
 
@@ -53,12 +44,9 @@ public class Subscription {
     @Column(nullable = false, length = 20)
     private SubscriptionStatus status;
 
-    private String paymentMethod;
-
-    private String paymentReference;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Payment payment;
 
     @Column(nullable = false)
     private Instant createdAt;
-
-    private boolean autoRenew;
 }

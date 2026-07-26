@@ -2,7 +2,7 @@ package com.vamo.ride.service;
 
 import com.vamo.addressing.entity.Address;
 import com.vamo.addressing.service.interfaces.UpdatingAddressCache;
-import com.vamo.common.entity.GeoPoint;
+import com.vamo.common.entity.Location;
 import com.vamo.ride.domain.RouteInfo;
 import com.vamo.ride.dto.HereDiscoverResponse;
 import com.vamo.ride.dto.HereRouteResponse;
@@ -39,7 +39,7 @@ public class HERERoutingServiceImpl implements RoutingService {
     @Value("${here.api.key}")
     private String HERE_API_KEY;
     @Override
-    public RouteInfo calculateRouteInfo(GeoPoint from, GeoPoint to) {
+    public RouteInfo calculateRouteInfo(Location from, Location to) {
         String origin = from.getLatitude() + "," + from.getLongitude();
         String destination = to.getLatitude() + "," + to.getLongitude();
 

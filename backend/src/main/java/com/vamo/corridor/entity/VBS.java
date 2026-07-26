@@ -1,6 +1,10 @@
 package com.vamo.corridor.entity;
 
+import com.vamo.common.entity.Location;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -32,12 +36,12 @@ public class VBS {
 	@Column(nullable = false, unique = true)
 	private String name;
 	
-	@NotNull
-	@Column(nullable = false)
-	private Double latitude;
-	
-	@NotNull
-	@Column(nullable = false)
-	private Double longitude;
+	@Embedded
+	@AttributeOverrides({
+			@AttributeOverride(name = "latitude", column = @Column(name = "vbs_lat")),
+			@AttributeOverride(name = "longitude", column = @Column(name = "vbs_lng")),
+			@AttributeOverride(name = "addressName", column = @Column(name = "vbs_address"))
+	})
+	private Location VBS_location;
 	
 }
