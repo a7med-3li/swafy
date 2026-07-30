@@ -21,6 +21,9 @@ jobs:
             
             # Pull the latest changes from the repository
             git pull origin main
+
+            # incase the db schema changed
+            docker compose down -v
             
             # Rebuild the backend image and restart the containers
             docker compose up --build -d
