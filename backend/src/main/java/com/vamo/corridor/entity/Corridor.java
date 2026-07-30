@@ -54,7 +54,7 @@ public class Corridor {
 	@Column(nullable = false, precision = 10, scale = 2)
 	private BigDecimal price;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "corridor", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "corridor")
 	private List<VBS> stops = new ArrayList<>();
 	
 	public void addStop(VBS stop) {
