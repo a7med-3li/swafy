@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.Instant;
+import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDate;
 
 @Entity
@@ -35,10 +35,11 @@ public class Subscription {
     private Corridor corridor;
     
     @Column(nullable = false)
+    @CreationTimestamp
     private LocalDate startDate;
 
     @Column(nullable = false)
-    private LocalDate endDate;
+    private LocalDate endDate =  LocalDate.now().plusMonths(1);
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -48,5 +49,10 @@ public class Subscription {
     private Payment payment;
 
     @Column(nullable = false)
-    private Instant createdAt;
+    private LocalDate createdAt;
+    
+    @PostPersist
+    private void postPersist() {
+        this.createdAt = LocalDate.now();
+    }
 }

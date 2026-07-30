@@ -10,7 +10,7 @@ public record AdminStatsResponse(
         long totalRidesToday,
         long activeSubscriptions,
         long totalSubscriptionsSold,
-        BigDecimal totalSubscriptionRevenue,
+        //BigDecimal totalSubscriptionRevenue,
         long totalRidesBooked,
         long totalRidesInProgress,
         long totalRidesCompleted,

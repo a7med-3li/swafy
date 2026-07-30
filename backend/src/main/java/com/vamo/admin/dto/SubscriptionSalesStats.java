@@ -6,9 +6,9 @@ public record SubscriptionSalesStats(
         long totalActive,
         long totalExpired,
         long totalCancelled,
-        long totalSuspended,
-        long studentBasicCount,
-        long studentPlusCount,
-        long corporateCommuterCount,
-        BigDecimal totalRevenue
+        long totalSuspended
+        //long studentBasicCount,
+       // long studentPlusCount,
+        //long corporateCommuterCount,
+        //BigDecimal totalRevenue
 ) {}

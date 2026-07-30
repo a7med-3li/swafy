@@ -2,6 +2,7 @@ package com.vamo.passenger.entity;
 
 import com.vamo.subscription.entity.Subscription;
 import com.vamo.user.entity.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,7 +24,7 @@ import java.util.UUID;
 
 @Entity
 @Builder
-@Table(name = "passenger_profile")
+@Table(name = "passengers")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -39,11 +40,19 @@ public class PassengerProfile {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
     
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "passenger_profile_id")
+    @OneToMany(mappedBy = "passenger", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subscription> subscriptions;
     
+    public void addSubscription(Subscription subscription) {
+        subscriptions.add(subscription);
+        subscription.setPassenger(this);
+    }
     
-    private UUID homeStopId;     // preferred VBS for quick booking
+    public void removeSubscription(Subscription subscription) {
+        subscriptions.remove(subscription);
+        subscription.setPassenger(null);
+    }
+    
+    // private UUID homeStopId;     // preferred VBS for quick booking
     
 }

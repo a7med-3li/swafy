@@ -22,16 +22,10 @@ public interface SubscriptionRepo extends JpaRepository<Subscription, Long> {
 
     List<Subscription> findByStatusAndEndDateBefore(SubscriptionStatus status, LocalDate date);
 
-    List<Subscription> findAllByOrderByCreatedAtDesc();
-
-    List<Subscription> findByPlanOrderByCreatedAtDesc(SubscriptionPlan plan);
-
     List<Subscription> findByStatusOrderByCreatedAtDesc(SubscriptionStatus status);
-
-    long countByPlan(SubscriptionPlan plan);
 
     long countByStatus(SubscriptionStatus status);
 
-    @Query("SELECT COALESCE(SUM(s.price), 0) FROM Subscription s")
-    BigDecimal totalRevenue();
+//    @Query("SELECT COALESCE(SUM(s.price), 0) FROM Subscription s")
+//    BigDecimal totalRevenue();
 }

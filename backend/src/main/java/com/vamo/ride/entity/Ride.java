@@ -43,14 +43,16 @@ public class Ride {
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "latitude", column = @Column(name = "pickup_lat")),
-            @AttributeOverride(name = "longitude", column = @Column(name = "pickup_lng"))
+            @AttributeOverride(name = "longitude", column = @Column(name = "pickup_lng")),
+            @AttributeOverride(name = "addressName", column = @Column(name = "pickup_address"))
     })
     private Location pickUp;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "latitude", column = @Column(name = "dropoff_lat")),
-            @AttributeOverride(name = "longitude", column = @Column(name = "dropoff_lng"))
+            @AttributeOverride(name = "longitude", column = @Column(name = "dropoff_lng")),
+            @AttributeOverride(name = "addressName", column = @Column(name = "dropoff_address"))
     })
     private Location dropOff;
 

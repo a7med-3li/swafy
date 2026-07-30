@@ -1,5 +1,7 @@
 package com.vamo.passenger.service;
 
+import java.util.List;
+import java.util.UUID;
 import com.vamo.common.events.PassengerRegisteredEvent;
 import com.vamo.passenger.entity.PassengerProfile;
 import com.vamo.passenger.repository.PassengerProfileRepository;
@@ -10,20 +12,16 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Service
 @RequiredArgsConstructor
 public class PassengerService {
-    // TODO: implement passenger-related logic
+	// TODO: implement passenger-related logic
 	
 	private final PassengerProfileRepository passengerProfileRepository;
 	
-	@TransactionalEventListener
-	public void onUserRegistered(PassengerRegisteredEvent event) {
-		PassengerProfile profile = new PassengerProfile(
-				null, // id will be generated
-				event.user(),
-				null, // homeStopId
-				0,    // rideBalance
-				null, // subExpires
-				0     // noShowCount
-		);
-		passengerProfileRepository.save(profile);
+	public PassengerProfile findById(UUID id) {
+		return passengerProfileRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Passenger not found"));
+	}
+
+	public void createPassengerProfile(PassengerProfile passengerProfile) {
+		passengerProfileRepository.save(passengerProfile);
 	}
 }

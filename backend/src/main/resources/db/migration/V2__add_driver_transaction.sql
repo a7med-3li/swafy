@@ -11,5 +11,3 @@ CREATE TABLE driver_transaction (
 );
 
 CREATE INDEX idx_driver_transaction_profile ON driver_transaction(driver_profile_id);
-
-ALTER TABLE driver_deposit RENAME COLUMN driver_id TO driver_profile_id;

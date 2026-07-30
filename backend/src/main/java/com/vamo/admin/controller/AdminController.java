@@ -79,12 +79,12 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/subscriptions")
-    public ResponseEntity<List<SubscriptionSalesItem>> getSubscriptions(
-            @RequestParam(required = false) SubscriptionPlan plan,
-            @RequestParam(required = false) SubscriptionStatus status) {
-        return ResponseEntity.ok(adminService.getSubscriptions(plan, status));
-    }
+//    @GetMapping("/subscriptions")
+//    public ResponseEntity<List<SubscriptionSalesItem>> getSubscriptions(
+//            @RequestParam(required = false) SubscriptionPlan plan,
+//            @RequestParam(required = false) SubscriptionStatus status) {
+//        return ResponseEntity.ok(adminService.getSubscriptions(plan, status));
+//    }
 
     @GetMapping("/subscriptions/stats")
     public ResponseEntity<SubscriptionSalesStats> getSubscriptionStats() {
@@ -95,9 +95,5 @@ public class AdminController {
     public ResponseEntity<List<RideAdminItem>> getNoShowRides() {
         return ResponseEntity.ok(adminService.getNoShowRides());
     }
-
-    @GetMapping("/no-shows/passengers")
-    public ResponseEntity<List<NoShowPassengerItem>> getPassengerNoShowRanking() {
-        return ResponseEntity.ok(adminService.getPassengerNoShowRanking());
-    }
+    
 }

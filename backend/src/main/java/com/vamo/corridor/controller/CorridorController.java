@@ -23,17 +23,17 @@ public class CorridorController {
 	
 	private final CorridorService corridorService;
 	
-	@PreAuthorize("hasRole('ADMIN')")
+	//@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping
 	public ResponseEntity<List<CorridorResponse>> getAllCorridors() {
 		List<Corridor> corridors = corridorService.getAllCorridors();
 		List<CorridorResponse> response = corridors.stream()
 				.map(c -> new CorridorResponse(
 						c.getId(),
-						c.getName(),
+						c.getTitle(),
 						c.getPrice(),
 						c.getStops().stream()
-								.map(vbs -> new StopResponse(vbs.getId(), vbs.getName(), vbs.getLatitude(), vbs.getLongitude()))
+								.map(vbs -> new StopResponse(vbs.getId(), vbs.getName(), vbs.getVBS_location().getLatitude(), vbs.getVBS_location().getLongitude()))
 								.toList()
 				))
 				.toList();
@@ -47,12 +47,12 @@ public class CorridorController {
 		
 		// Map the entity to the DTO before returning
 		List<StopResponse> stopDTOs = savedCorridor.getStops().stream()
-				.map(vbs -> new StopResponse(vbs.getId(), vbs.getName(), vbs.getLatitude(), vbs.getLongitude()))
+				.map(vbs -> new StopResponse(vbs.getId(), vbs.getName(), vbs.getVBS_location().getLatitude(), vbs.getVBS_location().getLongitude()))
 				.toList();
 		
 		CorridorResponse response = new CorridorResponse(
 				savedCorridor.getId(),
-				savedCorridor.getName(),
+				savedCorridor.getTitle(),
 				savedCorridor.getPrice(),
 				stopDTOs
 		);

@@ -9,8 +9,17 @@ import lombok.Setter;
 @Setter
 public class Location {
     
+    public Location(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+    
     private Double latitude;
     private Double longitude;
     
     private String addressName;
+    
+    public Location() {
+    
+    }
 }

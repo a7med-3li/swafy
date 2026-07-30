@@ -22,10 +22,10 @@ public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
 
-    @GetMapping("/plans")
-    public ResponseEntity<List<SubscriptionPlanInfo>> getPlans() {
-        return ResponseEntity.ok(subscriptionService.getAvailablePlans());
-    }
+//    @GetMapping("/plans")
+//    public ResponseEntity<List<SubscriptionPlanInfo>> getPlans() {
+//        return ResponseEntity.ok(subscriptionService.getAvailablePlans());
+//    }
 
     @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
     @PostMapping("/purchase")

@@ -62,7 +62,7 @@ public class AdminService {
         long ridesToday = rideRepository.countByRequestedAtBetween(dayStart, dayEnd);
         long activeSubs = subscriptionRepo.countByStatus(SubscriptionStatus.ACTIVE);
         long totalSubs = subscriptionRepo.count();
-        BigDecimal revenue = subscriptionRepo.totalRevenue();
+        //BigDecimal revenue = subscriptionRepo.totalRevenue();
 
         long booked = rideRepository.countByStatus(RideStatus.BOOKED);
         long inProgress = rideRepository.countByStatus(RideStatus.IN_PROGRESS);
@@ -72,7 +72,7 @@ public class AdminService {
 
         return new AdminStatsResponse(
                 totalUsers, drivers, approved, pending, ridesToday,
-                activeSubs, totalSubs, revenue,
+                activeSubs, totalSubs,
                 booked, inProgress, completed, cancelled, noShow
         );
     }
@@ -135,7 +135,7 @@ public class AdminService {
                     User user = userMap.get(p.getUser().getId());
                     String name = user != null ? user.getFirstName() + " " + user.getLastName() : "Unknown";
                     String phone = user != null ? user.getPhoneNumber() : "Unknown";
-                    String corridor = p.getActiveCorridor() != null ? p.getActiveCorridor().getName() : null;
+                    String corridor = p.getActiveCorridor() != null ? p.getActiveCorridor().getTitle() : null;
                     return new DriverAdminItem(
                             p.getId(), p.getUser().getId(), name, phone,
                             p.getNationalId(), p.getLicenseNumber(), p.isOnShift(),
@@ -188,26 +188,26 @@ public class AdminService {
         walletService.forfeitDeposit(depositId, reason);
     }
 
-    @Transactional(readOnly = true)
-    public List<SubscriptionSalesItem> getSubscriptions(SubscriptionPlan plan, SubscriptionStatus status) {
-        List<Subscription> subs;
-
-        if (plan != null) {
-            subs = subscriptionRepo.findByPlanOrderByCreatedAtDesc(plan);
-        } else if (status != null) {
-            subs = subscriptionRepo.findByStatusOrderByCreatedAtDesc(status);
-        } else {
-            subs = subscriptionRepo.findAllByOrderByCreatedAtDesc();
-        }
-
-        return subs.stream()
-                .map(s -> new SubscriptionSalesItem(
-                        s.getId(), s.getPassengerId(), s.getPlan(),
-                        s.getTotalRides(), s.getRemainingRides(), s.getPrice(),
-                        s.getStartDate(), s.getEndDate(), s.getStatus(),
-                        s.getCreatedAt(), s.isAutoRenew()))
-                .toList();
-    }
+//    @Transactional(readOnly = true)
+//    public List<SubscriptionSalesItem> getSubscriptions(SubscriptionPlan plan, SubscriptionStatus status) {
+//        List<Subscription> subs;
+//
+//        if (plan != null) {
+//            subs = subscriptionRepo.findByPlanOrderByCreatedAtDesc(plan);
+//        } else if (status != null) {
+//            subs = subscriptionRepo.findByStatusOrderByCreatedAtDesc(status);
+//        } else {
+//            subs = subscriptionRepo.findAllByOrderByCreatedAtDesc();
+//        }
+//
+//        return subs.stream()
+//                .map(s -> new SubscriptionSalesItem(
+//                        s.getId(), s.getPassengerId(), s.getPlan(),
+//                        s.getTotalRides(), s.getRemainingRides(), s.getPrice(),
+//                        s.getStartDate(), s.getEndDate(), s.getStatus(),
+//                        s.getCreatedAt(), s.isAutoRenew()))
+//                .toList();
+//    }
 
     @Transactional(readOnly = true)
     public SubscriptionSalesStats getSubscriptionStats() {
@@ -215,11 +215,11 @@ public class AdminService {
                 subscriptionRepo.countByStatus(SubscriptionStatus.ACTIVE),
                 subscriptionRepo.countByStatus(SubscriptionStatus.EXPIRED),
                 subscriptionRepo.countByStatus(SubscriptionStatus.CANCELLED),
-                subscriptionRepo.countByStatus(SubscriptionStatus.SUSPENDED),
-                subscriptionRepo.countByPlan(SubscriptionPlan.STUDENT_BASIC),
-                subscriptionRepo.countByPlan(SubscriptionPlan.STUDENT_PLUS),
-                subscriptionRepo.countByPlan(SubscriptionPlan.CORPORATE_COMMUTER),
-                subscriptionRepo.totalRevenue()
+                subscriptionRepo.countByStatus(SubscriptionStatus.SUSPENDED)
+                //subscriptionRepo.countByPlan(SubscriptionPlan.STUDENT_BASIC),
+               // subscriptionRepo.countByPlan(SubscriptionPlan.STUDENT_PLUS),
+               // subscriptionRepo.countByPlan(SubscriptionPlan.CORPORATE_COMMUTER),
+               // subscriptionRepo.totalRevenue()
         );
     }
 
@@ -235,20 +235,5 @@ public class AdminService {
                         r.getEstimatedFare(), r.getFinalFare()))
                 .toList();
     }
-
-    @Transactional(readOnly = true)
-    public List<NoShowPassengerItem> getPassengerNoShowRanking() {
-        Map<UUID, User> userMap = userRepository.findAllActive().stream()
-                .collect(Collectors.toMap(User::getId, u -> u));
-
-        return passengerProfileRepository.findAllByOrderByNoShowCountDesc()
-                .stream()
-                .filter(p -> p.getNoShowCount() > 0)
-                .map(p -> {
-                    User user = userMap.get(p.getUser().getId());
-                    String name = user != null ? user.getFirstName() + " " + user.getLastName() : "Unknown";
-                    return new NoShowPassengerItem(p.getUser().getId(), name, p.getNoShowCount());
-                })
-                .toList();
-    }
+    
 }

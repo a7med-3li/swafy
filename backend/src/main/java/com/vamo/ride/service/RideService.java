@@ -35,42 +35,42 @@ public class RideService {
     private static final LocalTime OPERATION_START = LocalTime.of(7, 0);
     private static final LocalTime OPERATION_END = LocalTime.of(18, 0);
 
-    @Transactional
-    public BookRideResponse bookRide(UUID passengerId, BookRideRequest request) {
-        LocalTime now = LocalTime.now();
-        if (now.isBefore(OPERATION_START) || now.isAfter(OPERATION_END)) {
-            throw new BadRequestException("Booking is only available between 7:00 AM and 6:00 PM");
-        }
-
-        long activeRides = rideRepository.countByPassengerIdAndStatus(passengerId, RideStatus.BOOKED);
-        if (activeRides > 0) {
-            throw new BadRequestException("You already have an active booking");
-        }
-
-        subscriptionService.deductRide(request.subscriptionId());
-
-        String pin = String.format("%04d", RANDOM.nextInt(10000));
-
-        Ride ride = Ride.builder()
-                .passengerId(passengerId)
-                .corridorId(request.corridorId())
-                .pickupVbsId(request.pickupVbsId())
-                .dropoffVbsId(request.dropoffVbsId())
-                .subscriptionId(request.subscriptionId())
-                .status(RideStatus.BOOKED)
-                .pin(pin)
-                .departureTime(Instant.now().plusSeconds(1800))
-                .requestedAt(Instant.now())
-                .build();
-
-        Ride saved = rideRepository.save(ride);
-
-        return new BookRideResponse(
-                saved.getId(), saved.getPin(), saved.getStatus(),
-                saved.getDepartureTime(), saved.getCorridorId(),
-                saved.getPickupVbsId(), saved.getDropoffVbsId()
-        );
-    }
+//    @Transactional
+//    public BookRideResponse bookRide(UUID passengerId, BookRideRequest request) {
+//        LocalTime now = LocalTime.now();
+//        if (now.isBefore(OPERATION_START) || now.isAfter(OPERATION_END)) {
+//            throw new BadRequestException("Booking is only available between 7:00 AM and 6:00 PM");
+//        }
+//
+//        long activeRides = rideRepository.countByPassengerIdAndStatus(passengerId, RideStatus.BOOKED);
+//        if (activeRides > 0) {
+//            throw new BadRequestException("You already have an active booking");
+//        }
+//
+//        subscriptionService.deductRide(request.subscriptionId());
+//
+//        String pin = String.format("%04d", RANDOM.nextInt(10000));
+//
+//        Ride ride = Ride.builder()
+//                .passengerId(passengerId)
+//                .corridorId(request.corridorId())
+//                .pickupVbsId(request.pickupVbsId())
+//                .dropoffVbsId(request.dropoffVbsId())
+//                .subscriptionId(request.subscriptionId())
+//                .status(RideStatus.BOOKED)
+//                .pin(pin)
+//                .departureTime(Instant.now().plusSeconds(1800))
+//                .requestedAt(Instant.now())
+//                .build();
+//
+//        Ride saved = rideRepository.save(ride);
+//
+//        return new BookRideResponse(
+//                saved.getId(), saved.getPin(), saved.getStatus(),
+//                saved.getDepartureTime(), saved.getCorridorId(),
+//                saved.getPickupVbsId(), saved.getDropoffVbsId()
+//        );
+//    }
 
     @Transactional
     public void confirmBoarding(UUID driverId, UUID rideId, String pin) {

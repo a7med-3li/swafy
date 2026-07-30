@@ -23,13 +23,13 @@ public class RideController {
     private final RideEstimationService rideEstimationService;
     private final RideService rideService;
 
-    @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
-    @PostMapping("/book")
-    public ResponseEntity<BookRideResponse> bookRide(
-            @AuthenticationPrincipal String userId,
-            @Valid @RequestBody BookRideRequest request) {
-        return ResponseEntity.ok(rideService.bookRide(UUID.fromString(userId), request));
-    }
+//    @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
+//    @PostMapping("/book")
+//    public ResponseEntity<BookRideResponse> bookRide(
+//            @AuthenticationPrincipal String userId,
+//            @Valid @RequestBody BookRideRequest request) {
+//        return ResponseEntity.ok(rideService.bookRide(UUID.fromString(userId), request));
+//    }
 
     @PreAuthorize("hasAnyRole('DRIVER', 'BOTH')")
     @PostMapping("/{id}/confirm")

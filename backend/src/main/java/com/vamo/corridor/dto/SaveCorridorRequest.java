@@ -1,5 +1,6 @@
 package com.vamo.corridor.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -15,7 +16,7 @@ public record SaveCorridorRequest(
 		
 		@NotNull(message = "Price is required")
 		@Positive(message = "Price must be greater than zero")
-		Double price,
+		BigDecimal price,
 		
 		// The nested list of stops
 		@NotEmpty(message = "A corridor must have at least one stop")

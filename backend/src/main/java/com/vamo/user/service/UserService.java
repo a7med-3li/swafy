@@ -4,6 +4,7 @@ import com.vamo.common.enums.Gender;
 import com.vamo.common.enums.UserRole;
 import com.vamo.common.events.DriverRegisteredEvent;
 import com.vamo.common.events.PassengerRegisteredEvent;
+import com.vamo.common.exception.UserAlreadyExistsException;
 import com.vamo.common.exception.UserNotFoundException;
 import com.vamo.common.mapper.Mappers;
 import com.vamo.common.dto.DriverRegisterRequest;
@@ -44,6 +45,8 @@ public class UserService {
         
         if (user.getRole() == UserRole.DRIVER) {
             user.setRole(UserRole.BOTH);
+        } else {
+          throw new UserAlreadyExistsException("User already exists");
         }
         
         eventPublisher.publishEvent(new PassengerRegisteredEvent(user, req));
@@ -57,6 +60,8 @@ public class UserService {
 
         if (user.getRole() == UserRole.PASSENGER) {
             user.setRole(UserRole.BOTH);
+        } else {
+            throw new UserAlreadyExistsException("User already exists");
         }
         
         eventPublisher.publishEvent(new DriverRegisteredEvent(user, req));
@@ -78,6 +83,7 @@ public class UserService {
     }
     
     // todo: needs to be refactored to map based on the user role. (response dto TBD)
+    // it should call the passenger/ driver service to get the user info based on the role
     public UserInfo getUserInfo(UUID id){
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));

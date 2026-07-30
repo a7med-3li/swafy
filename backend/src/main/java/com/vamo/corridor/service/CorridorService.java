@@ -1,6 +1,7 @@
 package com.vamo.corridor.service;
 
 import java.util.List;
+import com.vamo.common.entity.Location;
 import com.vamo.corridor.dto.CorridorStopRequest;
 import com.vamo.corridor.dto.SaveCorridorRequest;
 import com.vamo.corridor.entity.Corridor;
@@ -23,15 +24,14 @@ public class CorridorService {
 	@Transactional
 	public Corridor createCorridor(SaveCorridorRequest request) {
 		Corridor corridor = new Corridor();
-		corridor.setName(request.name());
-		corridor.setRoute(request.route());
+		corridor.setTitle(request.name());
+		//corridor.set(request.route());
 		corridor.setPrice(request.price());
 		
 		for (CorridorStopRequest stopDto : request.stops()) {
 			VBS stop = new VBS();
 			stop.setName(stopDto.name());
-			stop.setLatitude(stopDto.latitude());
-			stop.setLongitude(stopDto.longitude());
+			stop.setVBS_location(new Location(stopDto.latitude(), stopDto.longitude()));
 			
 			corridor.addStop(stop);
 		}
