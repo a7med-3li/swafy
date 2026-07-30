@@ -32,9 +32,7 @@ public class CorridorController {
 						c.getId(),
 						c.getTitle(),
 						c.getPrice(),
-						c.getStops().stream()
-								.map(vbs -> new StopResponse(vbs.getId(), vbs.getName(), vbs.getVBS_location().getLatitude(), vbs.getVBS_location().getLongitude()))
-								.toList()
+						List.of()
 				))
 				.toList();
 		return ResponseEntity.ok(response);

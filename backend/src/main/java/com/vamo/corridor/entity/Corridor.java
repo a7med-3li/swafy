@@ -10,6 +10,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -53,7 +54,7 @@ public class Corridor {
 	@Column(nullable = false, precision = 10, scale = 2)
 	private BigDecimal price;
 	
-	@OneToMany(mappedBy = "corridor", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "corridor", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<VBS> stops = new ArrayList<>();
 	
 	public void addStop(VBS stop) {
