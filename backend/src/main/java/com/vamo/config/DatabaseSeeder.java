@@ -1,5 +1,7 @@
 package com.vamo.config;
 
+import java.time.Instant;
+import com.vamo.common.enums.Gender;
 import com.vamo.common.enums.UserRole;
 import com.vamo.user.entity.User;
 import com.vamo.user.repository.UserRepository;
@@ -19,9 +21,13 @@ public class DatabaseSeeder {
 			if (userRepository.findByPhoneNumber(adminPhone).isEmpty()) {
 				User admin = new User();
 				admin.setPhoneNumber(adminPhone);
-				admin.setPasswordHash(passwordEncoder.encode("password"));
+				admin.setFirstName("Ahmed");
+				admin.setLastName("Ali");
 				admin.setRole(UserRole.ADMIN);
-				
+				admin.setDeleted(false);
+				admin.setCreatedAt(Instant.now());
+				admin.setGender(Gender.MALE);
+				admin.setPasswordHash(passwordEncoder.encode("password"));
 				userRepository.save(admin);
 			} else {
 				System.out.println("Admin user already exists. Skipping setup.");
