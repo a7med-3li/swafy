@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,10 +31,9 @@ public class Corridor {
 	private Long id;
 	
 	@NotBlank
-	@Column(nullable = false, unique = true)
+	@Column(name= "title", nullable = false, unique = true)
 	private String title;
 	
-	@NotBlank
 	@Embedded
 	@AttributeOverrides({
 			@AttributeOverride(name = "latitude", column = @Column(name = "start_lat")),
@@ -42,7 +42,6 @@ public class Corridor {
 	})
 	private Location start;
 	
-	@NotBlank
 	@Embedded
 	@AttributeOverrides({
 			@AttributeOverride(name = "latitude", column = @Column(name = "destination_lat")),
