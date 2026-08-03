@@ -29,7 +29,7 @@ class VamoTheme {
 
   static ThemeData dark() {
     final base = ThemeData.dark(useMaterial3: true);
-    final textTheme = GoogleFonts.cairoTextTheme(base.textTheme).apply(
+    final textTheme = GoogleFonts.tajawalTextTheme(base.textTheme).apply(
       bodyColor: title,
       displayColor: title,
     );
