@@ -51,7 +51,7 @@ class _CorridorsScreenState extends State<CorridorsScreen> {
                   Text(
                     'اختر المسار المناسب لرحلتك اليومية',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: VamoTheme.subtitle,
+                          color: context.subtitleColor,
                         ),
                   ),
                   const SizedBox(height: 20),

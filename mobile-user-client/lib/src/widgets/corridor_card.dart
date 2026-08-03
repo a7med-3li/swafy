@@ -29,10 +29,10 @@ class CorridorCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? VamoTheme.primary.withValues(alpha: 0.15)
-              : VamoTheme.card,
+              : context.cardColor,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? VamoTheme.primary : const Color(0xFF2A2A2A),
+            color: isSelected ? VamoTheme.primary : context.cardBorderColor,
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -89,9 +89,9 @@ class CorridorCard extends StatelessWidget {
             ),
 
             // ── Arrow ───────────────────────────────────
-            const Icon(
+            Icon(
               Icons.chevron_left_rounded,
-              color: VamoTheme.subtitle,
+              color: context.subtitleColor,
               size: 28,
             ),
           ],
@@ -104,12 +104,12 @@ class CorridorCard extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14, color: VamoTheme.subtitle),
+        Icon(icon, size: 14, color: context.subtitleColor),
         const SizedBox(width: 4),
         Text(
           text,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: VamoTheme.subtitle,
+                color: context.subtitleColor,
                 fontWeight: FontWeight.w500,
               ),
         ),

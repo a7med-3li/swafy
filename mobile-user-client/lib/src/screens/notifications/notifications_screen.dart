@@ -36,7 +36,7 @@ class NotificationsScreen extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: VamoTheme.background,
+        backgroundColor: context.bg,
         appBar: AppBar(
           title: const Text('الإشعارات والتنبيهات'),
           backgroundColor: Colors.transparent,
@@ -80,10 +80,10 @@ class NotificationsScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: VamoTheme.card,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(22),
         border: Border.all(
-          color: item.isUnread ? badgeColor.withValues(alpha: 0.5) : VamoTheme.cardBorder,
+          color: item.isUnread ? badgeColor.withValues(alpha: 0.5) : context.cardBorderColor,
           width: item.isUnread ? 1.5 : 1,
         ),
         boxShadow: item.isUnread
@@ -138,7 +138,7 @@ class NotificationsScreen extends StatelessWidget {
                 Text(
                   item.body,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: VamoTheme.subtitle,
+                        color: context.subtitleColor,
                         height: 1.5,
                       ),
                 ),
@@ -146,7 +146,7 @@ class NotificationsScreen extends StatelessWidget {
                 Text(
                   item.time,
                   style: TextStyle(
-                    color: VamoTheme.subtitle.withValues(alpha: 0.7),
+                    color: context.subtitleColor.withValues(alpha: 0.7),
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),

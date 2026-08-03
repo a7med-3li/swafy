@@ -26,12 +26,12 @@ class TodayRideCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: VamoTheme.card,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: VamoTheme.cardBorder),
+        border: Border.all(color: context.cardBorderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.25),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -69,13 +69,13 @@ class TodayRideCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1F1F1F),
+                  color: context.fieldColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
                   'يصل خلال $etaMinutes دقائق',
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: context.titleColor,
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
                   ),
@@ -99,9 +99,9 @@ class TodayRideCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xFF191919),
+              color: context.cardElevatedColor,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFF2B2B2B)),
+              border: Border.all(color: context.cardBorderColor),
             ),
             child: Row(
               children: [
@@ -125,8 +125,8 @@ class TodayRideCard extends StatelessWidget {
                     children: [
                       Text(
                         driverName,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: context.titleColor,
                           fontWeight: FontWeight.w800,
                           fontSize: 14,
                         ),
@@ -134,8 +134,8 @@ class TodayRideCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         'رقم اللوحة: $vehiclePlate',
-                        style: const TextStyle(
-                          color: VamoTheme.subtitle,
+                        style: TextStyle(
+                          color: context.subtitleColor,
                           fontSize: 12,
                         ),
                       ),
@@ -148,7 +148,7 @@ class TodayRideCard extends StatelessWidget {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF262626),
+                    color: context.fieldColor,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Row(

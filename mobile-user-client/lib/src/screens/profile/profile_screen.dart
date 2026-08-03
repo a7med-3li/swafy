@@ -42,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // Profile card
             Container(
               padding: const EdgeInsets.all(22),
-              decoration: BoxDecoration(color: VamoTheme.card, borderRadius: BorderRadius.circular(24), border: Border.all(color: const Color(0xFF2A2A2A))),
+              decoration: BoxDecoration(color: context.cardColor, borderRadius: BorderRadius.circular(24), border: Border.all(color: context.cardBorderColor)),
               child: Row(
                 children: [
                   Container(
@@ -58,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Text(auth.displayName, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
                         if (user != null) ...[
                           const SizedBox(height: 4),
-                          Text(user.phoneNumber, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: VamoTheme.subtitle)),
+                          Text(user.phoneNumber, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.subtitleColor)),
                         ],
                       ],
                     ),
@@ -84,12 +84,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             else if (subProvider.history.isEmpty)
               Container(
                 padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(color: VamoTheme.card, borderRadius: BorderRadius.circular(16)),
+                decoration: BoxDecoration(color: context.cardColor, borderRadius: BorderRadius.circular(16)),
                 child: Column(
                   children: [
-                    const Icon(Icons.history_rounded, color: VamoTheme.subtitle, size: 36),
+                    Icon(Icons.history_rounded, color: context.subtitleColor, size: 36),
                     const SizedBox(height: 12),
-                    Text('لا يوجد سجل اشتراكات', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: VamoTheme.subtitle)),
+                    Text('لا يوجد سجل اشتراكات', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.subtitleColor)),
                   ],
                 ),
               )
@@ -97,7 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ...subProvider.history.map((sub) => Container(
                 margin: const EdgeInsets.only(bottom: 12),
                 padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(color: VamoTheme.card, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFF2A2A2A))),
+                decoration: BoxDecoration(color: context.cardColor, borderRadius: BorderRadius.circular(16), border: Border.all(color: context.cardBorderColor)),
                 child: Row(
                   children: [
                     Container(
@@ -112,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           Text('${sub.price.toStringAsFixed(0)} ج.م', style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700)),
                           const SizedBox(height: 4),
-                          Text('${sub.startDate} — ${sub.endDate}', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: VamoTheme.subtitle)),
+                          Text('${sub.startDate} — ${sub.endDate}', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.subtitleColor)),
                         ],
                       ),
                     ),
@@ -148,12 +148,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-      decoration: BoxDecoration(color: VamoTheme.card, borderRadius: BorderRadius.circular(14)),
+      decoration: BoxDecoration(color: context.cardColor, borderRadius: BorderRadius.circular(14)),
       child: Row(
         children: [
-          Icon(icon, color: VamoTheme.subtitle, size: 20),
+          Icon(icon, color: context.subtitleColor, size: 20),
           const SizedBox(width: 14),
-          Text(label, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: VamoTheme.subtitle)),
+          Text(label, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.subtitleColor)),
           const Spacer(),
           Text(value, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700)),
         ],

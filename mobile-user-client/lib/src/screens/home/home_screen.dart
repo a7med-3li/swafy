@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
 import '../../providers/subscription_provider.dart';
+import '../../providers/theme_provider.dart';
 import '../../theme/theme.dart';
 import '../../widgets/boarding_pass_modal.dart';
 import '../../widgets/today_ride_card.dart';
@@ -47,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: VamoTheme.background,
+        backgroundColor: context.bg,
         appBar: _buildAppBar(context),
         body: IndexedStack(
           index: _currentIndex,
@@ -64,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: VamoTheme.background,
+      backgroundColor: context.bg,
       elevation: 0,
       title: Row(
         children: [
@@ -98,6 +99,31 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       actions: [
+        // ── Theme Switcher Button (Sun / Moon) ─────────────────
+        Builder(
+          builder: (context) {
+            final themeProvider = context.watch<ThemeProvider>();
+            final isDark = themeProvider.isDark;
+            return IconButton(
+              onPressed: () => context.read<ThemeProvider>().toggleTheme(),
+              style: IconButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: Theme.of(context).dividerColor.withValues(alpha: 0.2)),
+                ),
+              ),
+              icon: Icon(
+                isDark ? Icons.wb_sunny_rounded : Icons.nightlight_round,
+                color: isDark ? const Color(0xFFFACC15) : const Color(0xFF05472A),
+                size: 22,
+              ),
+              tooltip: isDark ? 'الوضع المضيء' : 'الوضع الداكن',
+            );
+          },
+        ),
+        const SizedBox(width: 8),
+
         // ── Notification Bell Icon with Badge ──────────────────
         IconButton(
           onPressed: () {
@@ -106,18 +132,18 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
           style: IconButton.styleFrom(
-            backgroundColor: VamoTheme.card,
+            backgroundColor: context.cardColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              side: const BorderSide(color: VamoTheme.cardBorder),
+              side: BorderSide(color: context.cardBorderColor),
             ),
           ),
           icon: Stack(
             clipBehavior: Clip.none,
             children: [
-              const Icon(
+              Icon(
                 Icons.notifications_outlined,
-                color: Colors.white,
+                color: context.titleColor,
                 size: 22,
               ),
               Positioned(
@@ -144,49 +170,49 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: VamoTheme.card,
+              color: context.cardColor,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: VamoTheme.cardBorder),
+              border: Border.all(color: context.cardBorderColor),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.menu_rounded,
-              color: Colors.white,
+              color: context.titleColor,
               size: 22,
             ),
           ),
-          color: VamoTheme.card,
+          color: context.cardColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
-            side: const BorderSide(color: VamoTheme.cardBorder),
+            side: BorderSide(color: context.cardBorderColor),
           ),
           position: PopupMenuPosition.under,
           itemBuilder: (context) => [
-            const PopupMenuItem(
+            PopupMenuItem(
               value: 'profile',
               child: Row(
                 children: [
                   Icon(Icons.person_outline_rounded,
-                      color: VamoTheme.subtitle, size: 20),
-                  SizedBox(width: 12),
-                  Text('الملف الشخصي',
+                      color: context.subtitleColor, size: 20),
+                  const SizedBox(width: 12),
+                  const Text('الملف الشخصي',
                       style: TextStyle(fontWeight: FontWeight.w700)),
                 ],
               ),
             ),
-            const PopupMenuItem(
+            PopupMenuItem(
               value: 'history',
               child: Row(
                 children: [
                   Icon(Icons.history_rounded,
-                      color: VamoTheme.subtitle, size: 20),
-                  SizedBox(width: 12),
-                  Text('سجل الاشتراكات',
+                      color: context.subtitleColor, size: 20),
+                  const SizedBox(width: 12),
+                  const Text('سجل الاشتراكات',
                       style: TextStyle(fontWeight: FontWeight.w700)),
                 ],
               ),
             ),
             const PopupMenuDivider(height: 1),
-            const PopupMenuItem(
+            PopupMenuItem(
               value: 'logout',
               child: Row(
                 children: [
@@ -267,9 +293,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildBottomNav() {
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF0D0D0D),
-        border: Border(top: BorderSide(color: Color(0xFF1F1F1F))),
+      decoration: BoxDecoration(
+        color: context.cardColor,
+        border: Border(top: BorderSide(color: context.cardBorderColor)),
       ),
       child: SafeArea(
         child: Padding(
@@ -306,7 +332,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(
               icon,
-              color: isSelected ? VamoTheme.accent : VamoTheme.subtitle,
+              color: isSelected ? VamoTheme.accent : context.subtitleColor,
               size: 24,
             ),
             if (isSelected) ...[
@@ -392,7 +418,7 @@ class _DashboardTab extends StatelessWidget {
                       Text(
                         'رحلتك اليومية أسهل مع Vamo',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: VamoTheme.subtitle,
+                              color: context.subtitleColor,
                             ),
                       ),
                     ],
@@ -640,9 +666,9 @@ class _DashboardTab extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: VamoTheme.card,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: VamoTheme.cardBorder),
+        border: Border.all(color: context.cardBorderColor),
       ),
       child: Column(
         children: [
@@ -671,7 +697,7 @@ class _DashboardTab extends StatelessWidget {
             'اشترك الآن في مسارك اليومي واستمتع برحلات مريحة، تعرفة موحدة، وسائقين معتمدين.',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: VamoTheme.subtitle,
+                  color: context.subtitleColor,
                   height: 1.6,
                 ),
           ),
@@ -722,7 +748,7 @@ class _DashboardTab extends StatelessWidget {
           value,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: isHighlight ? FontWeight.w900 : FontWeight.w700,
-                color: isHighlight ? VamoTheme.accent : Colors.white,
+                color: isHighlight ? VamoTheme.accent : context.titleColor,
                 fontSize: isHighlight ? 18 : 15,
               ),
         ),

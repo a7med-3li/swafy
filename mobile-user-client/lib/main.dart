@@ -10,6 +10,7 @@ import 'src/data/repositories/subscription_repository.dart';
 import 'src/providers/auth_provider.dart';
 import 'src/providers/corridor_provider.dart';
 import 'src/providers/subscription_provider.dart';
+import 'src/providers/theme_provider.dart';
 import 'src/screens/splash_screen.dart';
 import 'src/theme/theme.dart';
 
@@ -39,6 +40,9 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => SubscriptionProvider(subscriptionRepository: subscriptionRepo),
         ),
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+        ),
       ],
       child: const VamoApp(),
     ),
@@ -50,9 +54,13 @@ class VamoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
+
     return MaterialApp(
       title: 'Vamo',
-      theme: VamoTheme.dark(),
+      theme: VamoTheme.light(),
+      darkTheme: VamoTheme.dark(),
+      themeMode: themeProvider.themeMode,
       debugShowCheckedModeBanner: false,
       locale: const Locale('ar'),
       supportedLocales: const [Locale('ar')],

@@ -78,12 +78,12 @@ class _BoardingPassModalState extends State<BoardingPassModal> {
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.all(28),
         decoration: BoxDecoration(
-          color: VamoTheme.card,
+          color: context.cardColor,
           borderRadius: BorderRadius.circular(28),
-          border: Border.all(color: VamoTheme.cardBorder, width: 1.5),
+          border: Border.all(color: context.cardBorderColor, width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.6),
+              color: Colors.black.withValues(alpha: 0.25),
               blurRadius: 30,
               offset: const Offset(0, 10),
             ),
@@ -132,7 +132,7 @@ class _BoardingPassModalState extends State<BoardingPassModal> {
             Text(
               'اشتراك فعال حتى: ${widget.subscription.endDate}',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: VamoTheme.subtitle,
+                    color: context.subtitleColor,
                   ),
             ),
             const SizedBox(height: 24),
@@ -201,7 +201,7 @@ class _BoardingPassModalState extends State<BoardingPassModal> {
               child: OutlinedButton(
                 onPressed: () => Navigator.pop(context),
                 style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: VamoTheme.cardBorder),
+                  side: BorderSide(color: context.cardBorderColor),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 child: const Text(
