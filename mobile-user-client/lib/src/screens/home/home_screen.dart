@@ -105,9 +105,9 @@ class _HomeScreenState extends State<HomeScreen> {
               border: Border.all(color: const Color(0xFF2A2A2A)),
             ),
             child: const Icon(
-              Icons.more_vert_rounded,
+              Icons.menu_rounded,
               color: Colors.white,
-              size: 20,
+              size: 22,
             ),
           ),
           color: VamoTheme.card,
