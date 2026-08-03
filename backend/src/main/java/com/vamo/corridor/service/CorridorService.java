@@ -17,6 +17,11 @@ public class CorridorService {
 	
 	private final CorridorRepository corridorRepository;
 	
+	public Corridor findById(Long id) {
+		return corridorRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Corridor not found with id: " + id));
+	}
+	
 	public List<Corridor> getAllCorridors() {
 		return corridorRepository.findAll();
 	}

@@ -45,12 +45,9 @@ public class UserService {
         
         if (user.getRole() == UserRole.DRIVER) {
             user.setRole(UserRole.BOTH);
-        } else {
-          throw new UserAlreadyExistsException("User already exists");
         }
-        
         eventPublisher.publishEvent(new PassengerRegisteredEvent(user, req));
-        
+        System.out.println("Passenger registered event published for user: " + user.getId());
         return user;
     }
     
@@ -60,12 +57,9 @@ public class UserService {
 
         if (user.getRole() == UserRole.PASSENGER) {
             user.setRole(UserRole.BOTH);
-        } else {
-            throw new UserAlreadyExistsException("User already exists");
         }
-        
         eventPublisher.publishEvent(new DriverRegisteredEvent(user, req));
-        
+        System.out.println("Driver registered event published for user: " + user.getId());
         return user;
     }
     
