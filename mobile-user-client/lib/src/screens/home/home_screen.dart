@@ -5,15 +5,19 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/subscription_provider.dart';
 import '../../theme/theme.dart';
+import '../../widgets/boarding_pass_modal.dart';
+import '../../widgets/today_ride_card.dart';
 import '../../widgets/vamo_button.dart';
 import '../auth/login_screen.dart';
 import '../corridors/corridors_screen.dart';
+import '../notifications/notifications_screen.dart';
 import '../profile/profile_screen.dart';
 import '../subscriptions/subscription_history_screen.dart';
 
 /// Main dashboard shown after login.
 ///
-/// Contains a top action menu, bottom navigation, and a focused Home view.
+/// Contains a top action menu, notifications bell, bottom navigation,
+/// and a focused Home view featuring Today's Ride and QR Boarding Pass.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -68,11 +72,11 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: VamoTheme.primary.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(12),
+              color: VamoTheme.accent.withValues(alpha: 0.15),
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
               child: Padding(
                 padding: const EdgeInsets.all(6),
                 child: SvgPicture.asset(
@@ -94,6 +98,46 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       actions: [
+        // ── Notification Bell Icon with Badge ──────────────────
+        IconButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+            );
+          },
+          style: IconButton.styleFrom(
+            backgroundColor: VamoTheme.card,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: const BorderSide(color: VamoTheme.cardBorder),
+            ),
+          ),
+          icon: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              const Icon(
+                Icons.notifications_outlined,
+                color: Colors.white,
+                size: 22,
+              ),
+              Positioned(
+                top: -2,
+                right: -2,
+                child: Container(
+                  width: 9,
+                  height: 9,
+                  decoration: const BoxDecoration(
+                    color: VamoTheme.alert,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 8),
+
+        // ── Hamburger Menu (3 lines instead of 3 dots) ─────────
         PopupMenuButton<String>(
           onSelected: (value) => _handleMenuSelection(context, value),
           icon: Container(
@@ -102,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
             decoration: BoxDecoration(
               color: VamoTheme.card,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFF2A2A2A)),
+              border: Border.all(color: VamoTheme.cardBorder),
             ),
             child: const Icon(
               Icons.menu_rounded,
@@ -113,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
           color: VamoTheme.card,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
-            side: const BorderSide(color: Color(0xFF2A2A2A)),
+            side: const BorderSide(color: VamoTheme.cardBorder),
           ),
           position: PopupMenuPosition.under,
           itemBuilder: (context) => [
@@ -253,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           color: isSelected
-              ? VamoTheme.primary.withValues(alpha: 0.15)
+              ? VamoTheme.accent.withValues(alpha: 0.15)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
         ),
@@ -262,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(
               icon,
-              color: isSelected ? const Color(0xFF4ADE80) : VamoTheme.subtitle,
+              color: isSelected ? VamoTheme.accent : VamoTheme.subtitle,
               size: 24,
             ),
             if (isSelected) ...[
@@ -270,8 +314,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 label,
                 style: const TextStyle(
-                  color: Color(0xFF4ADE80),
-                  fontWeight: FontWeight.w700,
+                  color: VamoTheme.accent,
+                  fontWeight: FontWeight.w800,
                   fontSize: 13,
                 ),
               ),
@@ -312,7 +356,7 @@ class _DashboardTab extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: VamoTheme.primary.withValues(alpha: 0.25),
+                        color: VamoTheme.accent.withValues(alpha: 0.25),
                         blurRadius: 16,
                         offset: const Offset(0, 4),
                       ),
@@ -356,10 +400,21 @@ class _DashboardTab extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 28),
+
+            // ── Live Trip / Today's Ride Widget ────────────────
+            if (subProvider.active != null) ...[
+              TodayRideCard(
+                corridorName: 'مسار التجمع الخامس - المهندسين',
+                driverName: 'كابتن محمود حسن',
+                vehiclePlate: 'أ ب ج ١٢٣٤',
+                etaMinutes: 7,
+              ),
+              const SizedBox(height: 22),
+            ],
 
             // ── Active Subscription Status ─────────────────────
-            _buildSubscriptionSection(context, subProvider),
+            _buildSubscriptionSection(context, subProvider, auth.displayName),
           ],
         ),
       ),
@@ -367,7 +422,10 @@ class _DashboardTab extends StatelessWidget {
   }
 
   Widget _buildSubscriptionSection(
-      BuildContext context, SubscriptionProvider subProvider) {
+    BuildContext context,
+    SubscriptionProvider subProvider,
+    String passengerName,
+  ) {
     final active = subProvider.active;
 
     if (active != null) {
@@ -391,7 +449,7 @@ class _DashboardTab extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: VamoTheme.primary.withValues(alpha: 0.15),
+                  color: VamoTheme.accent.withValues(alpha: 0.15),
                   blurRadius: 24,
                   offset: const Offset(0, 8),
                 ),
@@ -411,7 +469,7 @@ class _DashboardTab extends StatelessWidget {
                       ),
                       child: const Icon(
                         Icons.card_membership_rounded,
-                        color: Color(0xFF4ADE80),
+                        color: VamoTheme.accent,
                         size: 22,
                       ),
                     ),
@@ -433,7 +491,7 @@ class _DashboardTab extends StatelessWidget {
                       child: Text(
                         active.status.label,
                         style: const TextStyle(
-                          color: Color(0xFF4ADE80),
+                          color: VamoTheme.accent,
                           fontSize: 12,
                           fontWeight: FontWeight.w800,
                         ),
@@ -458,7 +516,7 @@ class _DashboardTab extends StatelessWidget {
                     children: [
                       const Icon(
                         Icons.timer_outlined,
-                        color: Color(0xFF4ADE80),
+                        color: VamoTheme.accent,
                         size: 22,
                       ),
                       const SizedBox(width: 12),
@@ -477,7 +535,7 @@ class _DashboardTab extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 22),
 
                 // Dates and Price
                 Row(
@@ -493,6 +551,39 @@ class _DashboardTab extends StatelessWidget {
                     const SizedBox(width: 28),
                     _subInfoItem(context, 'تاريخ الانتهاء', active.endDate),
                   ],
+                ),
+                const SizedBox(height: 24),
+
+                // ── Prominent Digital Boarding Pass QR Button ──
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      BoardingPassModal.show(
+                        context,
+                        subscription: active,
+                        passengerName: passengerName,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      elevation: 4,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    icon: const Icon(Icons.qr_code_rounded,
+                        color: Colors.black, size: 24),
+                    label: const Text(
+                      'عرض تذكرة الركوب الإلكترونية (QR) 🎟️',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -551,7 +642,7 @@ class _DashboardTab extends StatelessWidget {
       decoration: BoxDecoration(
         color: VamoTheme.card,
         borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: const Color(0xFF2A2A2A)),
+        border: Border.all(color: VamoTheme.cardBorder),
       ),
       child: Column(
         children: [
@@ -559,12 +650,12 @@ class _DashboardTab extends StatelessWidget {
             width: 72,
             height: 72,
             decoration: BoxDecoration(
-              color: VamoTheme.primary.withValues(alpha: 0.15),
+              color: VamoTheme.accent.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(22),
             ),
             child: const Icon(
               Icons.explore_rounded,
-              color: Color(0xFF4ADE80),
+              color: VamoTheme.accent,
               size: 36,
             ),
           ),
@@ -631,7 +722,7 @@ class _DashboardTab extends StatelessWidget {
           value,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: isHighlight ? FontWeight.w900 : FontWeight.w700,
-                color: isHighlight ? const Color(0xFF4ADE80) : Colors.white,
+                color: isHighlight ? VamoTheme.accent : Colors.white,
                 fontSize: isHighlight ? 18 : 15,
               ),
         ),
