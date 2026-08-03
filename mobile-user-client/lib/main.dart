@@ -1,0 +1,70 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+
+import 'src/core/network/api_client.dart';
+import 'src/core/storage/token_storage.dart';
+import 'src/data/repositories/auth_repository.dart';
+import 'src/data/repositories/corridor_repository.dart';
+import 'src/data/repositories/subscription_repository.dart';
+import 'src/providers/auth_provider.dart';
+import 'src/providers/corridor_provider.dart';
+import 'src/providers/subscription_provider.dart';
+import 'src/screens/splash_screen.dart';
+import 'src/theme/theme.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialise token storage before anything else.
+  await TokenStorage.init();
+
+  // Create shared API client.
+  final apiClient = ApiClient();
+
+  // Create repositories.
+  final authRepo = AuthRepository(apiClient: apiClient);
+  final corridorRepo = CorridorRepository(apiClient: apiClient);
+  final subscriptionRepo = SubscriptionRepository(apiClient: apiClient);
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(authRepository: authRepo),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CorridorProvider(corridorRepository: corridorRepo),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => SubscriptionProvider(subscriptionRepository: subscriptionRepo),
+        ),
+      ],
+      child: const VamoApp(),
+    ),
+  );
+}
+
+class VamoApp extends StatelessWidget {
+  const VamoApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Vamo',
+      theme: VamoTheme.dark(),
+      debugShowCheckedModeBanner: false,
+      locale: const Locale('ar'),
+      supportedLocales: const [Locale('ar')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: const Directionality(
+        textDirection: TextDirection.rtl,
+        child: SplashScreen(),
+      ),
+    );
+  }
+}
