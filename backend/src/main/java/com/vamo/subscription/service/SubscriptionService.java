@@ -3,14 +3,17 @@ package com.vamo.subscription.service;
 import com.vamo.common.enums.SubscriptionStatus;
 import com.vamo.common.exception.BadRequestException;
 import com.vamo.common.exception.NotFoundException;
+import com.vamo.corridor.service.CorridorService;
 import com.vamo.passenger.entity.PassengerProfile;
 import com.vamo.passenger.service.PassengerService;
 import com.vamo.payment.entity.Payment;
 import com.vamo.subscription.dto.SubscribeRequest;
+import com.vamo.subscription.dto.SubscriptionRequestedEvent;
 import com.vamo.subscription.dto.SubscriptionResponse;
 import com.vamo.subscription.entity.Subscription;
 import com.vamo.subscription.repository.SubscriptionRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,19 +29,28 @@ public class SubscriptionService {
 
     private final SubscriptionRepo subscriptionRepo;
     private final PassengerService passengerService;
+    private final ApplicationEventPublisher eventPublisher;
+    private final CorridorService corridorService;
 
     // todo: implement admin notification logic on subscription purchase
     
     @Transactional
     public SubscriptionResponse purchase(UUID passengerId, SubscribeRequest request) {
-
+        
+        System.out.println(passengerId);
+        
         Subscription subscription = Subscription.builder()
                 .passenger(passengerService.findById(passengerId))
-                .corridor(request.corridor())
+                .corridor(corridorService.findById(request.corridorID()))
                 .status(SubscriptionStatus.PENDING)
                 .build();
-
+        
+        SubscriptionRequestedEvent requestedEvent =
+                new SubscriptionRequestedEvent(subscription.getPassenger(), subscription.getCorridor());
+        
         Subscription saved = subscriptionRepo.save(subscription);
+        eventPublisher.publishEvent(requestedEvent);
+        
         return toResponse(saved);
     }
     

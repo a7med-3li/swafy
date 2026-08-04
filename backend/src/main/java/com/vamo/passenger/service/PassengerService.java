@@ -6,7 +6,10 @@ import com.vamo.common.events.PassengerRegisteredEvent;
 import com.vamo.passenger.entity.PassengerProfile;
 import com.vamo.passenger.repository.PassengerProfileRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 @Service
@@ -17,11 +20,18 @@ public class PassengerService {
 	private final PassengerProfileRepository passengerProfileRepository;
 	
 	public PassengerProfile findById(UUID id) {
-		return passengerProfileRepository.findById(id)
+		return passengerProfileRepository.findByUserId(id)
 				.orElseThrow(() -> new RuntimeException("Passenger not found"));
 	}
-
-	public void createPassengerProfile(PassengerProfile passengerProfile) {
+	
+	@Async
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+	public void onPassengerRegisteredEvent(PassengerRegisteredEvent event) {
+		System.out.println("Passenger registered event received");
+		createPassengerProfile(new PassengerProfile(event.user().getId(), event.user(), List.of()));
+	}
+	
+	private void createPassengerProfile(PassengerProfile passengerProfile) {
 		passengerProfileRepository.save(passengerProfile);
 	}
 }
