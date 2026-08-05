@@ -4,12 +4,12 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.swafy</groupId>
+    <groupId>com.vamo</groupId>
     <artifactId>backend</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
 
-    <name>swafy-backend</name>
+    <name>vamo-backend</name>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -25,6 +25,12 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>me.paulschwarz</groupId>
+            <artifactId>spring-dotenv</artifactId>
+            <version>4.0.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
