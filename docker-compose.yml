@@ -23,15 +23,22 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    env_file:
-      - .env
     environment:
       # Database settings expected by the application
       DB_URL: "jdbc:postgresql://db:5432/vamo"
       DB_USER_NAME: vamo_user
       DB_PASSWORD: vamo_pass
+      # App secrets (override via environment or .env)
+      JWT_SECRET: "${JWT_SECRET:-change-me}"
+      HERE_API_KEY: "${HERE_API_KEY:-}"
+      ACCOUNT_SID: "${ACCOUNT_SID:-}"
+      AUTH_TOKEN: "${AUTH_TOKEN:-}"
+      SERVICE_SID: "${SERVICE_SID:-}"
       SPRING_PROFILES_ACTIVE: "local"
     restart: unless-stopped
+
+    env_file:
+      - .env
 
 volumes:
   db_data:
