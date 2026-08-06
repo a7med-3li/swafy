@@ -1,6 +1,6 @@
-# Backend (Swafy)
+# Backend (Vamo)
 
-This is the Java (Spring Boot) backend for Swafy.
+This is the Java (Spring Boot) backend for Vamo.
 
 Build locally
 - From the `backend/` directory:
@@ -16,7 +16,7 @@ Run with Docker Compose
 - docker-compose -f infra/docker-compose.yml up
 
 Important environment variables
-- SPRING_DATASOURCE_URL (e.g. jdbc:postgresql://db:5432/swafy)
+- SPRING_DATASOURCE_URL (e.g. jdbc:postgresql://db:5432/vamo)
 - SPRING_DATASOURCE_USERNAME
 - SPRING_DATASOURCE_PASSWORD
 - SPRING_PROFILES_ACTIVE
