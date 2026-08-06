@@ -15,18 +15,18 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ""
 // ---------------------------------------------------------------------------
 
 /**
- * Mirrors com.swafy.common.enums.UserRole
+ * Mirrors com.vamo.common.enums.UserRole
  * Add/remove values here as the backend enum evolves.
  */
 export type UserRole = "RIDER" | "DRIVER"
 
 /**
- * Mirrors com.swafy.common.enums.Gender
+ * Mirrors com.vamo.common.enums.Gender
  */
 export type Gender = "MALE" | "FEMALE" | "OTHER"
 
 /**
- * Exactly mirrors com.swafy.auth.dto.UserRegistrationRequest.
+ * Exactly mirrors com.vamo.auth.dto.UserRegistrationRequest.
  * Field names must stay in sync with the Java class.
  */
 export interface UserRegistrationRequest {

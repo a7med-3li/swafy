@@ -16,19 +16,7 @@ class SubscriptionRepository {
     final data = await _api.post(
       ApiConstants.purchaseSubscription,
       body: {
-        'corridor': {
-          'id': corridor.id,
-          'title': corridor.name,
-          'price': corridor.price,
-          'stops': corridor.stops.map((s) => {
-            'id': s.id,
-            'name': s.name,
-            'vbs_location': {
-              'latitude': s.latitude,
-              'longitude': s.longitude,
-            },
-          }).toList(),
-        },
+        'corridorID': corridor.id,
       },
     );
 
