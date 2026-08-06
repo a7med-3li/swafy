@@ -1,6 +1,5 @@
 package com.vamo.subscription.dto;
 
-import com.vamo.common.enums.SubscriptionPlan;
 import com.vamo.common.enums.SubscriptionStatus;
 
 import java.math.BigDecimal;

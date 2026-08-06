@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.time.LocalDate;
 
 @Entity
@@ -51,8 +52,9 @@ public class Subscription {
     @Column(nullable = false)
     private LocalDate createdAt;
     
-    @PostPersist
-    private void postPersist() {
+    @PrePersist
+    private void prePersist() {
         this.createdAt = LocalDate.now();
+        this.endDate = LocalDate.now().plusMonths(1);
     }
 }

@@ -2,6 +2,7 @@ package com.vamo.admin.controller;
 
 import com.vamo.admin.dto.*;
 import com.vamo.admin.service.AdminService;
+import com.vamo.admin.service.AdminStatsService;
 import com.vamo.common.enums.ApprovalStatus;
 import com.vamo.common.enums.RideStatus;
 import com.vamo.common.enums.SubscriptionPlan;
@@ -21,11 +22,11 @@ import java.util.UUID;
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
-    private final AdminService adminService;
+    private final AdminStatsService adminStatsService;
 
     @GetMapping("/stats")
     public ResponseEntity<AdminStatsResponse> getStats() {
-        return ResponseEntity.ok(adminService.getStats());
+        return ResponseEntity.ok(adminStatsService.getStats());
     }
 
     @GetMapping("/rides")
@@ -33,41 +34,41 @@ public class AdminController {
             @RequestParam(required = false) RideStatus status,
             @RequestParam(required = false) UUID driverId,
             @RequestParam(required = false) UUID passengerId) {
-        return ResponseEntity.ok(adminService.getRides(status, driverId, passengerId));
+        return ResponseEntity.ok(adminStatsService.getRides(status, driverId, passengerId));
     }
 
     @GetMapping("/rides/{id}")
     public ResponseEntity<RideAdminItem> getRideDetail(@PathVariable UUID id) {
-        return ResponseEntity.ok(adminService.getRideDetail(id));
+        return ResponseEntity.ok(adminStatsService.getRideDetail(id));
     }
 
     @GetMapping("/drivers")
     public ResponseEntity<List<DriverAdminItem>> getDrivers(
             @RequestParam(required = false) ApprovalStatus approvalStatus) {
-        return ResponseEntity.ok(adminService.getDrivers(approvalStatus));
+        return ResponseEntity.ok(adminStatsService.getDrivers(approvalStatus));
     }
 
     @PostMapping("/drivers/{id}/approve")
     public ResponseEntity<Void> approveDriver(@PathVariable UUID id) {
-        adminService.approveDriver(id);
+        adminStatsService.approveDriver(id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/drivers/{id}/reject")
     public ResponseEntity<Void> rejectDriver(@PathVariable UUID id) {
-        adminService.rejectDriver(id);
+        adminStatsService.rejectDriver(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/deposits")
     public ResponseEntity<List<DepositItem>> getDeposits(
             @RequestParam(required = false) Boolean approved) {
-        return ResponseEntity.ok(adminService.getDeposits(approved));
+        return ResponseEntity.ok(adminStatsService.getDeposits(approved));
     }
 
     @PostMapping("/deposits/{id}/approve")
     public ResponseEntity<Void> approveDeposit(@PathVariable Long id) {
-        adminService.approveDeposit(id);
+        adminStatsService.approveDeposit(id);
         return ResponseEntity.ok().build();
     }
 
@@ -75,7 +76,7 @@ public class AdminController {
     public ResponseEntity<Void> forfeitDeposit(
             @PathVariable Long id,
             @Valid @RequestBody ForfeitDepositRequest request) {
-        adminService.forfeitDeposit(id, request.reason());
+        adminStatsService.forfeitDeposit(id, request.reason());
         return ResponseEntity.ok().build();
     }
 
@@ -88,12 +89,12 @@ public class AdminController {
 
     @GetMapping("/subscriptions/stats")
     public ResponseEntity<SubscriptionSalesStats> getSubscriptionStats() {
-        return ResponseEntity.ok(adminService.getSubscriptionStats());
+        return ResponseEntity.ok(adminStatsService.getSubscriptionStats());
     }
 
     @GetMapping("/no-shows/rides")
     public ResponseEntity<List<RideAdminItem>> getNoShowRides() {
-        return ResponseEntity.ok(adminService.getNoShowRides());
+        return ResponseEntity.ok(adminStatsService.getNoShowRides());
     }
     
 }
