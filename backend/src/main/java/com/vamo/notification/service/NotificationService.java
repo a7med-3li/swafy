@@ -23,6 +23,12 @@ public class NotificationService {
 		return notificationRepo.findAllByReceiverId(pageable, receiverId);
 	}
 	
+	// hack: needs to be removed after editing the logic of storing and retrieving
+	public Page<Notification> findAll(UUID receiverId, int page, int size) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+		return notificationRepo.findAll(pageable);
+	}
+	
 	public long countUnreadByUserId(UUID receiverId) {
 		return notificationRepo.countByReceiverIdAndStatus(receiverId, NotificationStatus.UNREAD);
 	}

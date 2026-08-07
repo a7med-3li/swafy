@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../providers/notifications_providor.dart';
 import '../../theme/theme.dart';
+import '../../data/models/notification_response.dart';
 
 /// Screen displaying passenger service announcements, bus delay alerts,
 /// and subscription renewal notifications.
-class NotificationsScreen extends StatelessWidget {
+class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
 
   @override
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State<NotificationsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<NotificationProvider>().loadNotifications();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Simulated list of notifications for the passenger client
-    final notifications = [
-
-      _NotificationItem(
-        title: 'تحديث أمني في خدمة Vamo',
-        body: 'يمكنك الآن استخدام كود الـ QR الإلكتروني من شاشة الرئيسية لركوب الباص بسهولة وأمان.',
-        time: 'منذ ٣ أيام',
-        type: _NotificationType.info,
-        isUnread: false,
-      ),
-    ];
-
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -29,39 +33,83 @@ class NotificationsScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),
-        body: SafeArea(
-          child: ListView.builder(
-            padding: const EdgeInsets.all(24),
-            physics: const BouncingScrollPhysics(),
-            itemCount: notifications.length,
-            itemBuilder: (context, index) {
-              final item = notifications[index];
-              return _buildNotificationCard(context, item);
-            },
-          ),
+        body: Consumer<NotificationProvider>(
+          builder: (context, provider, _) {
+            if (provider.isLoading) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: VamoTheme.primary,
+                ),
+              );
+            }
+
+            if (provider.error != null) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                   Icon(
+                     Icons.error_outline,
+                     size: 48,
+                     color: VamoTheme.alert,
+                   ),
+                   const SizedBox(height: 16),
+                   Text(provider.error ?? 'حدث خطأ'),
+                   const SizedBox(height: 16),
+                   ElevatedButton(
+                     onPressed: () {
+                       provider.loadNotifications();
+                     },
+                     child: const Text('إعادة محاولة'),
+                   ),
+                  ],
+                ),
+              );
+            }
+
+            if (provider.notifications.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                   Icon(
+                     Icons.notifications_none_rounded,
+                     size: 48,
+                     color: context.subtitleColor,
+                   ),
+                   const SizedBox(height: 16),
+                   Text(
+                     'لا توجد إشعارات',
+                     style: Theme.of(context).textTheme.titleMedium,
+                   ),
+                  ],
+                ),
+              );
+            }
+
+            return SafeArea(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(24),
+                physics: const BouncingScrollPhysics(),
+                itemCount: provider.notifications.length,
+                itemBuilder: (context, index) {
+                  final notification = provider.notifications[index];
+                  return _buildNotificationCard(context, notification);
+                },
+              ),
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _buildNotificationCard(BuildContext context, _NotificationItem item) {
-    Color badgeColor;
-    IconData icon;
-
-    switch (item.type) {
-      case _NotificationType.delay:
-        badgeColor = VamoTheme.alert;
-        icon = Icons.warning_amber_rounded;
-        break;
-      case _NotificationType.success:
-        badgeColor = VamoTheme.success;
-        icon = Icons.check_circle_outline_rounded;
-        break;
-      case _NotificationType.info:
-        badgeColor = const Color(0xFF60A5FA);
-        icon = Icons.info_outline_rounded;
-        break;
-    }
+  Widget _buildNotificationCard(
+    BuildContext context,
+    NotificationResponse notification,
+  ) {
+    const badgeColor = Color(0xFF60A5FA);
+    const icon = Icons.info_outline_rounded;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -70,18 +118,9 @@ class NotificationsScreen extends StatelessWidget {
         color: context.cardColor,
         borderRadius: BorderRadius.circular(22),
         border: Border.all(
-          color: item.isUnread ? badgeColor.withValues(alpha: 0.5) : context.cardBorderColor,
-          width: item.isUnread ? 1.5 : 1,
+          color: context.cardBorderColor,
+          width: 1,
         ),
-        boxShadow: item.isUnread
-            ? [
-                BoxShadow(
-                  color: badgeColor.withValues(alpha: 0.1),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : [],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,50 +131,35 @@ class NotificationsScreen extends StatelessWidget {
               color: badgeColor.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: badgeColor, size: 24),
+            child: const Icon(icon, color: badgeColor, size: 24),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        item.title,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              fontSize: 15,
-                            ),
-                      ),
-                    ),
-                    if (item.isUnread)
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: badgeColor,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                  ],
+                Text(
+                  notification.title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                       fontWeight: FontWeight.w800,
+                       fontSize: 15,
+                     ),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  item.body,
+                  notification.message,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: context.subtitleColor,
-                        height: 1.5,
-                      ),
+                       color: context.subtitleColor,
+                       height: 1.5,
+                     ),
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  item.time,
+                  notification.shortDescription,
                   style: TextStyle(
-                    color: context.subtitleColor.withValues(alpha: 0.7),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
+                   color: context.subtitleColor.withValues(alpha: 0.7),
+                   fontSize: 12,
+                   fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -145,22 +169,4 @@ class NotificationsScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-enum _NotificationType { delay, success, info }
-
-class _NotificationItem {
-  final String title;
-  final String body;
-  final String time;
-  final _NotificationType type;
-  final bool isUnread;
-
-  _NotificationItem({
-    required this.title,
-    required this.body,
-    required this.time,
-    required this.type,
-    required this.isUnread,
-  });
 }

@@ -6,9 +6,11 @@ import 'src/core/network/api_client.dart';
 import 'src/core/storage/token_storage.dart';
 import 'src/data/repositories/auth_repository.dart';
 import 'src/data/repositories/corridor_repository.dart';
+import 'src/data/repositories/notification_repository.dart';
 import 'src/data/repositories/subscription_repository.dart';
 import 'src/providers/auth_provider.dart';
 import 'src/providers/corridor_provider.dart';
+import 'src/providers/notifications_providor.dart';
 import 'src/providers/subscription_provider.dart';
 import 'src/providers/theme_provider.dart';
 import 'src/screens/splash_screen.dart';
@@ -26,6 +28,7 @@ void main() async {
   // Create repositories.
   final authRepo = AuthRepository(apiClient: apiClient);
   final corridorRepo = CorridorRepository(apiClient: apiClient);
+  final notificationRepo = NotificationRepository(apiClient: apiClient);
   final subscriptionRepo = SubscriptionRepository(apiClient: apiClient);
 
   runApp(
@@ -36,6 +39,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => CorridorProvider(corridorRepository: corridorRepo),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => NotificationProvider(notificationRepository: notificationRepo),
         ),
         ChangeNotifierProvider(
           create: (_) => SubscriptionProvider(subscriptionRepository: subscriptionRepo),
