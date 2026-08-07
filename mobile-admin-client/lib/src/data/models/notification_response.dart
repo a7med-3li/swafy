@@ -1,6 +1,4 @@
-import 'stop_response.dart';
-
-/// A transit corridor with its stops and pricing.
+/// Notification payload returned by the backend.
 class NotificationResponse {
   const NotificationResponse({
     required this.id,

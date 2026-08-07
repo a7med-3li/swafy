@@ -1,10 +1,12 @@
 package com.vamo.notification.controller;
 
+import com.vamo.auth.security.JwtAuthentication;
 import com.vamo.notification.dto.NotificationResponseDto;
 import com.vamo.notification.entity.Notification;
 import com.vamo.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,12 +25,13 @@ public class NotificationController {
 
     @GetMapping
     public ResponseEntity<List<NotificationResponseDto>> getNotifications(
-            @AuthenticationPrincipal String userId,
+            Authentication authentication,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        UUID receiverId = UUID.fromString(userId);
+        JwtAuthentication jwtAuthentication = (JwtAuthentication) authentication;
+        UUID receiverId = UUID.fromString(jwtAuthentication.getUserId());
 
-        List<Notification> notifications = notificationService.findAll(receiverId, page, size)
+        List<Notification> notifications = notificationService.findAllByReceiverId(receiverId, page, size)
                 .getContent();
 
         return ResponseEntity.ok(

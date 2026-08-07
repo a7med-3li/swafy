@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/notifications_providor.dart';
 import '../../theme/theme.dart';
 import '../../data/models/notification_response.dart';
@@ -18,7 +19,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<NotificationProvider>().loadNotifications();
+      final auth = context.read<AuthProvider>();
+      if (auth.isAuthenticated && auth.user != null) {
+        context.read<NotificationProvider>().loadNotifications();
+      }
     });
   }
 
@@ -35,6 +39,28 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         ),
         body: Consumer<NotificationProvider>(
           builder: (context, provider, _) {
+            final auth = context.watch<AuthProvider>();
+
+            if (!auth.isAuthenticated) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.lock_outline,
+                      size: 48,
+                      color: VamoTheme.alert,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'يجب تسجيل الدخول لعرض الإشعارات',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ],
+                ),
+              );
+            }
+
             if (provider.isLoading) {
               return Center(
                 child: CircularProgressIndicator(

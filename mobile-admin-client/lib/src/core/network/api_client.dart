@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../constants/api_constants.dart';
@@ -91,6 +92,7 @@ class ApiClient {
       headers['Authorization'] = 'Bearer $token';
     }
 
+    debugPrint('ApiClient headers: ${headers['Authorization'] ?? 'none'}');
     return headers;
   }
 
