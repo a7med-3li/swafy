@@ -1,7 +1,9 @@
 package com.vamo.common.dto;
 
 import java.util.UUID;
+import lombok.Builder;
 
+@Builder
 public record SubscriptionRequestDTO(
 		UUID receiverID,
 		String firstName,
