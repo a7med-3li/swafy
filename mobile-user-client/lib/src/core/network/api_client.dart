@@ -185,7 +185,7 @@ class ApiClient {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final decoded = jsonDecode(response.body);
         if (decoded is Map<String, dynamic>) {
-          final newToken = decoded['token'] as String?;
+          final newToken = decoded['accessToken'] as String?;
           final newRefreshToken = decoded['refreshToken'] as String?;
 
           if (newToken != null && newRefreshToken != null) {

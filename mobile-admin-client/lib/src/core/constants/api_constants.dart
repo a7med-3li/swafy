@@ -15,7 +15,7 @@ class ApiConstants {
 
   /// Active base URL used by the app.
   static const String baseUrl = _devBaseUrl;
-
+  static const String _localBaseUrl = 'http://localhost:8080';
   // ── Auth ────────────────────────────────────────────────────────────
   static const String login = '/api/v1/auth/login';
   static const String refreshToken = '/api/v1/auth/refresh';
@@ -42,6 +42,6 @@ class ApiConstants {
   static const String estimateRide = '/api/v3/ride/estimate-ride';
 
   // ── Notifications ─────────────────────────────────────────────────
-  static const String notifications = '/api/v1/notifications';
+  static const String allNotifications = '/api/v1/notifications';
   static String getNotification(String id) => '/api/v1/notifications/$id';
 }

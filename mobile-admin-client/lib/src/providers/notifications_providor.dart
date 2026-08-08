@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../core/network/api_exception.dart';
+import '../data/models/notification_page_response.dart';
 import '../data/models/notification_response.dart';
 import '../data/repositories/notification_repository.dart';
 
@@ -14,10 +15,12 @@ class NotificationProvider extends ChangeNotifier {
   // ── State ───────────────────────────────────────────────────────────
 
   List<NotificationResponse> _notifications = [];
+  NotificationPageResponse? _page;
   bool _isLoading = false;
   String? _error;
 
   List<NotificationResponse> get notifications => List.unmodifiable(_notifications);
+  NotificationPageResponse? get page => _page;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
@@ -30,13 +33,16 @@ class NotificationProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _notifications = await _repo.getAllNotifications();
+      _page = await _repo.getAllNotifications();
+      _notifications = _page?.content ?? const [];
     } on ApiException catch (e) {
       _error = e.message;
       _notifications = [];
+      _page = null;
     } catch (_) {
       _error = 'تعذر تحميل الإشعارات.';
       _notifications = [];
+      _page = null;
     }
 
     _isLoading = false;

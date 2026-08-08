@@ -1,5 +1,6 @@
 import '../../core/constants/api_constants.dart';
 import '../../core/network/api_client.dart';
+import '../models/notification_page_response.dart';
 import '../models/notification_response.dart';
 
 /// Handles notification-related API calls.
@@ -8,17 +9,51 @@ class NotificationRepository {
 
   final ApiClient _api;
 
-  /// Fetches all available notifications.
-  Future<List<NotificationResponse>> getAllNotifications() async {
-    final data = await _api.get(ApiConstants.notifications);
+  /// Fetches notifications as a backend page.
+  Future<NotificationPageResponse> getAllNotifications({
+    int page = 0,
+    int size = 20,
+  }) async {
+    final data = await _api.get(
+      ApiConstants.allNotifications,
+      queryParams: {
+        'page': page.toString(),
+        'size': size.toString(),
+      },
+    );
 
-    if (data is List) {
-      return data
-          .map((e) => NotificationResponse.fromJson(e as Map<String, dynamic>))
-          .toList(growable: false);
+    if (data is Map<String, dynamic>) {
+      return NotificationPageResponse.fromJson(data);
     }
 
-    return const [];
+    if (data is List) {
+      final content = data
+          .whereType<Map<String, dynamic>>()
+          .map(NotificationResponse.fromJson)
+          .toList(growable: false);
+
+      return NotificationPageResponse(
+        content: content,
+        number: page,
+        size: size,
+        totalPages: content.isEmpty ? 0 : 1,
+        totalElements: content.length,
+        first: true,
+        last: true,
+        empty: content.isEmpty,
+      );
+    }
+
+    return NotificationPageResponse.fromJson({
+      'content': const [],
+      'number': page,
+      'size': size,
+      'totalPages': 0,
+      'totalElements': 0,
+      'first': true,
+      'last': true,
+      'empty': true,
+    });
   }
 
   /// Retrieves a specific notification by its ID.
