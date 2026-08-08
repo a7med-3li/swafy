@@ -23,14 +23,15 @@ import java.util.UUID;
 public class NotificationController {
 
     private final NotificationService notificationService;
-
-    @PreAuthorize("hasRole('ADMIN')")
+    
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<NotificationResponseDto>> getAllNotifications(
             Authentication authentication,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         JwtAuthentication jwtAuthentication = (JwtAuthentication) authentication;
+        System.out.println("User ID from JWT: " + jwtAuthentication.getCredentials());
         UUID receiverId = UUID.fromString(jwtAuthentication.getUserId());
 
         List<Notification> notifications = notificationService.findAll(receiverId, page, size)
