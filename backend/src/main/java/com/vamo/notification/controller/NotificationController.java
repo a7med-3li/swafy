@@ -1,13 +1,11 @@
 package com.vamo.notification.controller;
 
-import com.vamo.auth.security.JwtAuthentication;
 import com.vamo.notification.dto.NotificationResponseDto;
 import com.vamo.notification.entity.Notification;
 import com.vamo.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,12 +25,11 @@ public class NotificationController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<NotificationResponseDto>> getAllNotifications(
-            Authentication authentication,
+            @AuthenticationPrincipal String userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        JwtAuthentication jwtAuthentication = (JwtAuthentication) authentication;
-        System.out.println("User ID from JWT: " + jwtAuthentication.getCredentials());
-        UUID receiverId = UUID.fromString(jwtAuthentication.getUserId());
+        System.out.println("User ID from JWT: " + userId);
+        UUID receiverId = UUID.fromString(userId);
 
         List<Notification> notifications = notificationService.findAll(receiverId, page, size)
                 .getContent();
