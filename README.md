@@ -1,6 +1,6 @@
-# Swafy
+# Vamo
 
-Swafy is a ride‑sharing system. This repository is a starter scaffold containing:
+Vamo is a ride‑sharing system. This repository is a starter scaffold containing:
 
 - `backend/` - Maven-based Java backend (Spring Boot)
 - `mobile/` - mobile client (placeholder)
@@ -33,4 +33,4 @@ Repository structure
 - docs/: architecture and design notes
 
 Links
-- Repo: https://github.com/a7med-3li/swafy
+- Repo: https://github.com/a7med-3li/vamo
