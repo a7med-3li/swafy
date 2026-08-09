@@ -1,0 +1,38 @@
+# Maven
+/backend/target/
+
+# Gradle
+/.gradle/
+
+# Node
+/node_modules/
+
+# IDEs
+.idea/
+.vscode/
+# Logs
+*.log
+*.gz
+
+# OS
+.DS_Store
+
+# Docker
+docker-compose.override.yml
+
+# Ignore local env files
+.env
+
+# unfinished files
+router_api.yaml
+
+/landing-page/landing-page-announce
+/landing-page/coming-soon.mp4
+/docs
+/legal-docs
+
+# Accidental tilde directory (Android SDK created at repo root)
+/~
+
+# Sibling mobile project not part of this repo
+/mobile-admin-client/

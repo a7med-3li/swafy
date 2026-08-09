@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
@@ -80,8 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(12),
               child: Padding(
                 padding: const EdgeInsets.all(6),
-                child: SvgPicture.asset(
-                  'assets/images/vamo_logo.svg',
+                child: Image.asset(
+                  'assets/images/vamo-logo.png',
                   width: 24,
                   height: 24,
                 ),
