@@ -36,9 +36,6 @@ public class SubscriptionService {
     private final PassengerService passengerService;
     private final ApplicationEventPublisher eventPublisher;
     private final CorridorService corridorService;
-    private final NotificationHandler notificationHandler;
-    private final NotificationService notificationService;
-    private final SystemContextService systemContextService;
 
     // todo: implement admin notification logic on subscription purchase
     
@@ -47,29 +44,21 @@ public class SubscriptionService {
         
         PassengerProfile passenger = passengerService.findById(passengerId);
         Corridor corridor = corridorService.findById(request.corridorID());
+        
         Subscription subscription = Subscription.builder()
                 .passenger(passenger)
                 .corridor(corridor)
                 .status(SubscriptionStatus.PENDING)
                 .build();
         
-        SubscriptionRequestedEvent requestedEvent =
-                new SubscriptionRequestedEvent(subscription.getPassenger(), subscription.getCorridor());
-        //todo: review this sh******t
-        // note: you might need to separate this logic and make the listener construct the notification of the admin
-        SubscriptionRequestDTO requestDTO = SubscriptionRequestDTO.builder()
-                .receiverID(systemContextService.getAdminId() )
-                .firstName(passenger.getUser().getFirstName())
-                .lastName(passenger.getUser().getLastName())
-                .corridorTitle(corridor.getTitle())
-                .fees(corridor.getPrice().toString())
-                .phoneNumber(passenger.getUser().getPhoneNumber())
-                .build();
+        // 1. Fail fast if invalid (will throw BadRequestException internally)
+        validateSubscription(subscription);
         
-        notificationService.save(notificationHandler.handleSubscriptionRequest(requestDTO));
-        
+        // 2. Persist state first
         Subscription saved = subscriptionRepo.save(subscription);
-        eventPublisher.publishEvent(requestedEvent);
+        
+        // 3. Publish event with the *saved* entity
+        eventPublisher.publishEvent(new SubscriptionRequestedEvent(saved));
         
         return toResponse(saved);
     }
@@ -111,7 +100,21 @@ public class SubscriptionService {
         sub.setStatus(SubscriptionStatus.CANCELLED);
         subscriptionRepo.save(sub);
     }
-
+    
+    private void validateSubscription(Subscription subscription) {
+        
+        UUID passengerId = subscription.getPassenger().getId();
+        List<SubscriptionStatus> blockingStatuses = List.of(SubscriptionStatus.ACTIVE, SubscriptionStatus.PENDING);
+        
+        subscriptionRepo.findFirstByPassengerIdAndStatusIn(passengerId, blockingStatuses)
+                .ifPresent(existingSub -> {
+                    if (existingSub.getStatus() == SubscriptionStatus.ACTIVE) {
+                        throw new BadRequestException("User already has an active subscription");
+                    }
+                    throw new BadRequestException("User already has a pending subscription");
+                });
+    }
+    
     private SubscriptionResponse toResponse(Subscription sub) {
         return new SubscriptionResponse(
                 sub.getId(),

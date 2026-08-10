@@ -1,8 +1,5 @@
 package com.vamo.subscription.dto;
 
-import com.vamo.corridor.entity.Corridor;
-import com.vamo.passenger.entity.PassengerProfile;
-import com.vamo.user.entity.User;
+import com.vamo.subscription.entity.Subscription;
 
-public record SubscriptionRequestedEvent(PassengerProfile passenger, Corridor corridor) {
-}
+public record SubscriptionRequestedEvent(Subscription subscription) {}

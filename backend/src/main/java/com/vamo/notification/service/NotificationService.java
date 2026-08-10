@@ -41,7 +41,7 @@ public class NotificationService {
 	}
 	
 	
-	public void save(Notification notification) {
-		notificationRepo.save(notification);
+	public Notification save(Notification notification) {
+		return notificationRepo.save(notification);
 	}
 }
