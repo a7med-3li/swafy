@@ -58,7 +58,7 @@ public class SubscriptionService {
         Subscription saved = subscriptionRepo.save(subscription);
         
         // 3. Publish event with the *saved* entity
-        eventPublisher.publishEvent(new SubscriptionRequestedEvent(saved));
+        eventPublisher.publishEvent(new SubscriptionRequestedEvent(saved.getId()));
         
         return toResponse(saved);
     }

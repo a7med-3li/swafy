@@ -87,7 +87,7 @@ public class NotificationHandler {
 				.status(NotificationStatus.UNREAD)
 				.build());
 		
-		telegramNotificationService.sendMessage(notification.toString());
+		telegramNotificationService.sendMessage(notification.getMessage());
 	}
 	
 }
