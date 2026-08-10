@@ -45,4 +45,8 @@ class ApiConstants {
   static const String rideHistory = '/api/v3/ride/history';
   static const String rideSearch = '/api/v3/ride/search';
   static const String estimateRide = '/api/v3/ride/estimate-ride';
+
+  // ── Notifications ─────────────────────────────────────────────────
+  static const String allNotifications = '/api/v1/notifications';
+  static String getNotification(String id) => '/api/v1/notifications/$id';
 }

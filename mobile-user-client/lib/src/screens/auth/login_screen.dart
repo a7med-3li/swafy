@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
@@ -104,8 +103,8 @@ class _LoginScreenState extends State<LoginScreen>
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(24),
-                              child: SvgPicture.asset(
-                                'assets/images/vamo_logo.svg',
+                              child: Image.asset(
+                                'assets/images/vamo-logo.png',
                                 width: 90,
                                 height: 90,
                               ),
