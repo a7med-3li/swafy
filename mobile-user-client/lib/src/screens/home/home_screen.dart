@@ -427,17 +427,6 @@ class _DashboardTab extends StatelessWidget {
             ),
             const SizedBox(height: 28),
 
-            // ── Live Trip / Today's Ride Widget ────────────────
-            if (subProvider.active != null) ...[
-              TodayRideCard(
-                corridorName: 'مسار التجمع الخامس - المهندسين',
-                driverName: 'كابتن محمود حسن',
-                vehiclePlate: 'أ ب ج ١٢٣٤',
-                etaMinutes: 7,
-              ),
-              const SizedBox(height: 22),
-            ],
-
             // ── Active Subscription Status ─────────────────────
             _buildSubscriptionSection(context, subProvider, auth.displayName),
           ],
@@ -577,39 +566,7 @@ class _DashboardTab extends StatelessWidget {
                     _subInfoItem(context, 'تاريخ الانتهاء', active.endDate),
                   ],
                 ),
-                const SizedBox(height: 24),
-
-                // ── Prominent Digital Boarding Pass QR Button ──
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      BoardingPassModal.show(
-                        context,
-                        subscription: active,
-                        passengerName: passengerName,
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      elevation: 4,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    icon: const Icon(Icons.qr_code_rounded,
-                        color: Colors.black, size: 24),
-                    label: const Text(
-                      'عرض تذكرة الركوب الإلكترونية (QR) 🎟️',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
-                ),
+                const SizedBox(height: 24)
               ],
             ),
           ),
