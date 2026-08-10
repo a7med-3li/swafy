@@ -23,7 +23,6 @@ public class CorridorController {
 	
 	private final CorridorService corridorService;
 	
-	//@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping
 	public ResponseEntity<List<CorridorResponse>> getAllCorridors() {
 		List<Corridor> corridors = corridorService.getAllCorridors();

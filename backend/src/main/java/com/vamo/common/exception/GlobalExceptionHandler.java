@@ -86,7 +86,18 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
-
+    
+    @ExceptionHandler(NotificationNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotificationNotFound(NotificationNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage(),
+                LocalDateTime.now(),
+                null
+        );
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+    
     @ExceptionHandler(UserAlreadyDeletedException.class)
     public ResponseEntity<ErrorResponse> handleUserAlreadyDeleted(UserAlreadyDeletedException ex) {
         ErrorResponse error = new ErrorResponse(
