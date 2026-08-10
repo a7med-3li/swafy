@@ -4,6 +4,7 @@ import com.vamo.common.dto.SubscriptionRequestDTO;
 import com.vamo.common.enums.SubscriptionStatus;
 import com.vamo.common.exception.BadRequestException;
 import com.vamo.common.exception.NotFoundException;
+import com.vamo.common.util.SystemContextService;
 import com.vamo.corridor.entity.Corridor;
 import com.vamo.corridor.service.CorridorService;
 import com.vamo.notification.handler.NotificationHandler;
@@ -37,6 +38,7 @@ public class SubscriptionService {
     private final CorridorService corridorService;
     private final NotificationHandler notificationHandler;
     private final NotificationService notificationService;
+    private final SystemContextService systemContextService;
 
     // todo: implement admin notification logic on subscription purchase
     
@@ -54,9 +56,9 @@ public class SubscriptionService {
         SubscriptionRequestedEvent requestedEvent =
                 new SubscriptionRequestedEvent(subscription.getPassenger(), subscription.getCorridor());
         //todo: review this sh******t
-        
+        // note: you might need to separate this logic and make the listener construct the notification of the admin
         SubscriptionRequestDTO requestDTO = SubscriptionRequestDTO.builder()
-                .receiverID(passenger.getUser().getId())
+                .receiverID(systemContextService.getAdminId() )
                 .firstName(passenger.getUser().getFirstName())
                 .lastName(passenger.getUser().getLastName())
                 .corridorTitle(corridor.getTitle())

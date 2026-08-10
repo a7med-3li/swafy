@@ -22,7 +22,6 @@ public class NotificationController {
 
     private final NotificationService notificationService;
     
-    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<NotificationResponseDto>> getAllNotifications(
             @AuthenticationPrincipal String userId,
@@ -31,7 +30,7 @@ public class NotificationController {
         System.out.println("User ID from JWT: " + userId);
         UUID receiverId = UUID.fromString(userId);
 
-        List<Notification> notifications = notificationService.findAll(receiverId, page, size)
+        List<Notification> notifications = notificationService.findAllByReceiverId(receiverId, page, size)
                 .getContent();
 
         return ResponseEntity.ok(
