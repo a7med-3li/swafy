@@ -13,10 +13,10 @@ import org.springframework.stereotype.Repository;
 public interface CorridorRepository extends JpaRepository<Corridor, Long> {
 	
 	@Query("SELECT c FROM Corridor c WHERE NOT EXISTS (" +
-			"SELECT s.id FROM Subscription s " +
-			"WHERE s.corridor = c " +
+			"SELECT 1 FROM Subscription s " +
+			"WHERE s.corridor.id = c.id " +
 			"AND s.passenger.id = :passengerId " +
-			"AND s.status IN :blockingStatuses" +
+			"AND s.status IN (:blockingStatuses)" +
 			")")
 	List<Corridor> findAvailableCorridors(
 			@Param("passengerId") UUID passengerId,

@@ -18,9 +18,11 @@ public class NotificationService {
 	
 	private final NotificationRepo notificationRepo;
 	
+	
+	
 	public Page<Notification> findAllByReceiverId(UUID receiverId, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-		return notificationRepo.findAllByReceiverId(pageable, receiverId);
+		return notificationRepo.findAllByReceiverIdOrderByUpdatedAtDesc(pageable, receiverId);
 	}
 	
 	// hack: needs to be removed after editing the logic of storing and retrieving

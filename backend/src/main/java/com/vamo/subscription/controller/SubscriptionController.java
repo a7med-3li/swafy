@@ -2,7 +2,6 @@ package com.vamo.subscription.controller;
 
 import com.vamo.common.dto.ApiResponse;
 import com.vamo.subscription.dto.SubscribeRequest;
-import com.vamo.subscription.dto.SubscriptionPlanInfo;
 import com.vamo.subscription.dto.SubscriptionResponse;
 import com.vamo.subscription.service.SubscriptionService;
 import jakarta.validation.Valid;
@@ -26,9 +25,10 @@ public class SubscriptionController {
     @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
     @PostMapping("/purchase")
     public ResponseEntity<SubscriptionResponse> purchase(
-            @AuthenticationPrincipal String userId,
+            @AuthenticationPrincipal String passengerId,
             @Valid @RequestBody SubscribeRequest request) {
-        return ResponseEntity.ok(subscriptionService.purchase(UUID.fromString(userId), request));
+        System.out.println("Passenger ID: " + passengerId);
+        return ResponseEntity.ok(subscriptionService.purchase(UUID.fromString(passengerId), request));
     }
 
     @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")

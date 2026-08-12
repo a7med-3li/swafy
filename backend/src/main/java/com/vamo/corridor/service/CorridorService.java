@@ -31,6 +31,7 @@ public class CorridorService {
 				SubscriptionStatus.PENDING
 		);
 		
+		System.out.println("Finding available corridors for passenger: " + passengerId);
 		return corridorRepository.findAvailableCorridors(passengerId, blockingStatuses);
 	}
 	

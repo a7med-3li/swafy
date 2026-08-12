@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NotificationRepo extends JpaRepository<Notification, UUID> {
 	
-	Page<Notification> findAllByReceiverId(Pageable pageable, UUID receiverId);
+	Page<Notification> findAllByReceiverIdOrderByUpdatedAtDesc(Pageable pageable, UUID receiverId);
 	
 	long countByReceiverIdAndStatus(UUID receiverId, NotificationStatus status);
 	

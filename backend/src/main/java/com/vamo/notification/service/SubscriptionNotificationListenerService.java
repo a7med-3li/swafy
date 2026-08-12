@@ -37,7 +37,7 @@ public class SubscriptionNotificationListenerService {
 		Corridor corridor = subscription.getCorridor();
 		
 		SubscriptionRequestDTO requestDTO = SubscriptionRequestDTO.builder()
-				.receiverID(systemContextService.getAdminId())
+				.receiverID(passenger.getUser().getId())
 				.firstName(passenger.getUser().getFirstName())
 				.lastName(passenger.getUser().getLastName())
 				.corridorTitle(corridor.getTitle())
@@ -46,7 +46,17 @@ public class SubscriptionNotificationListenerService {
 				.build();
 		
 		notificationService.save(notificationHandler.handleSubscriptionRequest(requestDTO));
-		notificationHandler.handleSubscriptionRequestForAdmin(requestDTO);
+		
+		SubscriptionRequestDTO adminRequestDTO = SubscriptionRequestDTO.builder()
+				.receiverID(systemContextService.getAdminId())
+				.firstName(passenger.getUser().getFirstName())
+				.lastName(passenger.getUser().getLastName())
+				.corridorTitle(corridor.getTitle())
+				.fees(corridor.getPrice().toString())
+				.phoneNumber(passenger.getUser().getPhoneNumber())
+				.build();
+		
+		notificationHandler.handleSubscriptionRequestForAdmin(adminRequestDTO);
 	}
 }
 

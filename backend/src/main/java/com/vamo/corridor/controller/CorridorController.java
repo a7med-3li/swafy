@@ -2,6 +2,7 @@ package com.vamo.corridor.controller;
 
 import java.util.List;
 import java.util.UUID;
+import com.vamo.common.annotation.CurrentPassengerId;
 import com.vamo.corridor.dto.CorridorResponse;
 import com.vamo.corridor.dto.SaveCorridorRequest;
 import com.vamo.corridor.dto.StopResponse;
@@ -11,7 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,9 +27,9 @@ public class CorridorController {
 	
 	@GetMapping
 	public ResponseEntity<List<CorridorResponse>> getAllCorridors(
-			@AuthenticationPrincipal String userId
+			@CurrentPassengerId UUID passengerId
 	) {
-		List<Corridor> corridors = corridorService.getAvailableCorridorsForPassenger(UUID.fromString(userId));
+		List<Corridor> corridors = corridorService.getAvailableCorridorsForPassenger(passengerId);
 		List<CorridorResponse> response = corridors.stream()
 				.map(c -> new CorridorResponse(
 						c.getId(),

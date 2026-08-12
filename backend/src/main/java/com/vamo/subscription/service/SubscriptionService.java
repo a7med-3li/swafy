@@ -1,14 +1,10 @@
 package com.vamo.subscription.service;
 
-import com.vamo.common.dto.SubscriptionRequestDTO;
 import com.vamo.common.enums.SubscriptionStatus;
 import com.vamo.common.exception.BadRequestException;
 import com.vamo.common.exception.NotFoundException;
-import com.vamo.common.util.SystemContextService;
 import com.vamo.corridor.entity.Corridor;
 import com.vamo.corridor.service.CorridorService;
-import com.vamo.notification.handler.NotificationHandler;
-import com.vamo.notification.service.NotificationService;
 import com.vamo.passenger.entity.PassengerProfile;
 import com.vamo.passenger.service.PassengerService;
 import com.vamo.payment.entity.Payment;
@@ -22,9 +18,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,8 +30,6 @@ public class SubscriptionService {
     private final ApplicationEventPublisher eventPublisher;
     private final CorridorService corridorService;
 
-    // todo: implement admin notification logic on subscription purchase
-    
     @Transactional
     public SubscriptionResponse purchase(UUID passengerId, SubscribeRequest request) {
         
@@ -51,13 +42,10 @@ public class SubscriptionService {
                 .status(SubscriptionStatus.PENDING)
                 .build();
         
-        // 1. Fail fast if invalid (will throw BadRequestException internally)
         validateSubscription(subscription);
-        
-        // 2. Persist state first
+    
         Subscription saved = subscriptionRepo.save(subscription);
         
-        // 3. Publish event with the *saved* entity
         eventPublisher.publishEvent(new SubscriptionRequestedEvent(saved.getId()));
         
         return toResponse(saved);
@@ -104,14 +92,15 @@ public class SubscriptionService {
     private void validateSubscription(Subscription subscription) {
         
         UUID passengerId = subscription.getPassenger().getId();
+        Long corridorId = subscription.getCorridor().getId();
         List<SubscriptionStatus> blockingStatuses = List.of(SubscriptionStatus.ACTIVE, SubscriptionStatus.PENDING);
         
-        subscriptionRepo.findFirstByPassengerIdAndStatusIn(passengerId, blockingStatuses)
+        subscriptionRepo.findFirstByPassengerIdAndCorridorIdAndStatusIn(passengerId, corridorId, blockingStatuses)
                 .ifPresent(existingSub -> {
                     if (existingSub.getStatus() == SubscriptionStatus.ACTIVE) {
-                        throw new BadRequestException("User already has an active subscription");
+                        throw new BadRequestException("User already has an active subscription for this corridor");
                     }
-                    throw new BadRequestException("User already has a pending subscription");
+                    throw new BadRequestException("User already has a pending subscription for this corridor");
                 });
     }
     

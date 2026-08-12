@@ -1,5 +1,7 @@
 package com.vamo.notification.controller;
 
+import com.vamo.auth.security.JwtAuthentication;
+import com.vamo.common.annotation.CurrentPassengerId;
 import com.vamo.notification.dto.NotificationResponseDto;
 import com.vamo.notification.entity.Notification;
 import com.vamo.notification.service.NotificationService;
@@ -27,10 +29,9 @@ public class NotificationController {
             @AuthenticationPrincipal String userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        System.out.println("User ID from JWT: " + userId);
-        UUID receiverId = UUID.fromString(userId);
 
-        List<Notification> notifications = notificationService.findAllByReceiverId(receiverId, page, size)
+        UUID passengerId = UUID.fromString(userId);
+        List<Notification> notifications = notificationService.findAllByReceiverId(passengerId, page, size)
                 .getContent();
 
         return ResponseEntity.ok(
