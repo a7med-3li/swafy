@@ -6,6 +6,7 @@ import '../../providers/subscription_provider.dart';
 import '../../theme/theme.dart';
 import '../../widgets/error_banner.dart';
 import '../../widgets/vamo_button.dart';
+import '../../providers/corridor_provider.dart';
 
 /// Detail view for a single corridor with stop list and subscribe action.
 class CorridorDetailScreen extends StatelessWidget {
@@ -174,9 +175,13 @@ class CorridorDetailScreen extends StatelessWidget {
           actions: [
             TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('إلغاء', style: TextStyle(color: Color(0xFFA0A0A0)))),
             FilledButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.pop(ctx);
-                context.read<SubscriptionProvider>().purchase(corridor);
+                final subProvider = context.read<SubscriptionProvider>();
+                final success = await subProvider.purchase(corridor);
+                if (success && context.mounted) {
+                  await context.read<CorridorProvider>().loadCorridors();
+                }
               },
               style: FilledButton.styleFrom(backgroundColor: VamoTheme.primary),
               child: const Text('تأكيد'),
