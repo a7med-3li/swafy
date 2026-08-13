@@ -1,5 +1,6 @@
 package com.vamo.subscription.controller;
 
+import com.vamo.common.annotation.CurrentPassengerId;
 import com.vamo.common.dto.ApiResponse;
 import com.vamo.subscription.dto.SubscribeRequest;
 import com.vamo.subscription.dto.SubscriptionResponse;
@@ -33,9 +34,15 @@ public class SubscriptionController {
 
     @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
     @GetMapping("/active")
-    public ResponseEntity<SubscriptionResponse> getActive(@AuthenticationPrincipal String userId) {
-        return ResponseEntity.ok(subscriptionService.getActiveSubscription(UUID.fromString(userId)));
+    public ResponseEntity<SubscriptionResponse> getActive(@CurrentPassengerId UUID userId) {
+        return ResponseEntity.ok(subscriptionService.getActiveSubscription(userId));
     }
+	
+	@PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
+	@GetMapping("/pending")
+	public ResponseEntity<SubscriptionResponse> getPending(@CurrentPassengerId UUID userId) {
+		return ResponseEntity.ok(subscriptionService.getPendingSubscription(userId));
+	}
 
     @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
     @GetMapping("/history")

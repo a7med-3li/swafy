@@ -65,7 +65,13 @@ public class SubscriptionService {
                 .map(this::toResponse)
                 .orElseThrow(() -> new NotFoundException("No active subscription found"));
     }
-
+    
+    public SubscriptionResponse getPendingSubscription(UUID passengerId) {
+        return subscriptionRepo.findByPassengerIdAndStatus(passengerId, SubscriptionStatus.PENDING)
+                .map(this::toResponse)
+                .orElseThrow(() -> new NotFoundException("No pending subscription found"));
+    }
+    
     public List<SubscriptionResponse> getSubscriptionHistory(UUID passengerId) {
         return subscriptionRepo.findByPassengerIdOrderByCreatedAtDesc(passengerId)
                 .stream()
