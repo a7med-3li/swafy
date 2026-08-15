@@ -12,6 +12,7 @@ import '../auth/login_screen.dart';
 import '../corridors/corridors_screen.dart';
 import '../notifications/notifications_screen.dart';
 import '../profile/profile_screen.dart';
+import '../subscriptions/my_subscriptions_screen.dart';
 import '../subscriptions/subscription_history_screen.dart';
 
 /// Main dashboard shown after login.
@@ -54,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: const [
             _DashboardTab(),
             CorridorsScreen(),
+            MySubscriptionsScreen(),
             ProfileScreen(),
           ],
         ),
@@ -236,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _handleMenuSelection(BuildContext context, String value) {
     switch (value) {
       case 'profile':
-        switchTab(2);
+        switchTab(3);
         break;
       case 'history':
         Navigator.of(context).push(
@@ -257,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (ctx) => Directionality(
         textDirection: TextDirection.rtl,
         child: AlertDialog(
-          backgroundColor: VamoTheme.card,
+          backgroundColor: context.cardColor,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text('تسجيل الخروج',
@@ -266,8 +268,8 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('إلغاء',
-                  style: TextStyle(color: Color(0xFFA0A0A0))),
+              child: Text('إلغاء',
+                  style: TextStyle(color: context.subtitleColor)),
             ),
             FilledButton(
               onPressed: () async {
@@ -304,7 +306,8 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               _navItem(0, Icons.home_rounded, 'الرئيسية'),
               _navItem(1, Icons.route_rounded, 'المسارات'),
-              _navItem(2, Icons.person_outline_rounded, 'حسابي'),
+              _navItem(2, Icons.card_membership_rounded, 'اشتراكاتي'),
+              _navItem(3, Icons.person_outline_rounded, 'حسابي'),
             ],
           ),
         ),
@@ -642,15 +645,15 @@ class _DashboardTab extends StatelessWidget {
                     );
                   },
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFF373737)),
+                    side: BorderSide(color: context.cardBorderColor),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
                     padding: EdgeInsets.zero,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.history_rounded,
-                    color: VamoTheme.subtitle,
+                    color: context.subtitleColor,
                     size: 24,
                   ),
                 ),

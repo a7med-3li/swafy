@@ -3,17 +3,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
-import '../../providers/subscription_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../theme/theme.dart';
-import '../../widgets/boarding_pass_modal.dart';
-import '../../widgets/today_ride_card.dart';
 import '../../widgets/vamo_button.dart';
 import '../auth/login_screen.dart';
 import '../corridors/corridors_screen.dart';
 import '../notifications/notifications_screen.dart';
 import '../profile/profile_screen.dart';
-import '../subscriptions/subscription_history_screen.dart';
+import '../corridors/add_corridor_screen.dart';
+import '../subscriptions/pending_subscriptions_screen.dart';
 
 /// Main dashboard shown after login.
 ///
@@ -37,10 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Load active subscription on startup.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SubscriptionProvider>().loadActive();
-    });
   }
 
   @override
@@ -199,18 +193,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            PopupMenuItem(
-              value: 'history',
-              child: Row(
-                children: [
-                  Icon(Icons.history_rounded,
-                      color: context.subtitleColor, size: 20),
-                  const SizedBox(width: 12),
-                  const Text('سجل الاشتراكات',
-                      style: TextStyle(fontWeight: FontWeight.w700)),
-                ],
-              ),
-            ),
             const PopupMenuDivider(height: 1),
             PopupMenuItem(
               value: 'logout',
@@ -238,13 +220,6 @@ class _HomeScreenState extends State<HomeScreen> {
     switch (value) {
       case 'profile':
         switchTab(2);
-        break;
-      case 'history':
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => const SubscriptionHistoryScreen(),
-          ),
-        );
         break;
       case 'logout':
         _confirmLogout(context);
@@ -303,8 +278,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _navItem(0, Icons.home_rounded, 'الرئيسية'),
-              _navItem(1, Icons.route_rounded, 'المسارات'),
+              _navItem(0, Icons.dashboard_rounded, 'الرئيسية'),
+              _navItem(1, Icons.route_rounded, 'إدارة المسارات'),
               _navItem(2, Icons.person_outline_rounded, 'حسابي'),
             ],
           ),
@@ -353,14 +328,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-/// The "Home" tab content — clean, focused dashboard without scroll clutter.
+/// The "Home" tab content — Admin Dashboard focused on managing the system.
 class _DashboardTab extends StatelessWidget {
   const _DashboardTab();
 
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
-    final subProvider = context.watch<SubscriptionProvider>();
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -392,7 +366,7 @@ class _DashboardTab extends StatelessWidget {
                     child: Text(
                       auth.displayName.isNotEmpty
                           ? auth.displayName[0].toUpperCase()
-                          : 'V',
+                          : 'A',
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
@@ -416,7 +390,7 @@ class _DashboardTab extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'رحلتك اليومية أسهل مع Vamo',
+                        'لوحة تحكم الإدارة - Vamo Admin',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: context.subtitleColor,
                             ),
@@ -428,331 +402,116 @@ class _DashboardTab extends StatelessWidget {
             ),
             const SizedBox(height: 28),
 
-            // ── Live Trip / Today's Ride Widget ────────────────
-            if (subProvider.active != null) ...[
-              TodayRideCard(
-                corridorName: 'مسار التجمع الخامس - المهندسين',
-                driverName: 'كابتن محمود حسن',
-                vehiclePlate: 'أ ب ج ١٢٣٤',
-                etaMinutes: 7,
+            // ── Admin Quick Actions ─────────────────────────────
+            Text('إجراءات سريعة', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+            const SizedBox(height: 16),
+            
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF05472A), Color(0xFF081A19)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: const Color(0xFF166534).withValues(alpha: 0.5),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: VamoTheme.accent.withValues(alpha: 0.15),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
-              const SizedBox(height: 22),
-            ],
-
-            // ── Active Subscription Status ─────────────────────
-            _buildSubscriptionSection(context, subProvider, auth.displayName),
+              child: Column(
+                children: [
+                  Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      color: VamoTheme.accent.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                    child: const Icon(
+                      Icons.add_road_rounded,
+                      color: VamoTheme.accent,
+                      size: 36,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'إضافة مسار جديد',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'قم بتكوين مسار جديد للنظام، متضمناً المحطات وتكلفة الاشتراك.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: const Color(0xFF9E9E9E),
+                          height: 1.5,
+                        ),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AddCorridorScreen()));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: VamoTheme.accent,
+                        foregroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      ),
+                      icon: const Icon(Icons.add_rounded, color: Colors.black),
+                      label: const Text(
+                        'إضافة مسار',
+                        style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Secondary Quick Actions
+            Row(
+              children: [
+                Expanded(
+                  child: VamoButton(
+                    label: 'الطلبات المعلقة',
+                    icon: Icons.pending_actions_rounded,
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PendingSubscriptionsScreen()));
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: VamoButton(
+                    label: 'عرض وإدارة المسارات',
+                    icon: Icons.list_alt_rounded,
+                    onPressed: () {
+                      final homeState = context.findAncestorStateOfType<_HomeScreenState>();
+                      homeState?.switchTab(1);
+                    },
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildSubscriptionSection(
-    BuildContext context,
-    SubscriptionProvider subProvider,
-    String passengerName,
-  ) {
-    final active = subProvider.active;
-
-    if (active != null) {
-      final daysLeft = _calculateDaysLeft(active.endDate);
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF05472A), Color(0xFF081A19)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(26),
-              border: Border.all(
-                color: const Color(0xFF166534).withValues(alpha: 0.5),
-                width: 1.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: VamoTheme.accent.withValues(alpha: 0.15),
-                  blurRadius: 24,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Top row: Status badge & icon
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF166534),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: const Icon(
-                        Icons.card_membership_rounded,
-                        color: VamoTheme.accent,
-                        size: 22,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      'اشتراكك الحالي',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w900,
-                          ),
-                    ),
-                    const Spacer(),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF166534),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        active.status.label,
-                        style: const TextStyle(
-                          color: VamoTheme.accent,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 22),
-
-                // Days remaining badge
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF092E1C),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: const Color(0xFF15803D).withValues(alpha: 0.6),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.timer_outlined,
-                        color: VamoTheme.accent,
-                        size: 22,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          daysLeft > 0
-                              ? 'متبقي $daysLeft يوم على تجديد الاشتراك'
-                              : 'الاشتراك ينتهي اليوم أو يحتاج تجديد',
-                          style: const TextStyle(
-                            color: Color(0xFF86EFAC),
-                            fontWeight: FontWeight.w800,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 22),
-
-                // Dates and Price
-                Row(
-                  children: [
-                    _subInfoItem(
-                      context,
-                      'القيمة الشهرية',
-                      '${active.price.toStringAsFixed(0)} ج.م',
-                      isHighlight: true,
-                    ),
-                    const SizedBox(width: 28),
-                    _subInfoItem(context, 'تاريخ البدء', active.startDate),
-                    const SizedBox(width: 28),
-                    _subInfoItem(context, 'تاريخ الانتهاء', active.endDate),
-                  ],
-                ),
-                const SizedBox(height: 24),
-
-                // ── Prominent Digital Boarding Pass QR Button ──
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      BoardingPassModal.show(
-                        context,
-                        subscription: active,
-                        passengerName: passengerName,
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      elevation: 4,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    icon: const Icon(Icons.qr_code_rounded,
-                        color: Colors.black, size: 24),
-                    label: const Text(
-                      'عرض تذكرة الركوب الإلكترونية (QR) 🎟️',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Quick Actions for active user
-          Row(
-            children: [
-              Expanded(
-                child: VamoButton(
-                  label: 'تصفح مسار آخر / تجديد',
-                  icon: Icons.add_circle_outline_rounded,
-                  onPressed: () {
-                    final homeState =
-                        context.findAncestorStateOfType<_HomeScreenState>();
-                    homeState?.switchTab(1);
-                  },
-                ),
-              ),
-              const SizedBox(width: 12),
-              SizedBox(
-                width: 58,
-                height: 58,
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const SubscriptionHistoryScreen(),
-                      ),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFF373737)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    padding: EdgeInsets.zero,
-                  ),
-                  child: const Icon(
-                    Icons.history_rounded,
-                    color: VamoTheme.subtitle,
-                    size: 24,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      );
-    }
-
-    // Empty state when user has no active subscription
-    return Container(
-      padding: const EdgeInsets.all(28),
-      decoration: BoxDecoration(
-        color: context.cardColor,
-        borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: context.cardBorderColor),
-      ),
-      child: Column(
-        children: [
-          Container(
-            width: 72,
-            height: 72,
-            decoration: BoxDecoration(
-              color: VamoTheme.accent.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(22),
-            ),
-            child: const Icon(
-              Icons.explore_rounded,
-              color: VamoTheme.accent,
-              size: 36,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'لا يوجد اشتراك فعال حالياً',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w900,
-                ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            'اشترك الآن في مسارك اليومي واستمتع برحلات مريحة، تعرفة موحدة، وسائقين معتمدين.',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: context.subtitleColor,
-                  height: 1.6,
-                ),
-          ),
-          const SizedBox(height: 26),
-          VamoButton(
-            label: 'تصفح المسارات المتاحة 🧭',
-            icon: Icons.search_rounded,
-            onPressed: () {
-              final homeState =
-                  context.findAncestorStateOfType<_HomeScreenState>();
-              homeState?.switchTab(1);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  int _calculateDaysLeft(String endDateStr) {
-    try {
-      final endDate = DateTime.parse(endDateStr);
-      final now = DateTime.now();
-      final difference =
-          endDate.difference(DateTime(now.year, now.month, now.day)).inDays;
-      return difference > 0 ? difference : 0;
-    } catch (_) {
-      return 30; // Default fallback if parsing fails
-    }
-  }
-
-  Widget _subInfoItem(
-    BuildContext context,
-    String label,
-    String value, {
-    bool isHighlight = false,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: const Color(0xFF9E9E9E),
-              ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          value,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontWeight: isHighlight ? FontWeight.w900 : FontWeight.w700,
-                color: isHighlight ? VamoTheme.accent : context.titleColor,
-                fontSize: isHighlight ? 18 : 15,
-              ),
-        ),
-      ],
     );
   }
 }

@@ -83,7 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: VamoTheme.background,
+        backgroundColor: context.bg,
         body: SafeArea(
           child: Center(
             child: SingleChildScrollView(
@@ -135,7 +135,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           'سجل بياناتك للبدء في استخدام Vamo',
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: VamoTheme.subtitle,
+                                color: context.subtitleColor,
                               ),
                         ),
                         const SizedBox(height: 28),
@@ -211,7 +211,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                             Text(
                               'الجنس',
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: VamoTheme.subtitle,
+                                    color: context.subtitleColor,
                                     fontWeight: FontWeight.w600,
                                   ),
                             ),
@@ -219,9 +219,9 @@ class _RegisterScreenState extends State<RegisterScreen>
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                               decoration: BoxDecoration(
-                                color: VamoTheme.field,
+                                color: context.fieldColor,
                                 borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: const Color(0xFF373737)),
+                                border: Border.all(color: context.cardBorderColor),
                               ),
                               child: Row(
                                 children: [
@@ -247,7 +247,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                               _obscurePassword
                                   ? Icons.visibility_off_outlined
                                   : Icons.visibility_outlined,
-                              color: VamoTheme.subtitle,
+                              color: context.subtitleColor,
                               size: 20,
                             ),
                             onPressed: () => setState(
@@ -282,7 +282,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                             Text(
                               'لديك حساب بالفعل؟',
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: VamoTheme.subtitle,
+                                    color: context.subtitleColor,
                                   ),
                             ),
                             TextButton(
@@ -333,13 +333,13 @@ class _RegisterScreenState extends State<RegisterScreen>
               Icon(
                 icon,
                 size: 20,
-                color: isSelected ? Colors.white : VamoTheme.subtitle,
+                color: isSelected ? Colors.white : context.subtitleColor,
               ),
               const SizedBox(width: 8),
               Text(
                 label,
                 style: TextStyle(
-                  color: isSelected ? Colors.white : VamoTheme.subtitle,
+                  color: isSelected ? Colors.white : context.subtitleColor,
                   fontWeight: FontWeight.w700,
                 ),
               ),

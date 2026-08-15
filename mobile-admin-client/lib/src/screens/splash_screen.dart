@@ -105,10 +105,11 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30),
-                    child: SvgPicture.asset(
-                      'assets/images/vamo_logo.svg',
+                    child: Image.asset(
+                      'assets/images/vamo-logo.png',
                       width: 120,
                       height: 120,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),

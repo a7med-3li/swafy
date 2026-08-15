@@ -6,12 +6,12 @@ import 'src/core/network/api_client.dart';
 import 'src/core/storage/token_storage.dart';
 import 'src/data/repositories/auth_repository.dart';
 import 'src/data/repositories/corridor_repository.dart';
+import 'src/data/repositories/subscription_admin_repository.dart';
 import 'src/data/repositories/notification_repository.dart';
-import 'src/data/repositories/subscription_repository.dart';
 import 'src/providers/auth_provider.dart';
 import 'src/providers/corridor_provider.dart';
 import 'src/providers/notifications_providor.dart';
-import 'src/providers/subscription_provider.dart';
+import 'src/providers/subscription_admin_provider.dart';
 import 'src/providers/theme_provider.dart';
 import 'src/screens/splash_screen.dart';
 import 'src/theme/theme.dart';
@@ -29,7 +29,7 @@ void main() async {
   final authRepo = AuthRepository(apiClient: apiClient);
   final corridorRepo = CorridorRepository(apiClient: apiClient);
   final notificationRepo = NotificationRepository(apiClient: apiClient);
-  final subscriptionRepo = SubscriptionRepository(apiClient: apiClient);
+  final subAdminRepo = SubscriptionAdminRepository(apiClient: apiClient);
 
   runApp(
     MultiProvider(
@@ -44,7 +44,7 @@ void main() async {
           create: (_) => NotificationProvider(notificationRepository: notificationRepo),
         ),
         ChangeNotifierProvider(
-          create: (_) => SubscriptionProvider(subscriptionRepository: subscriptionRepo),
+          create: (_) => SubscriptionAdminProvider(repository: subAdminRepo),
         ),
         ChangeNotifierProvider(
           create: (_) => ThemeProvider(),

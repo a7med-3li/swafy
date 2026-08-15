@@ -92,7 +92,7 @@ class AuthRepository {
       );
 
       if (data is Map<String, dynamic>) {
-        final newToken = data['accessToken'] as String?;
+        final newToken = data['token'] as String?;
         final newRefresh = data['refreshToken'] as String?;
         if (newToken != null && newRefresh != null) {
           await TokenStorage.saveTokens(

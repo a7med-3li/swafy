@@ -28,7 +28,7 @@ class _SubscriptionHistoryScreenState extends State<SubscriptionHistoryScreen> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: VamoTheme.background,
+        backgroundColor: context.bg,
         appBar: AppBar(
           title: const Text('سجل الاشتراكات'),
           backgroundColor: Colors.transparent,
@@ -36,87 +36,93 @@ class _SubscriptionHistoryScreenState extends State<SubscriptionHistoryScreen> {
         ),
         body: SafeArea(
           child: subProvider.isLoading
-              ? const Center(
+              ? Center(
                   child: CircularProgressIndicator(
-                    color: Color(0xFF4ADE80),
+                    color: VamoTheme.accent,
                     strokeWidth: 3,
                   ),
                 )
               : subProvider.history.isEmpty
                   ? _buildEmptyState(context)
-                  : ListView.builder(
-                      padding: const EdgeInsets.all(24),
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: subProvider.history.length,
-                      itemBuilder: (context, index) {
-                        final sub = subProvider.history[index];
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 14),
-                          padding: const EdgeInsets.all(18),
-                          decoration: BoxDecoration(
-                            color: VamoTheme.card,
-                            borderRadius: BorderRadius.circular(18),
-                            border: Border.all(color: const Color(0xFF2A2A2A)),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  color: VamoTheme.primary.withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: const Icon(
-                                  Icons.card_membership_rounded,
-                                  color: Color(0xFF4ADE80),
-                                  size: 24,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${sub.price.toStringAsFixed(0)} ج.م',
-                                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                            fontWeight: FontWeight.w800,
-                                            fontSize: 16,
-                                          ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      '${sub.startDate} — ${sub.endDate}',
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                            color: VamoTheme.subtitle,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF1A1A1A),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Text(
-                                  sub.status.label,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xFF9E9E9E),
+                  : RefreshIndicator(
+                      onRefresh: () => subProvider.forceRefresh(),
+                      color: VamoTheme.accent,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(24),
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
+                        ),
+                        itemCount: subProvider.history.length,
+                        itemBuilder: (context, index) {
+                          final sub = subProvider.history[index];
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 14),
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              color: context.cardColor,
+                              borderRadius: BorderRadius.circular(18),
+                              border: Border.all(color: context.cardBorderColor),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    color: VamoTheme.primary.withValues(alpha: 0.2),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Icon(
+                                    Icons.card_membership_rounded,
+                                    color: VamoTheme.accent,
+                                    size: 24,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${sub.price.toStringAsFixed(0)} ج.م',
+                                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                              fontWeight: FontWeight.w800,
+                                              fontSize: 16,
+                                            ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        '${sub.startDate} — ${sub.endDate}',
+                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                              color: context.subtitleColor,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: context.fieldColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    sub.status.label,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: context.subtitleColor,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     ),
         ),
       ),
@@ -134,12 +140,12 @@ class _SubscriptionHistoryScreenState extends State<SubscriptionHistoryScreen> {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: VamoTheme.card,
+                color: context.cardColor,
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.history_rounded,
-                color: VamoTheme.subtitle,
+                color: context.subtitleColor,
                 size: 38,
               ),
             ),
@@ -155,7 +161,7 @@ class _SubscriptionHistoryScreenState extends State<SubscriptionHistoryScreen> {
               'ستظهر هنا جميع اشتراكاتك السابقة والحالية.',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: VamoTheme.subtitle,
+                    color: context.subtitleColor,
                   ),
             ),
           ],
