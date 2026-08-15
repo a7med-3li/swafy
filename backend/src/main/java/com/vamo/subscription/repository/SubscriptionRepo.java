@@ -17,7 +17,13 @@ import java.util.UUID;
 public interface SubscriptionRepo extends JpaRepository<Subscription, Long> {
 
     Optional<Subscription> findByPassengerIdAndStatus(UUID passengerId, SubscriptionStatus status);
-
+    
+    Optional<Subscription> findFirstByPassengerIdAndCorridorIdAndStatusIn(
+            UUID passengerId,
+            Long corridorId, // Or UUID, depending on your Corridor ID type
+            List<SubscriptionStatus> statuses
+    );
+    
     List<Subscription> findByPassengerIdOrderByCreatedAtDesc(UUID passengerId);
 
     List<Subscription> findByStatusAndEndDateBefore(SubscriptionStatus status, LocalDate date);

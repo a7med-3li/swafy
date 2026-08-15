@@ -13,6 +13,7 @@ class ApiConstants {
   // ignore: unused_field
   static const String _prodBaseUrl = 'https://api.vamoeg.app';
 
+  static const String _localBaseUrl = 'http://localhost:8080';
   /// Active base URL used by the app.
   static const String baseUrl = _devBaseUrl;
 

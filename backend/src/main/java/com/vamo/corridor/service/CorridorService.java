@@ -1,7 +1,9 @@
 package com.vamo.corridor.service;
 
 import java.util.List;
+import java.util.UUID;
 import com.vamo.common.entity.Location;
+import com.vamo.common.enums.SubscriptionStatus;
 import com.vamo.corridor.dto.CorridorStopRequest;
 import com.vamo.corridor.dto.SaveCorridorRequest;
 import com.vamo.corridor.entity.Corridor;
@@ -20,6 +22,17 @@ public class CorridorService {
 	public Corridor findById(Long id) {
 		return corridorRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Corridor not found with id: " + id));
+	}
+	
+	public List<Corridor> getAvailableCorridorsForPassenger(UUID passengerId) {
+		
+		List<SubscriptionStatus> blockingStatuses = List.of(
+				SubscriptionStatus.ACTIVE,
+				SubscriptionStatus.PENDING
+		);
+		
+		System.out.println("Finding available corridors for passenger: " + passengerId);
+		return corridorRepository.findAvailableCorridors(passengerId, blockingStatuses);
 	}
 	
 	public List<Corridor> getAllCorridors() {

@@ -1,6 +1,8 @@
 package com.vamo.corridor.controller;
 
 import java.util.List;
+import java.util.UUID;
+import com.vamo.common.annotation.CurrentPassengerId;
 import com.vamo.corridor.dto.CorridorResponse;
 import com.vamo.corridor.dto.SaveCorridorRequest;
 import com.vamo.corridor.dto.StopResponse;
@@ -24,8 +26,10 @@ public class CorridorController {
 	private final CorridorService corridorService;
 	
 	@GetMapping
-	public ResponseEntity<List<CorridorResponse>> getAllCorridors() {
-		List<Corridor> corridors = corridorService.getAllCorridors();
+	public ResponseEntity<List<CorridorResponse>> getAllCorridors(
+			@CurrentPassengerId UUID passengerId
+	) {
+		List<Corridor> corridors = corridorService.getAvailableCorridorsForPassenger(passengerId);
 		List<CorridorResponse> response = corridors.stream()
 				.map(c -> new CorridorResponse(
 						c.getId(),

@@ -3,6 +3,8 @@ package com.vamo.auth.service;
 import com.vamo.auth.security.SecurityUser;
 import com.vamo.common.dto.DriverRegisterRequest;
 import com.vamo.common.dto.PassengerRegisterRequest;
+import com.vamo.passenger.entity.PassengerProfile;
+import com.vamo.passenger.repository.PassengerProfileRepository;
 import com.vamo.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +30,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final JwtEncoder jwtEncoder;
+    private final PassengerProfileRepository passengerProfileRepository;
     
     public SecurityUser authenticate(String email, String password) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
@@ -41,13 +44,23 @@ public class AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
         
-        JwtClaimsSet claims = JwtClaimsSet.builder()
+        JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder()
                 .issuer("auth-service")
                 .issuedAt(now)
                 .expiresAt(now.plus(15, ChronoUnit.MINUTES))
                 .subject(securityUser.user().getId().toString())
-                .claim("roles", scope)
-                .build();
+                .claim("roles", scope);
+        
+        if (!scope.contains("ADMIN")) {
+	        
+	        passengerProfileRepository
+			        .findByUserId(securityUser.user().getId())
+			        .ifPresent(passengerProfile
+                            -> claimsBuilder.claim("passengerId",
+                            passengerProfile.getId().toString()));
+	        
+        }
+        JwtClaimsSet claims = claimsBuilder.build();
         
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
         return jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();

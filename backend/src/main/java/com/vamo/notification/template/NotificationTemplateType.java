@@ -15,13 +15,19 @@ public enum NotificationTemplateType {
 			"Your transfer of {amount} EGP to {receiverName} was completed successfully. " +
 					"The transaction reference number is: {transactionId}"
 	),
-	
-	SUBSCRIPTION_REQUEST(
+	SUBSCRIPTION_REQUEST_ADMIN(
 			"Subscription Request",
 			"You have a new subscription request.",
 			"You have received a new subscription request from {firstName} {lastName}. " +
 					"The passenger wants to subscribe for {CorridorTitle} with {fees} fees. " +
 					"You can contact the passenger at {phoneNumber}"
+	),
+	SUBSCRIPTION_REQUEST(
+			"Subscription Request",
+			"You have made a new subscription request.",
+			"{firstName}, you have registered a new subscription request. " +
+					"You want to subscribe for {CorridorTitle} with {fees} fees. " +
+					"We will review your request and get back to you soon."
 	);
 	
 	private final String title;
