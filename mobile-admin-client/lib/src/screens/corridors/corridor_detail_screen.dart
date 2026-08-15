@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/corridor_response.dart';
-import '../../providers/subscription_provider.dart';
 import '../../theme/theme.dart';
-import '../../widgets/error_banner.dart';
-import '../../widgets/vamo_button.dart';
 
 /// Detail view for a single corridor with stop list and subscribe action.
 class CorridorDetailScreen extends StatelessWidget {
@@ -15,8 +12,6 @@ class CorridorDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final subProvider = context.watch<SubscriptionProvider>();
-
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -138,50 +133,9 @@ class CorridorDetailScreen extends StatelessWidget {
                     );
                   }),
 
-                const SizedBox(height: 24),
-
-                // Messages
-                ErrorBanner(message: subProvider.error, onDismiss: subProvider.clearMessages),
-                if (subProvider.error != null) const SizedBox(height: 12),
-                ErrorBanner(message: subProvider.successMessage, isError: false, onDismiss: subProvider.clearMessages),
-                if (subProvider.successMessage != null) const SizedBox(height: 12),
-
-                // Subscribe
-                VamoButton(
-                  label: 'اشتراك في هذا المسار',
-                  icon: Icons.card_membership_rounded,
-                  isLoading: subProvider.isLoading,
-                  onPressed: () => _confirmSubscribe(context),
-                ),
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  void _confirmSubscribe(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: AlertDialog(
-          backgroundColor: VamoTheme.card,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text('تأكيد الاشتراك', style: TextStyle(fontWeight: FontWeight.w800)),
-          content: Text('هل تريد الاشتراك في مسار "${corridor.name}" بسعر ${corridor.price.toStringAsFixed(0)} ج.م؟'),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('إلغاء', style: TextStyle(color: Color(0xFFA0A0A0)))),
-            FilledButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-                context.read<SubscriptionProvider>().purchase(corridor);
-              },
-              style: FilledButton.styleFrom(backgroundColor: VamoTheme.primary),
-              child: const Text('تأكيد'),
-            ),
-          ],
         ),
       ),
     );

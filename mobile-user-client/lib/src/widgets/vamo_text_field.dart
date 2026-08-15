@@ -42,7 +42,7 @@ class VamoTextField extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: VamoTheme.subtitle,
+                color: context.subtitleColor,
                 fontWeight: FontWeight.w600,
               ),
         ),
@@ -54,12 +54,12 @@ class VamoTextField extends StatelessWidget {
           textDirection: textDirection,
           maxLines: maxLines,
           onChanged: onChanged,
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: context.titleColor),
           validator: validator,
           decoration: InputDecoration(
             hintText: hint,
             prefixIcon: prefixIcon != null
-                ? Icon(prefixIcon, color: VamoTheme.subtitle, size: 20)
+                ? Icon(prefixIcon, color: context.subtitleColor, size: 20)
                 : null,
             suffixIcon: suffixIcon,
           ),

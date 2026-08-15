@@ -74,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen>
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: VamoTheme.background,
+        backgroundColor: context.bg,
         body: SafeArea(
           child: Center(
             child: SingleChildScrollView(
@@ -126,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen>
                           'سجل دخولك للمتابعة',
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: VamoTheme.subtitle,
+                                color: context.subtitleColor,
                               ),
                         ),
                         const SizedBox(height: 32),
@@ -167,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen>
                               _obscurePassword
                                   ? Icons.visibility_off_outlined
                                   : Icons.visibility_outlined,
-                              color: VamoTheme.subtitle,
+                              color: context.subtitleColor,
                               size: 20,
                             ),
                             onPressed: () => setState(
@@ -199,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen>
                             Text(
                               'ليس لديك حساب؟',
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: VamoTheme.subtitle,
+                                    color: context.subtitleColor,
                                   ),
                             ),
                             TextButton(

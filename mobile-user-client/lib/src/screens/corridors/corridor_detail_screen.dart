@@ -21,7 +21,7 @@ class CorridorDetailScreen extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: VamoTheme.background,
+        backgroundColor: context.bg,
         appBar: AppBar(
           title: Text(corridor.name),
           backgroundColor: Colors.transparent,
@@ -62,7 +62,7 @@ class CorridorDetailScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(corridor.name, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900)),
+                                Text(corridor.name, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900, color: Colors.white)),
                                 const SizedBox(height: 4),
                                 Text('${corridor.stops.length} محطة', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: const Color(0xFF9E9E9E))),
                               ],
@@ -94,8 +94,8 @@ class CorridorDetailScreen extends StatelessWidget {
                 if (corridor.stops.isEmpty)
                   Container(
                     padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(color: VamoTheme.card, borderRadius: BorderRadius.circular(16)),
-                    child: Text('لا توجد محطات مسجلة حالياً.', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: VamoTheme.subtitle), textAlign: TextAlign.center),
+                    decoration: BoxDecoration(color: context.cardColor, borderRadius: BorderRadius.circular(16)),
+                    child: Text('لا توجد محطات مسجلة حالياً.', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.subtitleColor), textAlign: TextAlign.center),
                   )
                 else
                   ...List.generate(corridor.stops.length, (i) {
@@ -114,7 +114,7 @@ class CorridorDetailScreen extends StatelessWidget {
                               ),
                               child: Center(child: Text('${i + 1}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13))),
                             ),
-                            if (!isLast) Container(width: 2, height: 40, color: const Color(0xFF2A2A2A)),
+                            if (!isLast) Container(width: 2, height: 40, color: context.cardBorderColor),
                           ],
                         ),
                         const SizedBox(width: 14),
@@ -122,14 +122,14 @@ class CorridorDetailScreen extends StatelessWidget {
                           child: Container(
                             margin: const EdgeInsets.only(bottom: 12),
                             padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(color: VamoTheme.card, borderRadius: BorderRadius.circular(16)),
+                            decoration: BoxDecoration(color: context.cardColor, borderRadius: BorderRadius.circular(16)),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(stop.name, style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700)),
                                 if (stop.latitude != 0.0) ...[
                                   const SizedBox(height: 4),
-                                  Text('${stop.latitude.toStringAsFixed(4)}, ${stop.longitude.toStringAsFixed(4)}', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: VamoTheme.subtitle)),
+                                  Text('${stop.latitude.toStringAsFixed(4)}, ${stop.longitude.toStringAsFixed(4)}', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.subtitleColor)),
                                 ],
                               ],
                             ),
@@ -168,12 +168,12 @@ class CorridorDetailScreen extends StatelessWidget {
       builder: (ctx) => Directionality(
         textDirection: TextDirection.rtl,
         child: AlertDialog(
-          backgroundColor: VamoTheme.card,
+          backgroundColor: context.cardColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text('تأكيد الاشتراك', style: TextStyle(fontWeight: FontWeight.w800)),
           content: Text('هل تريد الاشتراك في مسار "${corridor.name}" بسعر ${corridor.price.toStringAsFixed(0)} ج.م؟'),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('إلغاء', style: TextStyle(color: Color(0xFFA0A0A0)))),
+            TextButton(onPressed: () => Navigator.pop(ctx), child: Text('إلغاء', style: TextStyle(color: context.subtitleColor))),
             FilledButton(
               onPressed: () async {
                 Navigator.pop(ctx);

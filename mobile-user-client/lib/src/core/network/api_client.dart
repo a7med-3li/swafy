@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../constants/api_constants.dart';
@@ -115,13 +117,21 @@ class ApiClient {
 
     try {
       response = await request().timeout(const Duration(seconds: 30));
+    } on TimeoutException {
+      throw ApiException(
+        'انتهت مهلة الاتصال. حاول مرة أخرى.',
+      );
     } on SocketException {
       throw ApiException(
         'تعذر الوصول إلى الخادم. تحقق من اتصال الإنترنت.',
       );
     } on HttpException {
       throw ApiException('حدث خطأ أثناء الاتصال بالخادم.');
-    } on Exception catch (e) {
+    } on ApiException {
+      rethrow;
+    } on Exception catch (e, stackTrace) {
+      debugPrint('🚨 [ApiClient] Exception: $e');
+      debugPrint('🚨 [ApiClient] StackTrace: $stackTrace');
       throw ApiException('خطأ غير متوقع: ${e.toString()}');
     }
 
@@ -132,6 +142,10 @@ class ApiClient {
         // Retry the original request with the new token.
         try {
           response = await request().timeout(const Duration(seconds: 30));
+        } on TimeoutException {
+          throw ApiException(
+            'انتهت مهلة الاتصال. حاول مرة أخرى.',
+          );
         } on SocketException {
           throw ApiException(
             'تعذر الوصول إلى الخادم. تحقق من اتصال الإنترنت.',
@@ -147,15 +161,33 @@ class ApiClient {
 
   dynamic _processResponse(http.Response response) {
     final body = response.body.trim();
-    final decoded = body.isEmpty ? null : jsonDecode(body);
+    dynamic decoded;
+    
+    try {
+      decoded = body.isEmpty ? null : jsonDecode(body);
+    } catch (e) {
+      debugPrint('🚨 [ApiClient] Failed to decode JSON: $body');
+      // If it's an error response, we'll handle it below.
+    }
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return decoded ?? <String, dynamic>{};
     }
 
-    // Error response
-    if (decoded is Map<String, dynamic>) {
-      throw ApiException.fromJson(decoded, statusCode: response.statusCode);
+    if (response.statusCode >= 400) {
+      debugPrint('🚨 [ApiClient] HTTP Error ${response.statusCode}: $body');
+      
+      if (decoded is Map<String, dynamic>) {
+        throw ApiException.fromJson(decoded, statusCode: response.statusCode);
+      }
+      
+      // Fallback meaningful message if it's not JSON
+      String message = 'حدث خطأ في الخادم (${response.statusCode}).';
+      if (response.statusCode == 400) message = 'طلب غير صالح. يرجى التحقق من البيانات.';
+      if (response.statusCode == 404) message = 'الخدمة غير موجودة.';
+      if (response.statusCode == 500) message = 'خطأ داخلي في الخادم. حاول لاحقاً.';
+      
+      throw ApiException(message, statusCode: response.statusCode);
     }
 
     throw ApiException(
@@ -185,7 +217,7 @@ class ApiClient {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final decoded = jsonDecode(response.body);
         if (decoded is Map<String, dynamic>) {
-          final newToken = decoded['accessToken'] as String?;
+          final newToken = decoded['token'] as String?;
           final newRefreshToken = decoded['refreshToken'] as String?;
 
           if (newToken != null && newRefreshToken != null) {

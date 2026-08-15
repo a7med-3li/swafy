@@ -5,6 +5,7 @@ import '../../providers/corridor_provider.dart';
 import '../../theme/theme.dart';
 import '../../widgets/corridor_card.dart';
 import '../../widgets/error_banner.dart';
+import 'add_corridor_screen.dart';
 import 'corridor_detail_screen.dart';
 
 /// Screen displaying all available corridors.
@@ -31,8 +32,23 @@ class _CorridorsScreenState extends State<CorridorsScreen> {
   Widget build(BuildContext context) {
     final provider = context.watch<CorridorProvider>();
 
-    return SafeArea(
-      child: CustomScrollView(
+    return Scaffold(
+      backgroundColor: context.bg,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const AddCorridorScreen()),
+          );
+        },
+        backgroundColor: VamoTheme.primary,
+        icon: const Icon(Icons.add_rounded, color: Colors.white),
+        label: const Text(
+          'إضافة مسار',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
+        ),
+      ),
+      body: SafeArea(
+        child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
           SliverPadding(
@@ -85,12 +101,12 @@ class _CorridorsScreenState extends State<CorridorsScreen> {
                         width: 80,
                         height: 80,
                         decoration: BoxDecoration(
-                          color: VamoTheme.card,
+                          color: context.cardColor,
                           borderRadius: BorderRadius.circular(24),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.route_rounded,
-                          color: VamoTheme.subtitle,
+                          color: context.subtitleColor,
                           size: 36,
                         ),
                       ),
@@ -105,7 +121,7 @@ class _CorridorsScreenState extends State<CorridorsScreen> {
                       Text(
                         'سيتم إضافة مسارات جديدة قريباً.',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: VamoTheme.subtitle,
+                              color: context.subtitleColor,
                             ),
                       ),
                       const SizedBox(height: 24),
@@ -151,6 +167,7 @@ class _CorridorsScreenState extends State<CorridorsScreen> {
             ),
         ],
       ),
+    ),
     );
   }
 }

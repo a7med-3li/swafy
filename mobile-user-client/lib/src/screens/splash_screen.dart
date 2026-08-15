@@ -41,7 +41,9 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _animController.forward();
-    _initApp();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initApp();
+    });
   }
 
   Future<void> _initApp() async {
@@ -79,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: VamoTheme.background,
+      backgroundColor: context.bg,
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnim,
@@ -123,15 +125,15 @@ class _SplashScreenState extends State<SplashScreen>
                 Text(
                   'رحلتك اليومية أسهل',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: VamoTheme.subtitle,
+                        color: context.subtitleColor,
                       ),
                 ),
                 const SizedBox(height: 40),
-                const SizedBox(
+                SizedBox(
                   width: 28,
                   height: 28,
                   child: CircularProgressIndicator(
-                    color: Color(0xFF4ADE80),
+                    color: VamoTheme.accent,
                     strokeWidth: 2.5,
                   ),
                 ),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,7 +8,7 @@ import '../../widgets/corridor_card.dart';
 import '../../widgets/error_banner.dart';
 import 'corridor_detail_screen.dart';
 
-/// Screen displaying all available corridors.
+/// Screen displaying all available corridors with a local search bar.
 class CorridorsScreen extends StatefulWidget {
   const CorridorsScreen({super.key});
 
@@ -16,6 +17,10 @@ class CorridorsScreen extends StatefulWidget {
 }
 
 class _CorridorsScreenState extends State<CorridorsScreen> {
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
+  Timer? _debounce;
+
   @override
   void initState() {
     super.initState();
@@ -25,8 +30,32 @@ class _CorridorsScreenState extends State<CorridorsScreen> {
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        setState(() => _searchQuery = value.trim());
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final provider = context.watch<CorridorProvider>();
+
+    // Client-side filtering
+    final filteredCorridors = _searchQuery.isEmpty
+        ? provider.corridors
+        : provider.corridors.where((c) {
+            final query = _searchQuery.toLowerCase();
+            return c.name.toLowerCase().contains(query);
+          }).toList();
 
     return SafeArea(
       child: RefreshIndicator(

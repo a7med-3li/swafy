@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
-import '../../providers/subscription_provider.dart';
 import '../../theme/theme.dart';
 import '../auth/login_screen.dart';
 
@@ -18,15 +17,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SubscriptionProvider>().loadHistory();
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
-    final subProvider = context.watch<SubscriptionProvider>();
     final user = auth.user;
 
     return SafeArea(
@@ -71,60 +66,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // User details
             if (user != null) ...[
               _infoTile(context, Icons.person_outline, 'الجنس', user.genderLabel),
-              _infoTile(context, Icons.badge_outlined, 'الدور', user.roleLabel),
+              _infoTile(context, Icons.admin_panel_settings_rounded, 'الدور', 'مدير النظام'),
               if (user.email != null && user.email!.isNotEmpty) _infoTile(context, Icons.email_outlined, 'البريد', user.email!),
             ],
             const SizedBox(height: 28),
 
-            // Subscription history
-            Text('سجل الاشتراكات', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
-            const SizedBox(height: 16),
-            if (subProvider.isLoading)
-              const Center(child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator(color: Color(0xFF4ADE80), strokeWidth: 3)))
-            else if (subProvider.history.isEmpty)
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(color: context.cardColor, borderRadius: BorderRadius.circular(16)),
-                child: Column(
-                  children: [
-                    Icon(Icons.history_rounded, color: context.subtitleColor, size: 36),
-                    const SizedBox(height: 12),
-                    Text('لا يوجد سجل اشتراكات', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.subtitleColor)),
-                  ],
-                ),
-              )
-            else
-              ...subProvider.history.map((sub) => Container(
-                margin: const EdgeInsets.only(bottom: 12),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(color: context.cardColor, borderRadius: BorderRadius.circular(16), border: Border.all(color: context.cardBorderColor)),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 44, height: 44,
-                      decoration: BoxDecoration(color: VamoTheme.primary.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(14)),
-                      child: const Icon(Icons.card_membership_rounded, color: Color(0xFF4ADE80), size: 22),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('${sub.price.toStringAsFixed(0)} ج.م', style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700)),
-                          const SizedBox(height: 4),
-                          Text('${sub.startDate} — ${sub.endDate}', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.subtitleColor)),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(color: const Color(0xFF1A1A1A), borderRadius: BorderRadius.circular(8)),
-                      child: Text(sub.status.label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF9E9E9E))),
-                    ),
-                  ],
-                ),
-              )),
-            const SizedBox(height: 28),
+
 
             // Logout
             OutlinedButton.icon(
