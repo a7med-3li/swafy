@@ -60,16 +60,18 @@ public class SubscriptionService {
         return toResponse(saved);
     }
 
-    public SubscriptionResponse getActiveSubscription(UUID passengerId) {
+    public List<SubscriptionResponse> getActiveSubscription(UUID passengerId) {
         return subscriptionRepo.findByPassengerIdAndStatus(passengerId, SubscriptionStatus.ACTIVE)
+                .stream()
                 .map(this::toResponse)
-                .orElseThrow(() -> new NotFoundException("No active subscription found"));
+                .toList();
     }
     
-    public SubscriptionResponse getPendingSubscription(UUID passengerId) {
+    public List<SubscriptionResponse> getPendingSubscription(UUID passengerId) {
         return subscriptionRepo.findByPassengerIdAndStatus(passengerId, SubscriptionStatus.PENDING)
+                .stream()
                 .map(this::toResponse)
-                .orElseThrow(() -> new NotFoundException("No pending subscription found"));
+                .toList();
     }
     
     public List<SubscriptionResponse> getSubscriptionHistory(UUID passengerId) {

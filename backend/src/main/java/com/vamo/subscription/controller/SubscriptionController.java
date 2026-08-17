@@ -34,28 +34,28 @@ public class SubscriptionController {
 
     @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
     @GetMapping("/active")
-    public ResponseEntity<SubscriptionResponse> getActive(@CurrentPassengerId UUID userId) {
+    public ResponseEntity<List<SubscriptionResponse>> getActive(@CurrentPassengerId UUID userId) {
         return ResponseEntity.ok(subscriptionService.getActiveSubscription(userId));
     }
 	
 	@PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
 	@GetMapping("/pending")
-	public ResponseEntity<SubscriptionResponse> getPending(@CurrentPassengerId UUID userId) {
+	public ResponseEntity<List<SubscriptionResponse>> getPending(@CurrentPassengerId UUID userId) {
 		return ResponseEntity.ok(subscriptionService.getPendingSubscription(userId));
 	}
 
     @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
     @GetMapping("/history")
-    public ResponseEntity<List<SubscriptionResponse>> getHistory(@AuthenticationPrincipal String userId) {
-        return ResponseEntity.ok(subscriptionService.getSubscriptionHistory(UUID.fromString(userId)));
+    public ResponseEntity<List<SubscriptionResponse>> getHistory(@CurrentPassengerId UUID userId) {
+        return ResponseEntity.ok(subscriptionService.getSubscriptionHistory(userId));
     }
 
     @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
     @PostMapping("/{id}/cancel")
     public ResponseEntity<ApiResponse> cancel(
-            @AuthenticationPrincipal String userId,
+            @CurrentPassengerId UUID userId,
             @PathVariable Long id) {
-        subscriptionService.cancelSubscription(id, UUID.fromString(userId));
+        subscriptionService.cancelSubscription(id, userId);
         return ResponseEntity.ok(new ApiResponse(true, "Subscription cancelled"));
     }
 }

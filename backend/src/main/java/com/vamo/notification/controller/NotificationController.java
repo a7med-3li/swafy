@@ -1,7 +1,7 @@
 package com.vamo.notification.controller;
 
-import com.vamo.auth.security.JwtAuthentication;
 import com.vamo.common.annotation.CurrentPassengerId;
+import com.vamo.common.dto.ApiResponse;
 import com.vamo.notification.dto.NotificationResponseDto;
 import com.vamo.notification.entity.Notification;
 import com.vamo.notification.service.NotificationService;
@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +20,8 @@ import java.util.UUID;
 public class NotificationController {
 
     private final NotificationService notificationService;
-    
+
+    @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
     @GetMapping
     public ResponseEntity<List<NotificationResponseDto>> getAllNotifications(
             @AuthenticationPrincipal String userId,
@@ -39,5 +37,19 @@ public class NotificationController {
                         .map(NotificationResponseDto::from)
                         .toList()
         );
+    }
+
+    @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
+    @GetMapping("/unread-count")
+    public ResponseEntity<Long> getUnreadCount(@AuthenticationPrincipal String userId) {
+        UUID passengerId = UUID.fromString(userId);
+        return ResponseEntity.ok(notificationService.countUnreadByUserId(passengerId));
+    }
+
+    @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
+    @PostMapping("/{id}/read")
+    public ResponseEntity<ApiResponse> markAsRead(@PathVariable UUID id) {
+        notificationService.markAsRead(id);
+        return ResponseEntity.ok(new ApiResponse(true, "Notification marked as read"));
     }
 }

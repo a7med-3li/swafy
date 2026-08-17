@@ -1,5 +1,6 @@
 package com.vamo.notification.entity;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 import com.vamo.common.enums.NotificationStatus;
@@ -70,27 +71,27 @@ public class Notification {
 	private String metadata;
 	
 	@Column(nullable = false)
-	private LocalDate createdAt;
+	private Instant createdAt;
 	
 	@Column(nullable = false)
-	private LocalDate updatedAt;
+	private Instant updatedAt;
 	
-	private LocalDate readAt;
+	private Instant readAt;
 	
 	public void markAsRead() {
 		this.status = NotificationStatus.READ;
-		this.readAt = LocalDate.now();
+		this.readAt = Instant.now();
 	}
 	
 	@PrePersist
 	public void prePersist() {
-		LocalDate now = LocalDate.now();
+		Instant now = Instant.now();
 		this.createdAt = now;
 		this.updatedAt = now;
 	}
 	
 	@PreUpdate
 	public void preUpdate() {
-		this.updatedAt = LocalDate.now();
+		this.updatedAt = Instant.now();
 	}
 }

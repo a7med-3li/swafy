@@ -100,16 +100,20 @@ async function post<TBody, TResponse>(
 // ---------------------------------------------------------------------------
 
 /**
- * POST /api/v1/auth/register
+ * POST /api/v1/auth/register/{role}
  *
  * Registers a new user and returns their profile.
+ * The endpoint mirrors the backend split: riders use `/register/passenger`,
+ * drivers use `/register/driver`.
  * Throws an `ApiError` on any non-2xx response.
  */
 export async function registerUser(
   payload: UserRegistrationRequest
 ): Promise<UserResponse> {
-  return post<UserRegistrationRequest, UserResponse>(
-    "/api/v1/auth/register",
-    payload
-  )
+  const endpoint =
+    payload.role === "DRIVER"
+      ? "/api/v1/auth/register/driver"
+      : "/api/v1/auth/register/passenger"
+
+  return post<UserRegistrationRequest, UserResponse>(endpoint, payload)
 }

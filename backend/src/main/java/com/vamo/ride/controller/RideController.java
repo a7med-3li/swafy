@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v3/ride")
+@RequestMapping("/api/v3/ride")
 public class RideController {
 
     private final RideEstimationService rideEstimationService;
