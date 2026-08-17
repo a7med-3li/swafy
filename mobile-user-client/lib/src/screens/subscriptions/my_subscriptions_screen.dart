@@ -5,10 +5,12 @@ import '../../data/models/subscription_response.dart';
 import '../../providers/subscription_provider.dart';
 import '../../theme/theme.dart';
 
-/// Subscriptions management screen with Active / Pending / All tabs.
+/// Subscriptions management screen with Active / Pending / History tabs.
 ///
-/// Categorizes the user's subscriptions by status and displays
-/// them in a clean, tabbed interface.
+/// Each tab fetches from its own dedicated backend endpoint:
+/// - Active  → /api/v1/subscriptions/active
+/// - Pending → /api/v1/subscriptions/pending
+/// - History → /api/v1/subscriptions/history
 class MySubscriptionsScreen extends StatefulWidget {
   const MySubscriptionsScreen({super.key});
 
@@ -25,7 +27,10 @@ class _MySubscriptionsScreenState extends State<MySubscriptionsScreen>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SubscriptionProvider>().loadHistory();
+      final provider = context.read<SubscriptionProvider>();
+      provider.loadActive();
+      provider.loadPending();
+      provider.loadHistory();
     });
   }
 
@@ -38,14 +43,6 @@ class _MySubscriptionsScreenState extends State<MySubscriptionsScreen>
   @override
   Widget build(BuildContext context) {
     final subProvider = context.watch<SubscriptionProvider>();
-
-    final activeList = subProvider.history
-        .where((s) => s.status == SubscriptionStatus.active)
-        .toList();
-    final pendingList = subProvider.history
-        .where((s) => s.status == SubscriptionStatus.pending)
-        .toList();
-    final allList = subProvider.history;
 
     return SafeArea(
       child: Column(
@@ -111,9 +108,9 @@ class _MySubscriptionsScreenState extends State<MySubscriptionsScreen>
                   fontSize: 13,
                 ),
                 tabs: [
-                  Tab(text: 'نشطة (${activeList.length})'),
-                  Tab(text: 'قيد التفعيل (${pendingList.length})'),
-                  Tab(text: 'الكل (${allList.length})'),
+                  Tab(text: 'نشطة (${subProvider.active.length})'),
+                  Tab(text: 'قيد التفعيل (${subProvider.pending.length})'),
+                  Tab(text: 'السجل (${subProvider.history.length})'),
                 ],
               ),
             ),
@@ -133,21 +130,21 @@ class _MySubscriptionsScreenState extends State<MySubscriptionsScreen>
                     controller: _tabController,
                     children: [
                       _SubscriptionList(
-                        subscriptions: activeList,
+                        subscriptions: subProvider.active,
                         emptyIcon: Icons.check_circle_outline_rounded,
                         emptyTitle: 'لا توجد اشتراكات نشطة',
                         emptySubtitle: 'اشترك في مسار لبدء رحلاتك اليومية',
                         onRefresh: () => subProvider.forceRefresh(),
                       ),
                       _SubscriptionList(
-                        subscriptions: pendingList,
+                        subscriptions: subProvider.pending,
                         emptyIcon: Icons.hourglass_empty_rounded,
                         emptyTitle: 'لا توجد اشتراكات قيد التفعيل',
-                        emptySubtitle: 'جميع اشتراكاتك مفعلة حالياً',
+                        emptySubtitle: 'طلبك قيد المراجعة من الإدارة',
                         onRefresh: () => subProvider.forceRefresh(),
                       ),
                       _SubscriptionList(
-                        subscriptions: allList,
+                        subscriptions: subProvider.history,
                         emptyIcon: Icons.inbox_rounded,
                         emptyTitle: 'لا يوجد سجل اشتراكات',
                         emptySubtitle: 'ستظهر هنا جميع اشتراكاتك بعد التسجيل',

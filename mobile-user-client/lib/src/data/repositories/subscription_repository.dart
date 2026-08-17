@@ -24,19 +24,32 @@ class SubscriptionRepository {
   }
 
   /// Fetches the user's currently active subscription, if any.
-  Future<SubscriptionResponse?> getActive() async {
-    try {
-      final data = await _api.get(ApiConstants.activeSubscription);
-      if (data is Map<String, dynamic> && data.isNotEmpty) {
-        return SubscriptionResponse.fromJson(data);
-      }
-    } catch (_) {
-      // No active subscription or error
+  Future<List<SubscriptionResponse>> getActive() async {
+    final data = await _api.get(ApiConstants.activeSubscription);
+
+    if (data is List) {
+      return data
+          .map((e) => SubscriptionResponse.fromJson(e as Map<String, dynamic>))
+          .toList(growable: false);
     }
-    return null;
+
+    return const [];
   }
 
-  /// Fetches the user's subscription history.
+  /// Fetches subscriptions pending admin approval.
+  Future<List<SubscriptionResponse>> getPending() async {
+    final data = await _api.get(ApiConstants.pendingSubscription);
+
+    if (data is List) {
+      return data
+          .map((e) => SubscriptionResponse.fromJson(e as Map<String, dynamic>))
+          .toList(growable: false);
+    }
+
+    return const [];
+  }
+
+  /// Fetches the user's full subscription history.
   Future<List<SubscriptionResponse>> getHistory() async {
     final data = await _api.get(ApiConstants.subscriptionHistory);
 

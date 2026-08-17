@@ -39,6 +39,7 @@ class ApiConstants {
   // ── Subscriptions ──────────────────────────────────────────────────
   static const String purchaseSubscription = '/api/v1/subscriptions/purchase';
   static const String activeSubscription = '/api/v1/subscriptions/active';
+  static const String pendingSubscription = '/api/v1/subscriptions/pending';
   static const String subscriptionHistory = '/api/v1/subscriptions/history';
   static String cancelSubscription(int id) => '/api/v1/subscriptions/$id/cancel';
 
@@ -49,5 +50,7 @@ class ApiConstants {
 
   // ── Notifications ──────────────────────────────────────────────────
   static const String allNotifications = '/api/v1/notifications';
+  static const String unreadCount = '/api/v1/notifications/unread-count';
   static String getNotification(String id) => '/api/v1/notifications/$id';
+  static String markNotificationRead(String id) => '/api/v1/notifications/$id/read';
 }

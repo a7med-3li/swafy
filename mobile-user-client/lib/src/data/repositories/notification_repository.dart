@@ -57,13 +57,20 @@ class NotificationRepository {
   }
 
   /// Retrieves a specific notification by its ID.
-  Future<NotificationResponse> getNotification({
-    required String id
-  }) async {
-    final data = await _api.get(
-      ApiConstants.getNotification(id),
-    );
-
+  Future<NotificationResponse> getNotification({required String id}) async {
+    final data = await _api.get(ApiConstants.getNotification(id));
     return NotificationResponse.fromJson(data as Map<String, dynamic>);
+  }
+
+  /// Returns the count of unread notifications.
+  Future<int> getUnreadCount() async {
+    final data = await _api.get(ApiConstants.unreadCount);
+    if (data is num) return data.toInt();
+    return 0;
+  }
+
+  /// Marks a notification as read.
+  Future<void> markAsRead(String id) async {
+    await _api.post(ApiConstants.markNotificationRead(id));
   }
 }

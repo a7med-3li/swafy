@@ -60,7 +60,7 @@ class _CorridorsScreenState extends State<CorridorsScreen> {
     return SafeArea(
       child: RefreshIndicator(
         color: const Color(0xFF4ADE80),
-        onRefresh: () => context.read<CorridorProvider>().loadCorridors(),
+        onRefresh: () => context.read<CorridorProvider>().forceRefresh(),
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [

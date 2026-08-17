@@ -3,10 +3,11 @@ import 'package:provider/provider.dart';
 
 import '../../data/models/corridor_response.dart';
 import '../../providers/subscription_provider.dart';
+import '../../providers/corridor_provider.dart';
 import '../../theme/theme.dart';
 import '../../widgets/error_banner.dart';
 import '../../widgets/vamo_button.dart';
-import '../../providers/corridor_provider.dart';
+import '../home/home_screen.dart';
 
 /// Detail view for a single corridor with stop list and subscribe action.
 class CorridorDetailScreen extends StatelessWidget {
@@ -141,11 +142,9 @@ class CorridorDetailScreen extends StatelessWidget {
 
                 const SizedBox(height: 24),
 
-                // Messages
+                // Error messages
                 ErrorBanner(message: subProvider.error, onDismiss: subProvider.clearMessages),
                 if (subProvider.error != null) const SizedBox(height: 12),
-                ErrorBanner(message: subProvider.successMessage, isError: false, onDismiss: subProvider.clearMessages),
-                if (subProvider.successMessage != null) const SizedBox(height: 12),
 
                 // Subscribe
                 VamoButton(
@@ -178,13 +177,73 @@ class CorridorDetailScreen extends StatelessWidget {
               onPressed: () async {
                 Navigator.pop(ctx);
                 final subProvider = context.read<SubscriptionProvider>();
-                final success = await subProvider.purchase(corridor);
-                if (success && context.mounted) {
-                  await context.read<CorridorProvider>().loadCorridors();
+                final result = await subProvider.purchase(corridor);
+                if (result != null && context.mounted) {
+                  _showRequestPlacedDialog(context);
                 }
               },
               style: FilledButton.styleFrom(backgroundColor: VamoTheme.primary),
               child: const Text('تأكيد'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showRequestPlacedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: AlertDialog(
+          backgroundColor: context.cardColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF05472A).withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.check_circle_rounded, color: Color(0xFF22C55E), size: 24),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text('تم تقديم الطلب', style: TextStyle(fontWeight: FontWeight.w800)),
+              ),
+            ],
+          ),
+          content: const Text(
+            'تم تقديم طلب اشتراكك بنجاح! سيتم مراجعة الطلب من قبل الإدارة وتفعيله قريباً.',
+            style: TextStyle(height: 1.6),
+          ),
+          actions: [
+            FilledButton(
+              onPressed: () async {
+                Navigator.pop(ctx);
+                if (!context.mounted) return;
+
+                // Refresh all data from the backend
+                final subProvider = context.read<SubscriptionProvider>();
+                final corridorProvider = context.read<CorridorProvider>();
+                await Future.wait([
+                  subProvider.forceRefresh(),
+                  corridorProvider.forceRefresh(),
+                ]);
+
+                if (!context.mounted) return;
+
+                // Find HomeScreenState before popping so we can switch tabs
+                final homeState = context.findAncestorStateOfType<HomeScreenState>();
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                homeState?.switchTab(0);
+              },
+              style: FilledButton.styleFrom(backgroundColor: VamoTheme.primary),
+              child: const Text('موافق'),
             ),
           ],
         ),

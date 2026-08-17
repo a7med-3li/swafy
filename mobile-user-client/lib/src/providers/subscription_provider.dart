@@ -5,7 +5,7 @@ import '../data/models/corridor_response.dart';
 import '../data/models/subscription_response.dart';
 import '../data/repositories/subscription_repository.dart';
 
-/// Manages subscription state (active, history, purchase) with caching
+/// Manages subscription state (active, pending, history) with caching
 /// to prevent redundant API calls.
 class SubscriptionProvider extends ChangeNotifier {
   SubscriptionProvider({required SubscriptionRepository subscriptionRepository})
@@ -15,18 +15,21 @@ class SubscriptionProvider extends ChangeNotifier {
 
   // ── State ───────────────────────────────────────────────────────────
 
-  SubscriptionResponse? _active;
+  List<SubscriptionResponse> _active = [];
+  List<SubscriptionResponse> _pending = [];
   List<SubscriptionResponse> _history = [];
   bool _isLoading = false;
   String? _error;
   String? _successMessage;
   DateTime? _activeLastFetch;
+  DateTime? _pendingLastFetch;
   DateTime? _historyLastFetch;
 
   /// Cache TTL for subscription data.
   static const _cacheDuration = Duration(minutes: 3);
 
-  SubscriptionResponse? get active => _active;
+  List<SubscriptionResponse> get active => List.unmodifiable(_active);
+  List<SubscriptionResponse> get pending => List.unmodifiable(_pending);
   List<SubscriptionResponse> get history => List.unmodifiable(_history);
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -36,12 +39,15 @@ class SubscriptionProvider extends ChangeNotifier {
       _activeLastFetch != null &&
       DateTime.now().difference(_activeLastFetch!) < _cacheDuration;
 
+  bool get _isPendingCacheValid =>
+      _pendingLastFetch != null &&
+      DateTime.now().difference(_pendingLastFetch!) < _cacheDuration;
+
   bool get _isHistoryCacheValid =>
       _historyLastFetch != null &&
-      DateTime.now().difference(_historyLastFetch!) < _cacheDuration &&
-      _history.isNotEmpty;
+      DateTime.now().difference(_historyLastFetch!) < _cacheDuration;
 
-  // ── Load active subscription ───────────────────────────────────────
+  // ── Load active subscriptions ──────────────────────────────────────
 
   Future<void> loadActive() async {
     if (_isActiveCacheValid) return;
@@ -57,6 +63,31 @@ class SubscriptionProvider extends ChangeNotifier {
       _error = e.message;
     } catch (_) {
       // Silently handle — it's okay if there's no active subscription.
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  // ── Load pending subscriptions ─────────────────────────────────────
+
+  Future<void> loadPending() async {
+    if (_isPendingCacheValid) return;
+
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _pending = await _repo.getPending();
+      _pendingLastFetch = DateTime.now();
+    } on ApiException catch (e) {
+      _error = e.message;
+      _pending = [];
+      _pendingLastFetch = null;
+    } catch (_) {
+      _pending = [];
+      _pendingLastFetch = null;
     }
 
     _isLoading = false;
@@ -89,17 +120,18 @@ class SubscriptionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Forces a fresh fetch of both active subscription and history.
+  /// Forces a fresh fetch of active, pending, and history.
   Future<void> forceRefresh() async {
     _activeLastFetch = null;
+    _pendingLastFetch = null;
     _historyLastFetch = null;
-    await Future.wait([loadActive(), loadHistory()]);
+    await Future.wait([loadActive(), loadPending(), loadHistory()]);
   }
 
   // ── Purchase ───────────────────────────────────────────────────────
 
-  /// Subscribes to a [corridor]. Shows success message on completion.
-  Future<bool> purchase(CorridorResponse corridor) async {
+  /// Subscribes to a [corridor]. Returns the new subscription on success.
+  Future<SubscriptionResponse?> purchase(CorridorResponse corridor) async {
     _isLoading = true;
     _error = null;
     _successMessage = null;
@@ -107,35 +139,30 @@ class SubscriptionProvider extends ChangeNotifier {
 
     try {
       final newSub = await _repo.purchase(corridor);
-      _active = newSub;
-      
-      // Update local history immediately for UI synchronization
-      final existingIndex = _history.indexWhere((s) => s.id == newSub.id);
-      if (existingIndex >= 0) {
-        _history[existingIndex] = newSub;
-      } else {
-        _history = [newSub, ..._history];
-      }
-      
-      _successMessage = 'تم الاشتراك بنجاح!';
-      
-      // Mark caches as valid so navigating to the tab uses this up-to-date local state
-      _activeLastFetch = DateTime.now();
-      _historyLastFetch = DateTime.now();
-      
+
+      // Add to pending since purchase creates a request awaiting approval
+      _pending = [newSub, ..._pending];
+
+      _successMessage = 'تم تقديم طلب الاشتراك بنجاح!';
+
+      // Invalidate caches so next load fetches fresh data from the server
+      _activeLastFetch = null;
+      _pendingLastFetch = null;
+      _historyLastFetch = null;
+
       _isLoading = false;
       notifyListeners();
-      return true;
+      return newSub;
     } on ApiException catch (e) {
       _error = e.message;
       _isLoading = false;
       notifyListeners();
-      return false;
+      return null;
     } catch (_) {
       _error = 'حدث خطأ أثناء الاشتراك.';
       _isLoading = false;
       notifyListeners();
-      return false;
+      return null;
     }
   }
 
@@ -148,9 +175,11 @@ class SubscriptionProvider extends ChangeNotifier {
 
     try {
       await _repo.cancel(id);
-      _active = null;
+      _active = _active.where((s) => s.id != id).toList();
+      _pending = _pending.where((s) => s.id != id).toList();
       _successMessage = 'تم إلغاء الاشتراك.';
       _activeLastFetch = null;
+      _pendingLastFetch = null;
       _historyLastFetch = null;
       _isLoading = false;
       notifyListeners();

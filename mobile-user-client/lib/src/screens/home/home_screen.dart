@@ -1,12 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
+import '../../data/models/subscription_response.dart';
 import '../../providers/subscription_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../theme/theme.dart';
-import '../../widgets/boarding_pass_modal.dart';
-import '../../widgets/today_ride_card.dart';
 import '../../widgets/vamo_button.dart';
 import '../auth/login_screen.dart';
 import '../corridors/corridors_screen.dart';
@@ -14,6 +15,8 @@ import '../notifications/notifications_screen.dart';
 import '../profile/profile_screen.dart';
 import '../subscriptions/my_subscriptions_screen.dart';
 import '../subscriptions/subscription_history_screen.dart';
+import '../../providers/corridor_provider.dart';
+import '../../providers/notification_provider.dart';
 
 /// Main dashboard shown after login.
 ///
@@ -23,24 +26,115 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   int _currentIndex = 0;
+
+  /// Polls the backend periodically so data stays fresh even while the
+  /// screen is idle (e.g. subscription approval by an admin).
+  Timer? _subscriptionPollTimer;
+  Timer? _corridorPollTimer;
+  Timer? _notificationPollTimer;
+
+  static const _subscriptionPollInterval = Duration(seconds: 30);
+  static const _corridorPollInterval = Duration(seconds: 60);
+  static const _notificationPollInterval = Duration(seconds: 45);
 
   /// Public method to switch tabs from child widgets.
   void switchTab(int index) {
     setState(() => _currentIndex = index);
+
+    // Force a fresh fetch when opening a tab, ignoring the TTL cache.
+    if (index == 0 || index == 2) {
+      context.read<SubscriptionProvider>().forceRefresh();
+    } else if (index == 1) {
+      context.read<CorridorProvider>().forceRefresh();
+    }
+    // Always refresh unread count when switching tabs
+    context.read<NotificationProvider>().loadUnreadCount();
   }
 
   @override
   void initState() {
     super.initState();
-    // Load active subscription on startup.
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SubscriptionProvider>().loadActive();
+      _startPolling();
+      _refreshAll();
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _subscriptionPollTimer?.cancel();
+    _corridorPollTimer?.cancel();
+    _notificationPollTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        _startPolling();
+        _refreshAll();
+        break;
+      case AppLifecycleState.paused:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.detached:
+        _subscriptionPollTimer?.cancel();
+        _corridorPollTimer?.cancel();
+        _notificationPollTimer?.cancel();
+        _subscriptionPollTimer = null;
+        _corridorPollTimer = null;
+        _notificationPollTimer = null;
+        break;
+      case AppLifecycleState.inactive:
+        break;
+    }
+  }
+
+  void _startPolling() {
+    _subscriptionPollTimer?.cancel();
+    _corridorPollTimer?.cancel();
+    _notificationPollTimer?.cancel();
+
+    _subscriptionPollTimer = Timer.periodic(
+      _subscriptionPollInterval,
+      (_) => _refreshSubscriptions(),
+    );
+    _corridorPollTimer = Timer.periodic(
+      _corridorPollInterval,
+      (_) => _refreshCorridors(),
+    );
+    _notificationPollTimer = Timer.periodic(
+      _notificationPollInterval,
+      (_) => _refreshNotifications(),
+    );
+  }
+
+  void _refreshAll() {
+    _refreshSubscriptions();
+    _refreshCorridors();
+    _refreshNotifications();
+  }
+
+  void _refreshSubscriptions() {
+    if (!mounted) return;
+    context.read<SubscriptionProvider>().forceRefresh();
+  }
+
+  void _refreshCorridors() {
+    if (!mounted) return;
+    context.read<CorridorProvider>().forceRefresh();
+  }
+
+  void _refreshNotifications() {
+    if (!mounted) return;
+    context.read<NotificationProvider>().loadUnreadCount();
   }
 
   @override
@@ -126,41 +220,60 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(width: 8),
 
         // ── Notification Bell Icon with Badge ──────────────────
-        IconButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+        Builder(
+          builder: (context) {
+            final unreadCount = context.select<NotificationProvider, int>(
+              (p) => p.unreadCount,
             );
-          },
-          style: IconButton.styleFrom(
-            backgroundColor: context.cardColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: context.cardBorderColor),
-            ),
-          ),
-          icon: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Icon(
-                Icons.notifications_outlined,
-                color: context.titleColor,
-                size: 22,
-              ),
-              Positioned(
-                top: -2,
-                right: -2,
-                child: Container(
-                  width: 9,
-                  height: 9,
-                  decoration: const BoxDecoration(
-                    color: VamoTheme.alert,
-                    shape: BoxShape.circle,
-                  ),
+            return IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+                );
+              },
+              style: IconButton.styleFrom(
+                backgroundColor: context.cardColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: context.cardBorderColor),
                 ),
               ),
-            ],
-          ),
+              icon: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Icon(
+                    Icons.notifications_outlined,
+                    color: context.titleColor,
+                    size: 22,
+                  ),
+                  if (unreadCount > 0)
+                    Positioned(
+                      top: -4,
+                      right: -4,
+                      child: Container(
+                        constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFEF4444),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            unreadCount > 99 ? '99+' : '$unreadCount',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              height: 1,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
         ),
         const SizedBox(width: 8),
 
@@ -318,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _navItem(int index, IconData icon, String label) {
     final isSelected = _currentIndex == index;
     return GestureDetector(
-      onTap: () => setState(() => _currentIndex = index),
+      onTap: () => switchTab(index),
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
@@ -445,231 +558,242 @@ class _DashboardTab extends StatelessWidget {
   ) {
     final active = subProvider.active;
 
-    if (active != null) {
-      final daysLeft = _calculateDaysLeft(active.endDate);
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF05472A), Color(0xFF081A19)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+    if (active.isEmpty) {
+      // Empty state when user has no active subscription
+      return Container(
+        padding: const EdgeInsets.all(28),
+        decoration: BoxDecoration(
+          color: context.cardColor,
+          borderRadius: BorderRadius.circular(26),
+          border: Border.all(color: context.cardBorderColor),
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: VamoTheme.accent.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(22),
               ),
-              borderRadius: BorderRadius.circular(26),
-              border: Border.all(
-                color: const Color(0xFF166534).withValues(alpha: 0.5),
-                width: 1.5,
+              child: const Icon(
+                Icons.explore_rounded,
+                color: VamoTheme.accent,
+                size: 36,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: VamoTheme.accent.withValues(alpha: 0.15),
-                  blurRadius: 24,
-                  offset: const Offset(0, 8),
-                ),
-              ],
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Top row: Status badge & icon
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF166534),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: const Icon(
-                        Icons.card_membership_rounded,
-                        color: VamoTheme.accent,
-                        size: 22,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      'اشتراكك الحالي',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w900,
-                          ),
-                    ),
-                    const Spacer(),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF166534),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        active.status.label,
-                        style: const TextStyle(
-                          color: VamoTheme.accent,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 22),
+            const SizedBox(height: 20),
+            Text(
+              'لا يوجد اشتراك فعال حالياً',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'اشترك الآن في مسارك اليومي واستمتع برحلات مريحة، تعرفة موحدة، وسائقين معتمدين.',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: context.subtitleColor,
+                    height: 1.6,
+                  ),
+            ),
+            const SizedBox(height: 26),
+            VamoButton(
+              label: 'تصفح المسارات المتاحة',
+              icon: Icons.search_rounded,
+              onPressed: () {
+                final homeState =
+                    context.findAncestorStateOfType<HomeScreenState>();
+                homeState?.switchTab(1);
+              },
+            ),
+          ],
+        ),
+      );
+    }
 
-                // Days remaining badge
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF092E1C),
+    // Active subscription(s)
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (int i = 0; i < active.length; i++) ...[
+          _buildSubscriptionCard(context, active[i]),
+          if (i < active.length - 1) const SizedBox(height: 16),
+        ],
+        const SizedBox(height: 20),
+
+        // Quick Actions
+        Row(
+          children: [
+            Expanded(
+              child: VamoButton(
+                label: 'تصفح مسار آخر / تجديد',
+                icon: Icons.add_circle_outline_rounded,
+                onPressed: () {
+                  final homeState =
+                      context.findAncestorStateOfType<HomeScreenState>();
+                  homeState?.switchTab(1);
+                },
+              ),
+            ),
+            const SizedBox(width: 12),
+            SizedBox(
+              width: 58,
+              height: 58,
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const SubscriptionHistoryScreen(),
+                    ),
+                  );
+                },
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: context.cardBorderColor),
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: const Color(0xFF15803D).withValues(alpha: 0.6),
-                    ),
                   ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.timer_outlined,
-                        color: VamoTheme.accent,
-                        size: 22,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          daysLeft > 0
-                              ? 'متبقي $daysLeft يوم على تجديد الاشتراك'
-                              : 'الاشتراك ينتهي اليوم أو يحتاج تجديد',
-                          style: const TextStyle(
-                            color: Color(0xFF86EFAC),
-                            fontWeight: FontWeight.w800,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  padding: EdgeInsets.zero,
                 ),
-                const SizedBox(height: 22),
-
-                // Dates and Price
-                Row(
-                  children: [
-                    _subInfoItem(
-                      context,
-                      'القيمة الشهرية',
-                      '${active.price.toStringAsFixed(0)} ج.م',
-                      isHighlight: true,
-                    ),
-                    const SizedBox(width: 28),
-                    _subInfoItem(context, 'تاريخ البدء', active.startDate),
-                    const SizedBox(width: 28),
-                    _subInfoItem(context, 'تاريخ الانتهاء', active.endDate),
-                  ],
+                child: Icon(
+                  Icons.history_rounded,
+                  color: context.subtitleColor,
+                  size: 24,
                 ),
-                const SizedBox(height: 24)
-              ],
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
+          ],
+        ),
+      ],
+    );
+  }
 
-          // Quick Actions for active user
+  Widget _buildSubscriptionCard(
+    BuildContext context,
+    SubscriptionResponse sub,
+  ) {
+    final daysLeft = _calculateDaysLeft(sub.endDate);
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF05472A), Color(0xFF081A19)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(26),
+        border: Border.all(
+          color: const Color(0xFF166534).withValues(alpha: 0.5),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: VamoTheme.accent.withValues(alpha: 0.15),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Top row: Status badge & icon
           Row(
             children: [
-              Expanded(
-                child: VamoButton(
-                  label: 'تصفح مسار آخر / تجديد',
-                  icon: Icons.add_circle_outline_rounded,
-                  onPressed: () {
-                    final homeState =
-                        context.findAncestorStateOfType<_HomeScreenState>();
-                    homeState?.switchTab(1);
-                  },
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF166534),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Icon(
+                  Icons.card_membership_rounded,
+                  color: VamoTheme.accent,
+                  size: 22,
                 ),
               ),
               const SizedBox(width: 12),
-              SizedBox(
-                width: 58,
-                height: 58,
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const SubscriptionHistoryScreen(),
-                      ),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: context.cardBorderColor),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+              Text(
+                'اشتراكك الحالي',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w900,
                     ),
-                    padding: EdgeInsets.zero,
-                  ),
-                  child: Icon(
-                    Icons.history_rounded,
-                    color: context.subtitleColor,
-                    size: 24,
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF166534),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  sub.status.label,
+                  style: const TextStyle(
+                    color: VamoTheme.accent,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
             ],
           ),
-        ],
-      );
-    }
+          const SizedBox(height: 22),
 
-    // Empty state when user has no active subscription
-    return Container(
-      padding: const EdgeInsets.all(28),
-      decoration: BoxDecoration(
-        color: context.cardColor,
-        borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: context.cardBorderColor),
-      ),
-      child: Column(
-        children: [
+          // Days remaining badge
           Container(
-            width: 72,
-            height: 72,
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
-              color: VamoTheme.accent.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(22),
+              color: const Color(0xFF092E1C),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: const Color(0xFF15803D).withValues(alpha: 0.6),
+              ),
             ),
-            child: const Icon(
-              Icons.explore_rounded,
-              color: VamoTheme.accent,
-              size: 36,
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.timer_outlined,
+                  color: VamoTheme.accent,
+                  size: 22,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    daysLeft > 0
+                        ? 'متبقي $daysLeft يوم على تجديد الاشتراك'
+                        : 'الاشتراك ينتهي اليوم أو يحتاج تجديد',
+                    style: const TextStyle(
+                      color: Color(0xFF86EFAC),
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 20),
-          Text(
-            'لا يوجد اشتراك فعال حالياً',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w900,
-                ),
+          const SizedBox(height: 22),
+
+          // Dates and Price
+          Row(
+            children: [
+              _subInfoItem(
+                context,
+                'القيمة الشهرية',
+                '${sub.price.toStringAsFixed(0)} ج.م',
+                isHighlight: true,
+              ),
+              const SizedBox(width: 28),
+              _subInfoItem(context, 'تاريخ البدء', sub.startDate),
+              const SizedBox(width: 28),
+              _subInfoItem(context, 'تاريخ الانتهاء', sub.endDate),
+            ],
           ),
-          const SizedBox(height: 10),
-          Text(
-            'اشترك الآن في مسارك اليومي واستمتع برحلات مريحة، تعرفة موحدة، وسائقين معتمدين.',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: context.subtitleColor,
-                  height: 1.6,
-                ),
-          ),
-          const SizedBox(height: 26),
-          VamoButton(
-            label: 'تصفح المسارات المتاحة 🧭',
-            icon: Icons.search_rounded,
-            onPressed: () {
-              final homeState =
-                  context.findAncestorStateOfType<_HomeScreenState>();
-              homeState?.switchTab(1);
-            },
-          ),
+          const SizedBox(height: 4)
         ],
       ),
     );
