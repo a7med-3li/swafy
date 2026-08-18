@@ -13,6 +13,7 @@ import com.vamo.notification.service.TelegramNotificationService;
 import com.vamo.notification.template.NotificationTemplateType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -64,6 +65,7 @@ public class NotificationHandler {
 				.build();
 	}
 	
+	@Transactional
 	public void handleSubscriptionRequestForAdmin(SubscriptionRequestDTO subRequestDTO) {
 		
 		var template = templateService.build(

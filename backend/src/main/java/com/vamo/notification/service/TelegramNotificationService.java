@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
@@ -20,7 +21,7 @@ public class TelegramNotificationService {
 	
 	@Value("${telegram.admin-chat-id}")
 	private String chatId;
-	
+	@Transactional
 	public void sendMessage(String text) {
 		webClient.post()
 				.uri("/bot{token}/sendMessage", botToken)
