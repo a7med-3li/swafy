@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 // this service orchestrates other services,
     // to create and finalize a ride before saving it in DB using RideService.
 
@@ -26,7 +27,7 @@ public class RideEstimationService {
         return new RideEstimateResponseDto(list);
     }
 
-    public Address search(String location){
+    public List<Address> search(String location){
         return routingService.search(location);
     }
 

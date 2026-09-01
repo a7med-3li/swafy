@@ -17,6 +17,7 @@ import '../subscriptions/my_subscriptions_screen.dart';
 import '../subscriptions/subscription_history_screen.dart';
 import '../../providers/corridor_provider.dart';
 import '../../providers/notification_provider.dart';
+import '../rides/book_ride_screen.dart';
 
 /// Main dashboard shown after login.
 ///
@@ -543,9 +544,107 @@ class _DashboardTab extends StatelessWidget {
             ),
             const SizedBox(height: 28),
 
+            // ── Primary Actions: Book a Ride / Request Subscription ─
+            Row(
+              children: [
+                Expanded(
+                  child: _buildActionCard(
+                    context,
+                    title: 'احجز رحلة',
+                    subtitle: 'اطلب سائقاً الآن',
+                    icon: Icons.directions_car_filled_rounded,
+                    colors: const [Color(0xFF05472A), Color(0xFF0A6B3E)],
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const BookRideScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildActionCard(
+                    context,
+                    title: 'اشترك في مسار',
+                    subtitle: 'رحلات شهرية ثابتة',
+                    icon: Icons.card_membership_rounded,
+                    colors: const [Color(0xFF1E3A8A), Color(0xFF3B82F6)],
+                    onTap: () {
+                      final homeState =
+                          context.findAncestorStateOfType<HomeScreenState>();
+                      homeState?.switchTab(1);
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
             // ── Active Subscription Status ─────────────────────
             _buildSubscriptionSection(context, subProvider, auth.displayName),
           ],
+        ),
+      ),
+    );
+  }
+
+  /// A large tappable action card (Book a Ride / Request Subscription).
+  Widget _buildActionCard(
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required List<Color> colors,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Ink(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 22),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: colors,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: colors.first.withValues(alpha: 0.25),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: Colors.white, size: 30),
+              const SizedBox(height: 14),
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 17,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

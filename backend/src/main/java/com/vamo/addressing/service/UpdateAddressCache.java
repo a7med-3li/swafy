@@ -18,6 +18,6 @@ public class UpdateAddressCache implements UpdatingAddressCache {
     @Override
     public void storeAddress(Address address) {
         addressingRepository.save(address);
-        log.info("The address cache has been updated with address: " + address.getAddress());
+        log.info("The address cache has been updated with address: " + address.getDescription());
     }
 }

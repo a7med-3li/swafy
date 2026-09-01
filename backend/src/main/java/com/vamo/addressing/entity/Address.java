@@ -1,6 +1,8 @@
 package com.vamo.addressing.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data
@@ -14,16 +16,15 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "address", unique = true)
-    private String address;
+    
+    @NotBlank
+    private String title;
+    
+    @Column(name = "description", unique = true)
+    private String description;
 
-//    @Embedded
-//    @AttributeOverrides({
-//            @AttributeOverride(name = "latitude", column = @Column(name = "latitude")),
-//            @AttributeOverride(name = "longitude", column = @Column(name = "longitude"))
-//    })
-//    private GeoPoint location;
-
+    @NotNull
     private String latitude;
+    @NotNull
     private String longitude;
 }

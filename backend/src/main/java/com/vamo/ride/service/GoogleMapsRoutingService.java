@@ -1,6 +1,7 @@
 package com.vamo.ride.service;
 
 
+import java.util.List;
 import com.vamo.addressing.entity.Address;
 import com.vamo.common.entity.Location;
 import com.vamo.ride.domain.RouteInfo;
@@ -17,7 +18,7 @@ public class GoogleMapsRoutingService implements RoutingService {
     }
 
     @Override
-    public Address search(String address) {
+    public List<Address> search(String address) {
         return null;
     }
 }

@@ -90,7 +90,7 @@ public class RideController {
 
     @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER', 'BOTH')")
     @GetMapping("/search")
-    public Address search(@RequestParam String location) {
+    public List<Address> search(@RequestParam String location) {
         return rideEstimationService.search(location);
     }
 }

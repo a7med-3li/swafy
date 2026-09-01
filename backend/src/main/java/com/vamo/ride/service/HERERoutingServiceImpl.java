@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -64,7 +65,7 @@ public class HERERoutingServiceImpl implements RoutingService {
     }
 
     @Override
-    public Address search(String location) {
+    public List<Address> search(String location) {
         String at = "29.0667,31.0833";
         HereDiscoverResponse response = searchClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -76,22 +77,16 @@ public class HERERoutingServiceImpl implements RoutingService {
                 .retrieve()
                 .bodyToMono(HereDiscoverResponse.class)
                 .block();
-
-        HereDiscoverResponse.Item item = response.items().getFirst();
-        Address address = Address.builder()
-                .address(item.title())
-                .latitude(item.position().lat())
-                .longitude(item.position().lng())
-                .build();
+	    
+	    assert response != null;
+        assert response.items() != null;
+	    List<Address> addresses = response.items().stream()
+                .map(this::mapToAddress)
+                .toList();
 
         log.info(response.toString());
-
-        try {
-            updatingAddressCache.storeAddress(address);
-        } catch (Exception e) {
-            log.info("the address is already there");
-        }
-        return address;
+        
+        return addresses;
     }
 
     private Optional<RouteInfo> mapToRouteInfo(HereRouteResponse response) {
@@ -111,4 +106,11 @@ public class HERERoutingServiceImpl implements RoutingService {
         return Optional.of(new RouteInfo(summary.length(), Duration.ofSeconds(summary.duration())));
     }
 
+    private Address mapToAddress(HereDiscoverResponse.Item item) {
+        return Address.builder()
+                .title(item.title())
+                .latitude(item.position().lat())
+                .longitude(item.position().lng())
+                .build();
+    }
 }

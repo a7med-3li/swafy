@@ -7,6 +7,7 @@ import com.vamo.ride.service.interfaces.RoutingService;
 import lombok.RequiredArgsConstructor;
 
 import java.time.Duration;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class FakeRoutingServiceImpl implements RoutingService {
@@ -18,7 +19,7 @@ public class FakeRoutingServiceImpl implements RoutingService {
     }
 
     @Override
-    public Address search(String address) {
+    public List<Address> search(String address) {
         return null;
     }
 }
