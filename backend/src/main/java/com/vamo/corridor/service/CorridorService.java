@@ -10,8 +10,11 @@ import com.vamo.corridor.entity.Corridor;
 import com.vamo.corridor.entity.VBS;
 import com.vamo.corridor.repository.CorridorRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+@Slf4j
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +34,7 @@ public class CorridorService {
 				SubscriptionStatus.PENDING
 		);
 		
-		System.out.println("Finding available corridors for passenger: " + passengerId);
+		log.debug("Finding available corridors for passenger: {}", passengerId);
 		return corridorRepository.findAvailableCorridors(passengerId, blockingStatuses);
 	}
 	

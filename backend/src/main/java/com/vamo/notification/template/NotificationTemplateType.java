@@ -4,16 +4,9 @@ public enum NotificationTemplateType {
 	
 	//todo: refine templates to contain more data
 	PASSENGER_REGISTERED(
-			"Welcome to QuickPay!",
+			"Welcome to Vamo!",
 			"Your account has been successfully created.",
-			"Welcome {firstName} {lastName}! Your account is ready. You can start sending and receiving money securely."
-	),
-	
-	TRANSACTION_SENT(
-			"Money Sent",
-			"You sent {amount} EGP to {receiverName}.",
-			"Your transfer of {amount} EGP to {receiverName} was completed successfully. " +
-					"The transaction reference number is: {transactionId}"
+			"Welcome {firstName} {lastName}! Your account is ready. You can start booking your rides."
 	),
 	SUBSCRIPTION_REQUEST_ADMIN(
 			"Subscription Request",

@@ -13,12 +13,12 @@ public class SwaggerConfig {
     // TODO: configure OpenAPI / Swagger to use bearerAuth instead of basic-auth
 
     @Bean
-    public OpenAPI customSwafyOpenAPI() {
+    public OpenAPI vamoOpenAPI() {
         final String securitySchemeName = "bearerAuth";
         return new OpenAPI()
                 .info(new Info()
-                        .title("Swafy API")
-                        .description("API documentation for Swafy backend")
+                        .title("Vamo API")
+                        .description("API documentation for Vamo backend")
                         .version("v1.0"))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
