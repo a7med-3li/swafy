@@ -71,7 +71,7 @@ public class HERERoutingServiceImpl implements RoutingService {
                 .uri(uriBuilder -> uriBuilder
                         .queryParam("q", location)
                         .queryParam("at", at)
-                        .queryParam("limit", 1)
+                        .queryParam("limit", 7)
                         .queryParam("apiKey", HERE_API_KEY)
                         .build())
                 .retrieve()
