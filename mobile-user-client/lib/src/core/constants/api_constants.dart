@@ -7,7 +7,7 @@ class ApiConstants {
 
   // ── Base URL ────────────────────────────────────────────────────────
   /// Development server (direct IP).
-  static const String _devBaseUrl = 'http://48.199.17.132:8080';
+  static const String _devBaseUrl = 'http://13.51.40.28:8080';
 
   /// Production domain (when DNS is configured).
   // ignore: unused_field
@@ -15,7 +15,7 @@ class ApiConstants {
 
   static const String _localBaseUrl = 'http://localhost:8080';
   /// Active base URL used by the app.
-  static const String baseUrl = _localBaseUrl;
+  static const String baseUrl = _devBaseUrl;
 
   // ── Auth ────────────────────────────────────────────────────────────
   static const String registerPassenger = '/api/v1/auth/register/passenger';
