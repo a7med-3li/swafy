@@ -4,6 +4,7 @@ import com.vamo.addressing.entity.Address;
 import com.vamo.addressing.service.interfaces.UpdatingAddressCache;
 import com.vamo.common.entity.Location;
 import com.vamo.common.enums.VehicleType;
+import com.vamo.pricing.service.FareCalculationService;
 import com.vamo.ride.dto.HereDiscoverResponse;
 import com.vamo.ride.dto.HereRouteResponse;
 import com.vamo.ride.dto.RideRequestDto;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,8 @@ public class HERERoutingServiceImpl implements RoutingService {
     // TODO find a better way for the api integration and consume the response
 
     private final UpdatingAddressCache updatingAddressCache;
+    private final FareCalculationService fareCalculationService;
+    
     @Qualifier("routingClient")
     private final WebClient routeClient;
 
@@ -98,7 +102,8 @@ public class HERERoutingServiceImpl implements RoutingService {
         List<RoutingResponse> routingResponses = new ArrayList<>();
         for (int i = 0; i < VehicleType.values().length; i++) {
             HereRouteResponse routeResponse = calculateRouteInfo(from, to, VehicleType.values()[i].name().toLowerCase());
-            routingResponses.add(mapToRoutingResponse(routeResponse, VehicleType.values()[i].name().toLowerCase()));
+            BigDecimal price = fareCalculationService.calculateFare("CAR",routeResponse.getTotalDistanceMeters()/1000.0, routeResponse.getTotalDurationSeconds()/60.0 );
+            routingResponses.add(mapToRoutingResponse(routeResponse, VehicleType.values()[i].name().toLowerCase(), price));
         }
         
         if (routingResponses.isEmpty()) {
@@ -116,11 +121,11 @@ public class HERERoutingServiceImpl implements RoutingService {
                 .build();
     }
     
-    private RoutingResponse mapToRoutingResponse(HereRouteResponse response, String transportMode) {
+    private RoutingResponse mapToRoutingResponse(HereRouteResponse response, String transportMode, BigDecimal price) {
         if (response == null
                 || response.routes() == null
                 || response.routes().isEmpty()) {
-            return new RoutingResponse("", 0L, 0L, VehicleType.CAR);
+            return new RoutingResponse("", 0L, 0L, VehicleType.CAR, price);
         }
 
         HereRouteResponse.Route route = response.routes().getFirst();
@@ -131,7 +136,8 @@ public class HERERoutingServiceImpl implements RoutingService {
                 section.polyline(),
                 (long) summary.duration(),
                 (long) summary.length(),
-                VehicleType.valueOf(transportMode.toUpperCase()) // Assuming the transport mode is a valid VehicleType
+                VehicleType.valueOf(transportMode.toUpperCase()),
+                price
         );
     }
 }

@@ -3,19 +3,22 @@ import 'package:flutter/material.dart';
 /// A single ride option returned by the backend ride-request endpoint.
 ///
 /// Mirrors the backend `RoutingResponse`: `{routePolyline, duration,
-/// distance, vehicleType}`. [duration] is in seconds, [distance] in meters.
+/// distance, vehicleType, price}`. [duration] is in seconds, [distance] in
+/// meters, [price] in EGP.
 class RideOption {
   const RideOption({
     required this.routePolyline,
     required this.duration,
     required this.distance,
     required this.vehicleType,
+    required this.price,
   });
 
   final String routePolyline;
   final int duration;
   final int distance;
   final String vehicleType;
+  final double price;
 
   factory RideOption.fromJson(Map<String, dynamic> json) {
     return RideOption(
@@ -23,6 +26,7 @@ class RideOption {
       duration: (json['duration'] as num?)?.toInt() ?? 0,
       distance: (json['distance'] as num?)?.toInt() ?? 0,
       vehicleType: json['vehicleType'] as String? ?? '',
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -58,6 +62,9 @@ class RideOption {
     }
     return '$distance م';
   }
+
+  /// Estimated price formatted in EGP.
+  String get formattedPrice => '${price.toStringAsFixed(0)} ج.م';
 
   /// Material icon representing the vehicle type.
   IconData get icon {

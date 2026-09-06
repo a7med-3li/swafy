@@ -15,7 +15,7 @@ class ApiConstants {
 
   static const String _localBaseUrl = 'http://localhost:8080';
   /// Active base URL used by the app.
-  static const String baseUrl = _devBaseUrl;
+  static const String baseUrl = _localBaseUrl;
 
   // ── Auth ────────────────────────────────────────────────────────────
   static const String registerPassenger = '/api/v1/auth/register/passenger';
