@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../core/network/api_client.dart';
 import '../core/network/api_exception.dart';
 import '../data/models/address_result.dart';
+import '../data/models/ride_option.dart';
 import '../data/repositories/address_repository.dart';
+import '../data/repositories/ride_repository.dart';
 
 /// Encapsulates the result of resolving the passenger's current location.
 class PickupLocation {
@@ -81,10 +84,14 @@ class AddressSearchState {
 /// dropoff), each backed by autocomplete + full-search fallback, with the
 /// device's current location offered as the pickup default when available.
 class RideBookProvider extends ChangeNotifier {
-  RideBookProvider({required AddressRepository addressRepository})
-      : _addressRepo = addressRepository;
+  RideBookProvider({
+    required AddressRepository addressRepository,
+    RideRepository? rideRepository,
+  })  : _addressRepo = addressRepository,
+        _rideRepo = rideRepository ?? RideRepository(apiClient: ApiClient());
 
   final AddressRepository _addressRepo;
+  final RideRepository _rideRepo;
 
   // ── Device location state (pickup default) ──────────────────────────
   bool _isLocating = false;
@@ -95,7 +102,16 @@ class RideBookProvider extends ChangeNotifier {
   final AddressSearchState _pickup = AddressSearchState();
   final AddressSearchState _dropoff = AddressSearchState();
 
+  // ── Ride request state ──────────────────────────────────────────────
+  List<RideOption>? _rideOptions;
+  bool _isRequestingRide = false;
+  String? _rideRequestError;
+
   bool get isLocating => _isLocating;
+  bool get isRequestingRide => _isRequestingRide;
+  bool get hasRideOptions => _rideOptions != null && _rideOptions!.isNotEmpty;
+  List<RideOption>? get rideOptions => _rideOptions;
+  String? get rideRequestError => _rideRequestError;
   PickupLocation? get deviceLocation => _deviceLocation;
   String? get locationError => _locationError;
   bool get hasDeviceLocation => _deviceLocation != null;
@@ -176,6 +192,7 @@ class RideBookProvider extends ChangeNotifier {
 
   /// Runs autocomplete for [query]. Cheap, fast — used while typing.
   Future<void> _autoComplete(AddressSearchState search, String query) async {
+    _clearRideRequest();
     search.beginSearch();
     final token = search.token;
     notifyListeners();
@@ -200,6 +217,7 @@ class RideBookProvider extends ChangeNotifier {
   /// Runs the full search for [query] (maps API). Called explicitly when
   /// autocomplete returned no results and the user taps the fallback button.
   Future<void> _fullSearch(AddressSearchState search, String query) async {
+    _clearRideRequest();
     search.beginSearch();
     final token = search.token;
     notifyListeners();
@@ -223,31 +241,37 @@ class RideBookProvider extends ChangeNotifier {
 
   void selectPickup(AddressResult address) {
     _pickup.select(address);
+    _clearRideRequest();
     notifyListeners();
   }
 
   void selectDropoff(AddressResult address) {
     _dropoff.select(address);
+    _clearRideRequest();
     notifyListeners();
   }
 
   void clearPickupSelection() {
     _pickup.clearSelection();
+    _clearRideRequest();
     notifyListeners();
   }
 
   void clearDropoffSelection() {
     _dropoff.clearSelection();
+    _clearRideRequest();
     notifyListeners();
   }
 
   void clearPickupSearch() {
     _pickup.clearResults();
+    _clearRideRequest();
     notifyListeners();
   }
 
   void clearDropoffSearch() {
     _dropoff.clearResults();
+    _clearRideRequest();
     notifyListeners();
   }
 
@@ -258,7 +282,63 @@ class RideBookProvider extends ChangeNotifier {
     _dropoff.clearSelection();
     _deviceLocation = null;
     _locationError = null;
+    _clearRideRequest();
     notifyListeners();
+  }
+
+  /// Requests ride options for the currently pinned pick-up and drop-off
+  /// locations. No-op until both are fully pinned.
+  Future<void> requestRide() async {
+    final pickup = pickupCoordinates;
+    final dropoff = _dropoff.selected;
+    if (pickup == null ||
+        dropoff == null ||
+        dropoff.lat == null ||
+        dropoff.lng == null) {
+      return;
+    }
+
+    _isRequestingRide = true;
+    _rideRequestError = null;
+    _rideOptions = null;
+    notifyListeners();
+
+    try {
+      final options = await _rideRepo.requestRide(
+        pickupLatitude: pickup.latitude,
+        pickupLongitude: pickup.longitude,
+        dropoffLatitude: dropoff.lat!,
+        dropoffLongitude: dropoff.lng!,
+      );
+      if (!_isRequestingRide) return; // cleared while the request was in flight
+      // Drop empty stubs returned by the backend when a transport mode fails.
+      _rideOptions = options
+          .where((o) => o.duration > 0 || o.distance > 0)
+          .toList(growable: false);
+    } on ApiException catch (e) {
+      if (!_isRequestingRide) return;
+      _rideRequestError = e.message;
+    } catch (e) {
+      if (!_isRequestingRide) return;
+      debugPrint('⚠️ [RideBookProvider] requestRide error: $e');
+      _rideRequestError = 'تعذر الحصول على خيارات الرحلة. حاول مرة أخرى.';
+    }
+
+    _isRequestingRide = false;
+    notifyListeners();
+  }
+
+  /// Clears any fetched/rendered ride options without notifying (the caller
+  /// is expected to notifyListeners afterwards).
+  void _clearRideRequest() {
+    if (_rideOptions == null &&
+        _rideRequestError == null &&
+        !_isRequestingRide) {
+      return;
+    }
+    _rideOptions = null;
+    _rideRequestError = null;
+    _isRequestingRide = false;
   }
 }
 

@@ -31,6 +31,22 @@ class ApiClient {
     return _sendWithRetry(() => _client.get(uri, headers: _headers()));
   }
 
+  /// Sends a GET request carrying a JSON [body] (used by endpoints that
+  /// read complex payloads, e.g. the ride-options request).
+  Future<dynamic> getWithBody(
+    String path, {
+    Map<String, dynamic>? body,
+  }) async {
+    final uri = _buildUri(path);
+    return _sendWithRetry(() async {
+      final request = http.Request('GET', uri)
+        ..headers.addAll(_headers())
+        ..body = jsonEncode(body ?? {});
+      final streamed = await _client.send(request);
+      return http.Response.fromStream(streamed);
+    });
+  }
+
   /// Sends a POST request with a JSON [body].
   Future<dynamic> post(
     String path, {

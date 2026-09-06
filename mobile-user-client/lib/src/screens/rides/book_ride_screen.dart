@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/address_result.dart';
+import '../../data/models/ride_option.dart';
 import '../../providers/ride_book_provider.dart';
 import '../../theme/theme.dart';
 import '../../widgets/vamo_button.dart';
@@ -319,6 +320,61 @@ class BookRideScreenState extends State<BookRideScreen> {
   // ── Results ─────────────────────────────────────────────────────────
   Widget _buildResultsSection(BuildContext context) {
     final provider = context.watch<RideBookProvider>();
+
+    // ── Ride-request flow: loading / error / options ────────────────
+    if (provider.isRequestingRide) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (provider.rideRequestError != null) {
+      return _buildRideRequestError(context, provider.rideRequestError!);
+    }
+
+    if (provider.rideOptions != null) {
+      final options = provider.rideOptions!;
+      if (options.isEmpty) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.route_rounded,
+                    color: context.subtitleColor, size: 48),
+                const SizedBox(height: 14),
+                Text(
+                  'لا توجد خيارات رحلة متاحة لهذه الوجهة حالياً.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: context.subtitleColor, fontSize: 15),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+      return ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        itemCount: options.length + 1,
+        separatorBuilder: (_, __) => const SizedBox(height: 8),
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(4, 4, 4, 8),
+              child: Text(
+                'خيارات الرحلة المتاحة',
+                style: TextStyle(
+                  color: context.subtitleColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            );
+          }
+          return _RideOptionTile(option: options[index - 1]);
+        },
+      );
+    }
+
     final search =
         _isPickupActive ? provider.pickupSearch : provider.dropoffSearch;
 
@@ -390,6 +446,35 @@ class BookRideScreenState extends State<BookRideScreen> {
     );
   }
 
+  Widget _buildRideRequestError(BuildContext context, String message) {
+    final provider = context.read<RideBookProvider>();
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.error_outline_rounded,
+                color: context.subtitleColor, size: 48),
+            const SizedBox(height: 14),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: context.subtitleColor, fontSize: 15),
+            ),
+            const SizedBox(height: 16),
+            VamoButton(
+              label: 'إعادة المحاولة',
+              icon: Icons.refresh_rounded,
+              isOutlined: true,
+              onPressed: provider.requestRide,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // ── Bottom panel ────────────────────────────────────────────────────
   Widget _buildBottomPanel(BuildContext context) {
     final provider = context.watch<RideBookProvider>();
@@ -410,6 +495,7 @@ class BookRideScreenState extends State<BookRideScreen> {
           VamoButton(
             label: _requestLabel(provider, canRequest),
             icon: Icons.directions_car_filled_rounded,
+            isLoading: provider.isRequestingRide,
             onPressed: canRequest ? _onConfirmBooking : null,
           ),
         ],
@@ -417,11 +503,11 @@ class BookRideScreenState extends State<BookRideScreen> {
     );
   }
 
-  String _requestLabel(RideBookProvider provider, bool canRequest) {
-    if (canRequest) return 'تأكيد الحجز';
-    if (!provider.hasPickup) return 'حدد نقطة الانطلاق أولاً';
-    return 'حدد نقطة النزول أولاً';
-  }
+String _requestLabel(RideBookProvider provider, bool canRequest) {
+  if (canRequest) return 'اطلب رحلة';
+  if (!provider.hasPickup) return 'حدد نقطة الانطلاق أولاً';
+  return 'حدد نقطة النزول أولاً';
+}
 
   Widget _buildPickupRow(BuildContext context, RideBookProvider provider) {
     if (provider.isLocating) {
@@ -476,13 +562,93 @@ class BookRideScreenState extends State<BookRideScreen> {
   }
 
   void _onConfirmBooking() {
-    // Booking submission endpoint is pending on the backend.
-    // Once available, submit the ride here (pickup = provider.pickupCoordinates,
-    // dropoff = provider.dropoffSelected).
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('تم تحديد نقطتي الانطلاق والنزول. سيتم تفعيل الحجز قريباً.'),
+    context.read<RideBookProvider>().requestRide();
+  }
+}
+
+/// A passive (non-selectable) ride-option row shown after requesting a ride.
+/// Tapping/selecting will be enabled once the booking flow is implemented.
+class _RideOptionTile extends StatelessWidget {
+  const _RideOptionTile({required this.option});
+
+  final RideOption option;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: context.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: context.cardBorderColor),
       ),
+      child: Row(
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: VamoTheme.primary.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(option.icon, color: VamoTheme.accentDark, size: 26),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  option.typeLabel,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: context.titleColor,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    _buildChip(
+                      context,
+                      icon: Icons.schedule_rounded,
+                      text: option.formattedDuration,
+                    ),
+                    const SizedBox(width: 12),
+                    _buildChip(
+                      context,
+                      icon: Icons.straighten_rounded,
+                      text: option.formattedDistance,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChip(
+    BuildContext context, {
+    required IconData icon,
+    required String text,
+  }) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: context.subtitleColor),
+        const SizedBox(width: 4),
+        Text(
+          text,
+          style: TextStyle(
+            color: context.subtitleColor,
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 }
