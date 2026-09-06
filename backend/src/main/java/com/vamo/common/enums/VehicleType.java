@@ -1,10 +1,12 @@
 package com.vamo.common.enums;
 
 public enum VehicleType {
+    
+    CAR("car"),
+    TAXI("taxi"),
+    SCOOTER("scooter"),
+    BUS("bus");
 
-    PRIVATE_CAR,
-    TAXI,
-    SCOOTER,
-    SEVEN_PLACES,
-    MICROBUS
+    VehicleType(String value) {
+    }
 }

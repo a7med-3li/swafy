@@ -8,6 +8,7 @@ import 'src/data/repositories/address_repository.dart';
 import 'src/data/repositories/auth_repository.dart';
 import 'src/data/repositories/corridor_repository.dart';
 import 'src/data/repositories/notification_repository.dart';
+import 'src/data/repositories/ride_repository.dart';
 import 'src/data/repositories/subscription_repository.dart';
 import 'src/providers/auth_provider.dart';
 import 'src/providers/corridor_provider.dart';
@@ -33,6 +34,7 @@ void main() async {
   final subscriptionRepo = SubscriptionRepository(apiClient: apiClient);
   final notificationRepo = NotificationRepository(apiClient: apiClient);
   final addressRepo = AddressRepository(apiClient: apiClient);
+  final rideRepo = RideRepository(apiClient: apiClient);
 
   runApp(
     MultiProvider(
@@ -50,7 +52,8 @@ void main() async {
           create: (_) => NotificationProvider(notificationRepository: notificationRepo),
         ),
         ChangeNotifierProvider(
-          create: (_) => RideBookProvider(addressRepository: addressRepo),
+          create: (_) =>
+              RideBookProvider(addressRepository: addressRepo, rideRepository: rideRepo),
         ),
         ChangeNotifierProvider(
           create: (_) => ThemeProvider(),

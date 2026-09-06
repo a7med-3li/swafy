@@ -3,9 +3,11 @@ package com.vamo.ride.service;
 import com.vamo.addressing.entity.Address;
 import com.vamo.addressing.service.interfaces.UpdatingAddressCache;
 import com.vamo.common.entity.Location;
-import com.vamo.ride.domain.RouteInfo;
+import com.vamo.common.enums.VehicleType;
 import com.vamo.ride.dto.HereDiscoverResponse;
 import com.vamo.ride.dto.HereRouteResponse;
+import com.vamo.ride.dto.RideRequestDto;
+import com.vamo.ride.dto.RoutingResponse;
 import com.vamo.ride.service.interfaces.RoutingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,8 +42,8 @@ public class HERERoutingServiceImpl implements RoutingService {
 
     @Value("${here.api.key}")
     private String HERE_API_KEY;
-    @Override
-    public RouteInfo calculateRouteInfo(Location from, Location to) {
+    
+    public HereRouteResponse calculateRouteInfo(Location from, Location to, String transportMode) {
         String origin = from.getLatitude() + "," + from.getLongitude();
         String destination = to.getLatitude() + "," + to.getLongitude();
 
@@ -48,7 +51,7 @@ public class HERERoutingServiceImpl implements RoutingService {
                 .uri(uriBuilder -> uriBuilder
                         .queryParam("origin", origin)
                         .queryParam("destination", destination)
-                        .queryParam("transportMode", "car")
+                        .queryParam("transportMode", transportMode)
                         .queryParam("return", "summary")
                         .queryParam("apiKey", HERE_API_KEY)
                         .build())
@@ -60,8 +63,7 @@ public class HERERoutingServiceImpl implements RoutingService {
                 .bodyToMono(HereRouteResponse.class)
                 .block(); // block because we are in MVC app
 
-        return mapToRouteInfo(response)
-                .orElse(RouteInfo.empty());
+        return response;
     }
 
     @Override
@@ -88,22 +90,22 @@ public class HERERoutingServiceImpl implements RoutingService {
         
         return addresses;
     }
-
-    private Optional<RouteInfo> mapToRouteInfo(HereRouteResponse response) {
-        if (response == null
-                || response.routes() == null
-                || response.routes().isEmpty()) {
-            return Optional.of(RouteInfo.empty());
+    
+    @Override
+    public List<RoutingResponse> getRideOptions(RideRequestDto rideRequestDto) {
+        Location from = rideRequestDto.pickUp();
+        Location to = rideRequestDto.dropOff();
+        List<RoutingResponse> routingResponses = new ArrayList<>();
+        for (int i = 0; i < VehicleType.values().length; i++) {
+            HereRouteResponse routeResponse = calculateRouteInfo(from, to, VehicleType.values()[i].name().toLowerCase());
+            routingResponses.add(mapToRoutingResponse(routeResponse, VehicleType.values()[i].name().toLowerCase()));
+        }
+        
+        if (routingResponses.isEmpty()) {
+            throw new RuntimeException("Failed to retrieve route information from HERE API.");
         }
 
-        HereRouteResponse.Summary summary =
-                response.routes()
-                        .getFirst()
-                        .sections()
-                        .getFirst()
-                        .summary();
-
-        return Optional.of(new RouteInfo(summary.length(), Duration.ofSeconds(summary.duration())));
+        return routingResponses;
     }
 
     private Address mapToAddress(HereDiscoverResponse.Item item) {
@@ -112,5 +114,24 @@ public class HERERoutingServiceImpl implements RoutingService {
                 .latitude(item.position().lat())
                 .longitude(item.position().lng())
                 .build();
+    }
+    
+    private RoutingResponse mapToRoutingResponse(HereRouteResponse response, String transportMode) {
+        if (response == null
+                || response.routes() == null
+                || response.routes().isEmpty()) {
+            return new RoutingResponse("", 0L, 0L, VehicleType.CAR);
+        }
+
+        HereRouteResponse.Route route = response.routes().getFirst();
+        HereRouteResponse.Section section = route.sections().getFirst();
+        HereRouteResponse.Summary summary = section.summary();
+
+        return new RoutingResponse(
+                section.polyline(),
+                (long) summary.duration(),
+                (long) summary.length(),
+                VehicleType.valueOf(transportMode.toUpperCase()) // Assuming the transport mode is a valid VehicleType
+        );
     }
 }

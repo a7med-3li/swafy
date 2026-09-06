@@ -2,9 +2,11 @@ package com.vamo.ride.controller;
 
 import com.vamo.addressing.entity.Address;
 import com.vamo.common.dto.ApiResponse;
+import com.vamo.common.entity.Location;
 import com.vamo.ride.dto.*;
 import com.vamo.ride.service.RideEstimationService;
 import com.vamo.ride.service.RideService;
+import com.vamo.ride.service.interfaces.RoutingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,7 @@ import java.util.UUID;
 @RequestMapping("/api/v3/ride")
 public class RideController {
 
-    private final RideEstimationService rideEstimationService;
+    private final RoutingService routingService;
     private final RideService rideService;
 
 //    @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
@@ -81,16 +83,15 @@ public class RideController {
         return ResponseEntity.ok(rideService.getDriverHistory(UUID.fromString(userId)));
     }
 
-    @PreAuthorize("hasAnyRole('PASSENGER', 'BOTH')")
-    @PostMapping("/estimate-ride")
-    public RideEstimateResponseDto estimateRide(
-            @Valid @RequestBody RideEstimateRequestDto request) {
-        return rideEstimationService.estimate(request);
-    }
-
     @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER', 'BOTH')")
     @GetMapping("/search")
     public List<Address> search(@RequestParam String location) {
-        return rideEstimationService.search(location);
+        return routingService.search(location);
+    }
+    
+    @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER', 'BOTH')")
+    @GetMapping("/request")
+    public List<RoutingResponse> request(@RequestBody RideRequestDto rideRequestDto) {
+        return routingService.getRideOptions(rideRequestDto);
     }
 }

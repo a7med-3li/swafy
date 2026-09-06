@@ -1,4 +1,4 @@
-CREATE TABLE driver_transaction (
+CREATE TABLE IF NOT EXISTS driver_transaction (
     id BIGSERIAL PRIMARY KEY,
     driver_profile_id UUID NOT NULL REFERENCES driver_profile(id),
     type VARCHAR(20) NOT NULL,
