@@ -14,11 +14,11 @@ CREATE TABLE IF NOT EXISTS fare_configs (
 );
 
 CREATE INDEX idx_fare_configs_lookup
-    ON fare_configs (vehicle_type, city_or_zone, active, effective_from DESC);
+    ON fare_configs (vehicle_type, city, active, effective_from DESC);
 
 -- seed initial rate for Beni Suef
 INSERT INTO fare_configs
-(vehicle_type, city_or_zone, base_fare, per_km_rate, per_minute_rate,
+(vehicle_type, city, base_fare, per_km_rate, per_minute_rate,
  minimum_fare, waiting_rate_per_minute, surge_multiplier, active, effective_from)
 VALUES
     ('CAR', 'BENI_SUEF', 7.00, 2.75, 0.30, 15.00, 0.50, 1.0, true, now());
