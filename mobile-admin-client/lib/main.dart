@@ -8,11 +8,13 @@ import 'src/data/repositories/auth_repository.dart';
 import 'src/data/repositories/corridor_repository.dart';
 import 'src/data/repositories/subscription_admin_repository.dart';
 import 'src/data/repositories/notification_repository.dart';
+import 'src/data/repositories/fare_config_repository.dart';
 import 'src/providers/auth_provider.dart';
 import 'src/providers/corridor_provider.dart';
 import 'src/providers/notifications_providor.dart';
 import 'src/providers/subscription_admin_provider.dart';
 import 'src/providers/theme_provider.dart';
+import 'src/providers/fare_config_provider.dart';
 import 'src/screens/splash_screen.dart';
 import 'src/theme/theme.dart';
 
@@ -30,6 +32,7 @@ void main() async {
   final corridorRepo = CorridorRepository(apiClient: apiClient);
   final notificationRepo = NotificationRepository(apiClient: apiClient);
   final subAdminRepo = SubscriptionAdminRepository(apiClient: apiClient);
+  final fareConfigRepo = FareConfigRepository(apiClient: apiClient);
 
   runApp(
     MultiProvider(
@@ -45,6 +48,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => SubscriptionAdminProvider(repository: subAdminRepo),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => FareConfigProvider(repository: fareConfigRepo),
         ),
         ChangeNotifierProvider(
           create: (_) => ThemeProvider(),

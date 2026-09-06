@@ -12,6 +12,7 @@ import '../notifications/notifications_screen.dart';
 import '../profile/profile_screen.dart';
 import '../corridors/add_corridor_screen.dart';
 import '../subscriptions/pending_subscriptions_screen.dart';
+import '../fare_configs/fare_configs_screen.dart';
 
 /// Main dashboard shown after login.
 ///
@@ -484,7 +485,7 @@ class _DashboardTab extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             
-            // Secondary Quick Actions
+            const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
@@ -508,6 +509,14 @@ class _DashboardTab extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 12),
+            VamoButton(
+              label: 'إدارة أسعار الرحلات',
+              icon: Icons.payments_outlined,
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FareConfigsScreen()));
+              },
             ),
           ],
         ),

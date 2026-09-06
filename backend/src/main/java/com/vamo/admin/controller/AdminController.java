@@ -92,6 +92,11 @@ public class AdminController {
         return ResponseEntity.ok(adminStatsService.getSubscriptionStats());
     }
 
+    @GetMapping("/subscriptions/pending")
+    public ResponseEntity<List<PendingSubscriptionItem>> getPendingSubscriptions() {
+        return ResponseEntity.ok(adminStatsService.getPendingSubscriptions());
+    }
+
     @GetMapping("/no-shows/rides")
     public ResponseEntity<List<RideAdminItem>> getNoShowRides() {
         return ResponseEntity.ok(adminStatsService.getNoShowRides());
