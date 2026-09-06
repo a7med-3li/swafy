@@ -1,4 +1,4 @@
-package com.vamo.common.util.pricing.service;
+package com.vamo.pricing.service;
 
 import org.springframework.stereotype.Service;
 
