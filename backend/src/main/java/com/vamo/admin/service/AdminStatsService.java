@@ -188,28 +188,7 @@ public class AdminStatsService {
         walletService.forfeitDeposit(depositId, reason);
     }
 
-//    @Transactional(readOnly = true)
-//    public List<SubscriptionSalesItem> getSubscriptions(SubscriptionPlan plan, SubscriptionStatus status) {
-//        List<Subscription> subs;
-//
-//        if (plan != null) {
-//            subs = subscriptionRepo.findByPlanOrderByCreatedAtDesc(plan);
-//        } else if (status != null) {
-//            subs = subscriptionRepo.findByStatusOrderByCreatedAtDesc(status);
-//        } else {
-//            subs = subscriptionRepo.findAllByOrderByCreatedAtDesc();
-//        }
-//
-//        return subs.stream()
-//                .map(s -> new SubscriptionSalesItem(
-//                        s.getId(), s.getPassengerId(), s.getPlan(),
-//                        s.getTotalRides(), s.getRemainingRides(), s.getPrice(),
-//                        s.getStartDate(), s.getEndDate(), s.getStatus(),
-//                        s.getCreatedAt(), s.isAutoRenew()))
-//                .toList();
-//    }
-
-    @Transactional(readOnly = true)
+@Transactional(readOnly = true)
     public SubscriptionSalesStats getSubscriptionStats() {
         return new SubscriptionSalesStats(
                 subscriptionRepo.countByStatus(SubscriptionStatus.ACTIVE),
@@ -221,6 +200,29 @@ public class AdminStatsService {
                // subscriptionRepo.countByPlan(SubscriptionPlan.CORPORATE_COMMUTER),
                // subscriptionRepo.totalRevenue()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<PendingSubscriptionItem> getPendingSubscriptions() {
+        return subscriptionRepo.findByStatusOrderByCreatedAtDesc(SubscriptionStatus.PENDING)
+                .stream()
+                .map(s -> {
+                    User passenger = s.getPassenger().getUser();
+                    String passengerName = passenger.getFirstName() + " " + passenger.getLastName();
+                    return new PendingSubscriptionItem(
+                            s.getId(),
+                            s.getPassenger().getId(),
+                            passengerName,
+                            passenger.getPhoneNumber(),
+                            s.getCorridor().getId(),
+                            s.getCorridor().getTitle(),
+                            s.getCorridor().getPrice(),
+                            s.getStartDate(),
+                            s.getEndDate(),
+                            s.getStatus()
+                    );
+                })
+                .toList();
     }
 
     @Transactional(readOnly = true)

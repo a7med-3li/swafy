@@ -45,6 +45,9 @@ class SubscriptionResponse {
     required this.startDate,
     required this.endDate,
     required this.status,
+    this.corridorTitle = '',
+    this.passengerName = '',
+    this.passengerPhone = '',
   });
 
   final int id;
@@ -53,6 +56,15 @@ class SubscriptionResponse {
   final String endDate;
   final SubscriptionStatus status;
 
+  /// Corridor label (populated by admin listing endpoints).
+  final String corridorTitle;
+
+  /// Passenger display name (populated by admin listing endpoints).
+  final String passengerName;
+
+  /// Passenger phone number (populated by admin listing endpoints).
+  final String passengerPhone;
+
   factory SubscriptionResponse.fromJson(Map<String, dynamic> json) {
     return SubscriptionResponse(
       id: (json['id'] as num?)?.toInt() ?? 0,
@@ -60,6 +72,9 @@ class SubscriptionResponse {
       startDate: json['startDate'] as String? ?? '',
       endDate: json['endDate'] as String? ?? '',
       status: SubscriptionStatus.fromString(json['status'] as String?),
+      corridorTitle: json['corridorTitle'] as String? ?? '',
+      passengerName: json['passengerName'] as String? ?? '',
+      passengerPhone: json['passengerPhone'] as String? ?? '',
     );
   }
 
